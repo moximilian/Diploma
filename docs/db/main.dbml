@@ -1,0 +1,117 @@
+Table users {
+    id uuid [primary key]
+    name varchar
+    surname varchar
+    last_name varchar
+    login varchar [not null, unique]
+    password varchar [not null, note: 'hash' ]
+    registered_at timestamp
+    photo base64
+    failed_attempts_count integer
+    is_deleted boolean
+}
+
+Table auth_sessions {
+    sid uuid [primary key]
+    expired timestamp
+    session varchar
+    status varchar
+    user_id uuid
+} 
+
+Ref: auth_sessions.user_id > users.id
+
+Table group_enter_requests {
+    id uuid [primary key]
+    user_id uuid
+    group_id uuid
+    is_approved boolean
+}
+
+Table group_participants {
+    id uuid [primary key]
+    user_id uuid
+    group_id uuid
+}
+
+Table groups {
+    id uuid [primary key]
+    creator_id uuid
+    name varchar
+    description varchar
+    is_open boolean
+    max_participants_count integer
+    is_deleted boolean
+}
+
+Ref: groups.creator_id > users.id
+Ref: group_participants.user_id > users.id
+Ref: group_participants.group_id > groups.id
+Ref: group_enter_requests.user_id > users.id
+Ref: group_enter_requests.group_id > groups.id
+
+Table slot_participants {
+    id uuid [primary key]
+    user_id uuid
+    slot_id uuid
+    is_attended boolean
+    is_paid boolean
+    custom json
+}
+
+Table slots {
+    id uuid [primary key]
+    creator_id uuid
+    repeat_id uuid
+    name varchar
+    description varchar
+    is_open boolean
+    time time 
+    weekday varchar
+    duration integer
+    max_participants_count integer
+}  
+
+Table rapids {
+    id uuid [primary key]
+    weekdays array [null]
+    start_date timestamp
+    end_date timestamp  
+    months array [null]
+}
+
+Ref: slot_participants.user_id > users.id
+Ref: slot_participants.slot_id > slots.id
+Ref: slots.creator_id > users.id 
+Ref: slots.repeat_id > rapids.id
+
+Table events {
+    id uuid [primary key]
+    repeat_id uuid
+    name varchar
+    description varchar
+    weekday varchar
+    time time 
+    duration integer
+    max_participants_count integer
+}
+Ref: events.repeat_id > rapids.id
+
+Table group_events {
+    id uuid [primary key]
+    group_id uuid
+    event_id uuid
+} 
+Ref: group_events.event_id > events.id
+Ref: group_events.group_id > groups.id
+
+Table group_event_participants {
+    id uuid [primary key]
+    group_event_id uuid
+    participant_id uuid
+    is_attended boolean
+    is_paid boolean
+    custom json
+}
+Ref: group_event_participants.group_event_id > group_events.id
+Ref: group_event_participants.participant_id > group_participants.id 
