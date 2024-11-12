@@ -28,3 +28,12 @@
 - Просмотр своего расписания планируемых занятий (как орагнизатор и как участник)
 - Ведение посещаемости, оплаты и прочих характеристик на каждом занятии
 - Отправка уведомлений о переносе занятия
+
+
+For Development:
+
+docker-compose --env-file development.env up
+
+For Production:
+
+docker-compose --env-file production.env up
