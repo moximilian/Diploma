@@ -32,8 +32,10 @@
 
 For Development:
 
-docker-compose --env-file development.env up
+docker-compose --env-file app/.env.development.local up
+
+API будет доступна на http://0.0.0.0:8000
 
 For Production:
 
-docker-compose --env-file production.env up
+docker-compose --env-file app/.env.production up

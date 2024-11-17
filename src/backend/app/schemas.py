@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from uuid import UUID
+
 
 class ItemBase(BaseModel):
     name: str
@@ -8,7 +10,7 @@ class ItemCreate(ItemBase):
     pass
 
 class Item(ItemBase):
-    id: int
+    id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True

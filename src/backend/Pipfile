@@ -4,15 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
 requests = "*"
 fastapi = "*"
 python-dotenv = "*"
 pydantic = "*"
+uvicorn = "*"
+sqlalchemy = "*"
+psycopg2 = "*"
+uuid = "*"
 
 [dev-packages]
-pytest = "*"
-black = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.12"

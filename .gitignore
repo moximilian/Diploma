@@ -1,8 +1,7 @@
 .vscode/
 src/backend/venv
 
-# @TODO delete when project is ready
 src/backend/Pipfile.lock
 
-src/backend/.env.development.local
+src/backend/app/.env.development.local
 src/frontend/node-modules

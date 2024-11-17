@@ -4,14 +4,11 @@ Entry point for all endpoints
 
 import os
 import importlib
-from fastapi import APIRouter, Depends
-
-from ..database import get_db
-from .endpoints.items import router as items_router
-
+from fastapi import APIRouter
+from env_constants import BASE_URL
 
 app_router = APIRouter()
-db = Depends(get_db)
+
 
 def include_routers(app_router: APIRouter):
     endpoints_path = os.path.join(os.path.dirname(__file__), 'endpoints')
@@ -21,7 +18,8 @@ def include_routers(app_router: APIRouter):
             try:
                 module = importlib.import_module(f'api.endpoints.{module_name}')
                 if hasattr(module, 'router'):
-                    app_router.include_router(module.router, prefix=f'/{module_name}', tags=[module_name])
+                    app_router.include_router(module.router, prefix=f'/{BASE_URL}', tags=[module_name])
+                    print(f'{module} router is added')
             except Exception as e:
                 print(f'Failed to include router from {filename}: {e}')
 

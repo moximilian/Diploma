@@ -1,13 +1,10 @@
-import os
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from env_constants import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
 
-load_dotenv(dotenv_path='../.env.development.local')
-
-POSTGRES_USER=os.getenv('POSTGRES_USER')
-POSTGRES_PASSWORD=os.getenv('POSTGRES_PASSWORD')
-POSTGRES_DB=os.getenv('POSTGRES_DB')
+if None in [POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB]:
+    print('Some of the params are empty and cant provide access to DB')
+    exit()
 
 DATABASE_URL = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@db/{POSTGRES_DB}'
 engine = create_engine(DATABASE_URL)

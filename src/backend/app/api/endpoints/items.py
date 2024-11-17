@@ -2,17 +2,19 @@
 Logic to work with API
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-import app.schemas as schemas
-from backend.app.crud.items import ItemsCRUD
-from backend.app.api.api import db
+import schemas
+from crud.items import ItemsCRUD
+from database import get_db
 router = APIRouter()
 
 @router.post('/items/insert', response_model=schemas.Item)
-async def create_item(item: schemas.ItemCreate):
-    return ItemsCRUD(db).create_item(item)
+async def create_item(item: schemas.ItemCreate, db=Depends(get_db)):
+    controller = ItemsCRUD(db)
+    return controller.create_item(item)
 
-@router.post('/items/read', response_model=list[schemas.Item])
-async def read_items(request_body):
-    return ItemsCRUD(db).read_items(request_body)
+@router.post('/items/list', response_model=list[schemas.Item])
+async def read_items(request_body: dict, db=Depends(get_db)):
+    controller = ItemsCRUD(db)
+    return controller.read_items(request_body)
