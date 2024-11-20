@@ -12,6 +12,8 @@ uvicorn = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
 uuid = "*"
+python-jose = "*"
+bcrypt = "*"
 
 [dev-packages]
 

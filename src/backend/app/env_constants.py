@@ -9,8 +9,7 @@ if not os.path.exists(ENV_PATH):
 
 load_dotenv(dotenv_path=ENV_PATH)
 
-POSTGRES_USER=os.getenv('POSTGRES_USER')
-POSTGRES_PASSWORD=os.getenv('POSTGRES_PASSWORD')
-POSTGRES_DB=os.getenv('POSTGRES_DB')
-BASE_URL=os.getenv('BASE_URL')
-
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_DB = os.getenv('POSTGRES_DB')
+BASE_URL = os.getenv('BASE_URL')

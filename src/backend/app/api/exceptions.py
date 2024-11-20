@@ -1,15 +1,17 @@
 """
 Logic to work with API
 """
+from fastapi import HTTPException
 
-from fastapi import APIRouter
-from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
-from main import app
+class BaseException(HTTPException):
+    def __init__(self, code, message):
+        super().__init__(status_code=code, detail=message)
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request, exc):
-    return JSONResponse(
-        status_code=422,
-        content={'detail': 'Can not find requested route.', 'body': exc.body},
-    )
+class ValidationEror(BaseException):
+    def __init__(self, message: str, field: str = None):
+        detailed_message = {
+            'message': message,
+            'code': 400,
+            'field': field
+        }
+        super().__init__(code=400, message=detailed_message)

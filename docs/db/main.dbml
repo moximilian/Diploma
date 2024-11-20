@@ -6,19 +6,24 @@ Table users {
     login varchar [not null, unique]
     password varchar [not null, note: 'hash' ]
     registered_at timestamp
-    photo base64
+    photo_id uuid
     failed_attempts_count integer
     is_deleted boolean
+}
+
+Table images {
+    id uuid [primary key]
+    image_name varchar
+    image_data longblob
 }
 
 Table auth_sessions {
     sid uuid [primary key]
     expired timestamp
-    session varchar
     status varchar
     user_id uuid
 } 
-
+Ref: users.photo_id > images.id
 Ref: auth_sessions.user_id > users.id
 
 Table group_enter_requests {
