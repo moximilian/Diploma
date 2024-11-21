@@ -19,7 +19,15 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 
-class Item(Base):
+class BaseModel:
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def get(self, key, default=None):
+        return getattr(self, key, default)
+
+
+class Item(Base, BaseModel):
     __tablename__ = 'items'
 
     id = Column(UUID(as_uuid=True), primary_key=True,
@@ -28,7 +36,7 @@ class Item(Base):
     description = Column(String)
 
 
-class User(Base):
+class User(Base, BaseModel):
     __tablename__ = 'users'
 
     photo_id = Column(
@@ -49,20 +57,16 @@ class User(Base):
     is_deleted = Column(Boolean, default=False, server_default=false())
 
 
-class AuthSession(Base):
-    __tablename__ = 'auth_sessions'
+class RevokedToken(Base, BaseModel):
+    __tablename__ = 'revoked_tokens'
 
-    sid = Column(UUID(as_uuid=True), primary_key=True,
-                 default=uuid.uuid4, index=True)
-    expired = Column(DateTime(), nullable=True)
-    status = Column(String(256), nullable=False)
-    user_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey('users.id'),
-    )
+    id = Column(UUID(as_uuid=True), primary_key=True,
+                default=uuid.uuid4, index=True)
+    token = Column(String, unique=True)
+    revoked_at = Column(DateTime, default=func.now())
 
 
-class Image(Base):
+class Image(Base, BaseModel):
     __tablename__ = 'images'
 
     id = Column(UUID(as_uuid=True), primary_key=True,

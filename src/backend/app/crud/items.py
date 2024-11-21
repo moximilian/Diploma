@@ -11,7 +11,7 @@ class ItemsCRUD():
         self.db = db
 
     def create_item(self, item: ItemCreate):
-        db_item = m.Item(name=item.name, description=item.description)
+        db_item = m.Item(name=item.get('name'), description=item.get('description'))
         self.db.add(db_item)
         self.db.commit()
         self.db.refresh(db_item)

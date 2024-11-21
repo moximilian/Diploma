@@ -5,7 +5,8 @@ Authorization logic
 from fastapi import APIRouter, Depends
 
 import schemas
-from crud.auth import Authorisation
+from crud.auth import Authorisation, authorised_user
+
 from database import get_db
 router = APIRouter()
 
@@ -19,10 +20,10 @@ async def register(body: schemas.UserCreate, db=Depends(get_db)):
 @router.post('/auth/login', response_model=schemas.Token)
 async def login(body: schemas.UserLogin, db=Depends(get_db)):
     controller = Authorisation(db)
-    return controller.authorize(body)
+    return controller.login(body)
 
 
-@router.post('/auth/logout', response_model=schemas.AuthSession)
-async def logout(body: schemas.BaseItemIn, db=Depends(get_db)):
+@router.post('/auth/logout', response_model=None)
+async def logout(token: schemas.Token, db=Depends(get_db), _=Depends(authorised_user)):
     controller = Authorisation(db)
-    return controller.logout(body)
+    return controller.logout(token), 200

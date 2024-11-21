@@ -11,20 +11,27 @@ Table users {
     is_deleted boolean
 }
 
+Table revoked_tokens {
+    id uuid [primary key]
+    access_token varchar
+    revoked_at datetime
+}
+
 Table images {
     id uuid [primary key]
     image_name varchar
     image_data longblob
 }
-
-Table auth_sessions {
-    sid uuid [primary key]
-    expired timestamp
-    status varchar
-    user_id uuid
-} 
 Ref: users.photo_id > images.id
-Ref: auth_sessions.user_id > users.id
+
+// Depricated. Instead JWT
+// Table auth_sessions {
+//     sid uuid [primary key]
+//     expired timestamp
+//     status varchar
+//     user_id uuid
+// } 
+// Ref: auth_sessions.user_id > users.id
 
 Table group_enter_requests {
     id uuid [primary key]
