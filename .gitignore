@@ -1,5 +1,6 @@
 .vscode/
 src/backend/venv
+src/backend/.venv
 
 src/backend/Pipfile.lock
 

@@ -136,13 +136,13 @@ class Authorisation(BaseCRUD):
             Token for future access
 
         Raises:
-            AuthorisationError if db does not have user with provided login
+            ValidationEror if db does not have user with provided login
         """
         user = self._verify_token(
             auth_creds.get('login'), auth_creds.get('password')
         )
         if not user:
-            raise exc.AuthorisationError(field=['login', 'password'])
+            raise exc.ValidationEror(field=['login', 'password'])
 
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = self._create_access_token(

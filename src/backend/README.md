@@ -1,16 +1,29 @@
-Активировать виртуальное пространство
+# Активировать виртуальное пространство
 
-Windows:
-- venv\Scripts\activate
+`cd /src/backend`
 
-On macOS and Linux:
+## Windows:
+- `py -m venv .venv`
+- `.\venv\Scripts\activate`
 
-- source venv/bin/activate
+## On macOS and Linux:
 
-For Development:
+- `python3 -m venv .venv`
+- `source venv/bin/activate`
+
+# Установка зависимостей:
+
+__Необходимая версия Python > 3.11__
+
+`pipenv install --ignore-pipfile`
+
+# Запуск приложения через Docker:
 
 `docker-compose --env-file app/.env.development.local up`
-For reload `docker-compose up --build`
+
+Перезапуск:
+
+`docker-compose up --build`
 
 API будет доступна на http://0.0.0.0:8000
 
