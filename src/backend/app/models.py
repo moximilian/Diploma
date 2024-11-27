@@ -73,3 +73,66 @@ class Image(Base, BaseModel):
                 default=uuid.uuid4, index=True)
     image_name = Column(String(256), nullable=False)
     image_data = Column(LargeBinary(length=(2**32)-1), default=b'')
+
+
+class Group(Base, BaseModel):
+    __tablename__ = 'groups'
+    id = Column(UUID(as_uuid=True), primary_key=True,
+                default=uuid.uuid4, index=True)
+    creator_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+    name = Column(String(256), nullable=False)
+    description = Column(String(1024), nullable=True)
+    is_open = Column(Boolean, default=False, server_default=false())
+    max_participants_count = Column(Integer, server_default='1')
+    is_deleted = Column(Boolean, default=False, server_default=false())
+
+
+class EnterRequest(Base, BaseModel):
+    __tablename__ = 'group_enter_requests'
+
+    id = Column(UUID(as_uuid=True), primary_key=True,
+                default=uuid.uuid4, index=True)
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+    group_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+    is_approved = Column(Boolean, default=False, server_default=false())
+
+
+class Participant(Base, BaseModel):
+    __tablename__ = 'group_participants'
+
+    id = Column(UUID(as_uuid=True), primary_key=True,
+                default=uuid.uuid4, index=True)
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+    group_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+
+class Event(Base, BaseModel):
+    __tablename__ = 'events'
+
+    id = Column(UUID(as_uuid=True), primary_key=True,
+                    default=uuid.uuid4, index=True)
+
+    userepeat_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('rapids .id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+    name = Column(String(256), nullable=False)
+    description = Column(String(1024), nullable=True)
+    datetime = Column('datetime',
+                           DateTime(), default=func.now())
+    duration = Column(Integer(), server_default='0')
+    max_participants_count = Column(Integer, server_default='1')

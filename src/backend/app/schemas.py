@@ -63,6 +63,13 @@ class UserLogin(BaseModelConfig):
     login: str = LoginField()
     password: str = PasswordField()
 
+class PasswordsChange(BaseModelConfig):
+    current_password: str = PasswordField()
+    new_password: str = PasswordField()
+    new_password_confirm: str = PasswordField()
+
+class RequestBodyOne(BaseModelConfig):
+    id: UUID
 
 class UserOut(UserBase):
     id: UUID
