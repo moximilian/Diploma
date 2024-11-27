@@ -24,5 +24,5 @@ async def change_password(body: schemas.RequestBodyOne, db=Depends(get_db), curr
 @router.post('/user/delete', response_model=schemas.UserOut)
 async def change_password(body: schemas.RequestBodyOne, db=Depends(get_db), current_user=Depends(authorised_user)):
     controller = User(db, current_user)
-    return controller.delete(body)
+    return controller.mark_deleted(body)
 

@@ -66,3 +66,30 @@ class BaseCRUD():
         self.db.commit()
         self.db.refresh(item_to_delete)
         return item_to_delete
+
+    def mark_deleted(self, body, field):
+         """Mark one item as deleted from specific table by given field key and value.
+
+        Args:
+            value (schemas.RequestBodyOne) Request body
+            field (str): Field key of model of which type is searched. Defaults to 'id'
+
+        Returns:
+            Item in DB that was found in db.\n
+            None if provided field is not found on model.
+        """
+        if not hasattr(self.model, field):
+            raise exc.NotFoundError(field=field)
+        if not hassattr(self.model, 'is_deleted'):
+            print(f'{self.model} do not have `is_deleted` property')
+            raise exc.InternalError()
+
+        item_to_delete = self.get(body)
+        if not item_to_delete:
+            raise exc.NotFoundError(field=field)
+
+        value_to_search = body.get(field, None)
+        if not value_to_search:
+            raise exc.NotFoundError(field=field)
+        self.db.update(self.model).where(self.model[field] == value_to_search).values(is_deleted=True)
+        self.db.commit()
