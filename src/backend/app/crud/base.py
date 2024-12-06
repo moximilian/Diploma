@@ -1,6 +1,7 @@
 import models as m
 import api.exceptions as exc
 
+
 class BaseCRUD():
     """BaseCRUD implements base common logic that can be used
     by all other CRUD classes.
@@ -68,7 +69,7 @@ class BaseCRUD():
         return item_to_delete
 
     def mark_deleted(self, body, field):
-         """Mark one item as deleted from specific table by given field key and value.
+        """Mark one item as deleted from specific table by given field key and value.
 
         Args:
             value (schemas.RequestBodyOne) Request body
@@ -80,7 +81,7 @@ class BaseCRUD():
         """
         if not hasattr(self.model, field):
             raise exc.NotFoundError(field=field)
-        if not hassattr(self.model, 'is_deleted'):
+        if not hasattr(self.model, 'is_deleted'):
             print(f'{self.model} do not have `is_deleted` property')
             raise exc.InternalError()
 
@@ -91,5 +92,6 @@ class BaseCRUD():
         value_to_search = body.get(field, None)
         if not value_to_search:
             raise exc.NotFoundError(field=field)
-        self.db.update(self.model).where(self.model[field] == value_to_search).values(is_deleted=True)
+        self.db.update(self.model).where(
+            self.model[field] == value_to_search).values(is_deleted=True)
         self.db.commit()

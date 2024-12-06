@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from uuid import UUID
 import datetime
 
-PASSWORD_PATTERN = r'^[a-zA-Z0-9!@#$%^&*()-+=?]*$'
+PASSWORD_PATTERN = r'^[a-zA-Z0-9!@#$%^&*()\-+=?]*$'
 
 
 def PasswordField():
@@ -63,13 +63,16 @@ class UserLogin(BaseModelConfig):
     login: str = LoginField()
     password: str = PasswordField()
 
+
 class PasswordsChange(BaseModelConfig):
     current_password: str = PasswordField()
     new_password: str = PasswordField()
     new_password_confirm: str = PasswordField()
 
+
 class RequestBodyOne(BaseModelConfig):
     id: UUID
+
 
 class UserOut(UserBase):
     id: UUID
@@ -80,4 +83,3 @@ class UserOut(UserBase):
 class Token(BaseModelConfig):
     access_token: str
     token_type: str = Field(default='bearer')
-

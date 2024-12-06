@@ -51,7 +51,7 @@ class User(Base, BaseModel):
     last_name = Column(String(128), nullable=True)
     login = Column(String(128), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
-    registered_at = Column('password_expires_at',
+    registered_at = Column('registered_at',
                            DateTime(), default=func.now())
     failed_attempts_count = Column(Integer(), server_default='0')
     is_deleted = Column(Boolean, default=False, server_default=false())
@@ -120,19 +120,20 @@ class Participant(Base, BaseModel):
         ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
     )
 
+
 class Event(Base, BaseModel):
     __tablename__ = 'events'
 
     id = Column(UUID(as_uuid=True), primary_key=True,
-                    default=uuid.uuid4, index=True)
+                default=uuid.uuid4, index=True)
 
-    userepeat_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey('rapids .id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
-    )
+    # userepeat_id = Column(
+    #     UUID(as_uuid=True),
+    #     ForeignKey('rapids.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    # )
     name = Column(String(256), nullable=False)
     description = Column(String(1024), nullable=True)
     datetime = Column('datetime',
-                           DateTime(), default=func.now())
+                      DateTime(), default=func.now())
     duration = Column(Integer(), server_default='0')
     max_participants_count = Column(Integer, server_default='1')

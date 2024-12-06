@@ -144,8 +144,7 @@ class Authorisation(BaseCRUD):
         if not user:
             raise exc.ValidationEror(field=['login', 'password'])
 
-        
-        self._change_failed_attempt(user, 0)
+        # self._change_failed_attempt(user, 0)
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = self._create_access_token(
             data={'sub': user.login}, expires_delta=access_token_expires
@@ -164,30 +163,24 @@ class Authorisation(BaseCRUD):
             User if one exists.
         """
         user = self._get_user_by_login(username)
-        if not user or :
+        if not user or not self._verify_password(password, user.get('password')):
             return False
-        if user.failed_attempts_count > 10:
-            raise exc.AuthorisationError('Too many failed attempts. Please try again later')
-        if not self._verify_password(password, user.get('password')):
-            user = self._change_failed_attempt(user, user.failed_attempts_count + 1)
-            return False
-        
         return user
 
-    def _change_failed_attempt(self, user: m.User, new_count) -> m.User:
-        """Add failed attempt to user
+    # def _change_failed_attempt(self, user: m.User, new_count) -> m.User:
+    #     """Add failed attempt to user
 
-        Args:
-            user (m.User): current user
-        
-        Returns:
-            user (m.User): current user
-        """
-        # Make base function
-        user = self.db.update(m.User).where(m.User.id == user.id ).values(failed_attempts_count=new_count)
-        self.db.commit()
-        self.db.refresh(user)
-        return user
+    #     Args:
+    #         user (m.User): current user
+
+    #     Returns:
+    #         user (m.User): current user
+    #     """
+    #     # Make base function
+    #     user = self.db.update(m.User).where(m.User.id == user.id ).values(failed_attempts_count=new_count)
+    #     self.db.commit()
+    #     self.db.refresh(user)
+    #     return user
 
     def _verify_password(self, plain_password: str, hashed_password: str) -> bool:
         """Verify plain password's hash matches one in db.

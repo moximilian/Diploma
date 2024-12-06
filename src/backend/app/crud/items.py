@@ -11,7 +11,8 @@ class ItemsCRUD():
         self.db = db
 
     def create_item(self, item: ItemCreate):
-        db_item = m.Item(name=item.get('name'), description=item.get('description'))
+        db_item = m.Item(name=item.get('name'),
+                         description=item.get('description'))
         self.db.add(db_item)
         self.db.commit()
         self.db.refresh(db_item)
@@ -19,6 +20,4 @@ class ItemsCRUD():
 
     def read_items(self, request_body):
         filters = request_body.get('filters')
-        limit = filters.get('limit', 10)
-        page = filters.get('page', 1)
-        return self.db.query(m.Item).offset(page).limit(limit).all()
+        return self.db.query(m.Item).all()
