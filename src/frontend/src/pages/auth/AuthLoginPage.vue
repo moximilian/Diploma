@@ -13,8 +13,6 @@
         <input name="password" type="password" required v-model="passwordValue" />
 
         <BaseBtn @click="authorize">Log In</BaseBtn>
-        <BaseBtn @click="getItems" :disabled="!isAuthorized">Test Items request after login</BaseBtn>
-        {{ items }}
     </div>
 </template>
 
@@ -24,17 +22,8 @@ export default {
         return {
             loginValue: '',
             passwordValue: '',
-            items: {},
 
         }
-    },
-    computed: {
-        accessToken() {
-            return this.$ls.token
-        },
-        isAuthorized() {
-            return !!(this.accessToken) // && getUser()
-        },
     },
     methods: {
         authorize() {
@@ -42,16 +31,10 @@ export default {
                 this.$ls.token = res.access_token
                 this.$ls.current_user = res.user_id
                 console.log(res)
+                this.$router.replace('/home')
             })
         },
-        getItems() {
-            this.$api.items.list({
-                filters: {
-                    limit: 0,
-                    page: 1,
-                },
-            }, (res) => {this.items = res})
-        },
+
 
     },
     created() {

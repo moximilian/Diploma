@@ -39,3 +39,10 @@ body {
     justify-content: flex-end;
     align-items: center;
 }
+.flex-container-column {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
