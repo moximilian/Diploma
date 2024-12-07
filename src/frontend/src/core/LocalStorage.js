@@ -6,6 +6,7 @@ export default class LocalStorage {
     _secret = /*metaData.userId ||*/ process.env.VUE_APP_CRYPTO_KEY || 'Fghk%^8vmn'
     _theme = false
     _lang = 'en'
+    _current_user = null
 
     constructor() {
         this._ls = window.localStorage
@@ -14,7 +15,8 @@ export default class LocalStorage {
         this._theme = theme
 
         this._lang = ''
-        this._token = this.getItemDecrypt('token') || ''
+        this._token = this.getItemDecrypt('token') || null
+        this._current_user =  this.getItemDecrypt('current_user') || null
 
         return reactive(this)
     }
@@ -28,6 +30,9 @@ export default class LocalStorage {
     get lang() {
         return this._lang
     }
+    get current_user() {
+        return this._current_user
+    }
 
     set theme(value) {
         this._theme = value
@@ -37,6 +42,10 @@ export default class LocalStorage {
     set token(value) {
         this._token = value
         this.setItemEncrypt('token', value)
+    }
+    set current_user(value) {
+        this._current_user = value
+        this.setItemEncrypt('current_user', value)
     }
 
     set lang(value) {

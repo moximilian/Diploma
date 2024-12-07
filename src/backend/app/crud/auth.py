@@ -149,7 +149,7 @@ class Authorisation(BaseCRUD):
         access_token = self._create_access_token(
             data={'sub': user.login}, expires_delta=access_token_expires
         )
-        return {'access_token': access_token, 'token_type': 'bearer'}
+        return {'access_token': access_token, 'token_type': 'bearer', 'user_id': user.get('id')}
 
     def _verify_token(self, username: str, password: str) -> t.Union[UserOut, bool]:
         """Verify if user exists and given password match one in db.

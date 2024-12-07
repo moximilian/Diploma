@@ -12,9 +12,8 @@
         <input name="login" type="text" required v-model="loginValue" />
         <input name="password" type="password" required v-model="passwordValue" />
 
-        <button @click="authorize">Log In</button>
-        <button @click="getItems">Test Items request after login</button>
-        <button @click="logout">Logout</button>
+        <BaseBtn @click="authorize">Log In</BaseBtn>
+        <BaseBtn @click="getItems" :disabled="!isAuthorized">Test Items request after login</BaseBtn>
         {{ items }}
     </div>
 </template>
@@ -26,12 +25,22 @@ export default {
             loginValue: '',
             passwordValue: '',
             items: {},
+
         }
+    },
+    computed: {
+        accessToken() {
+            return this.$ls.token
+        },
+        isAuthorized() {
+            return !!(this.accessToken) // && getUser()
+        },
     },
     methods: {
         authorize() {
             this.$api.auth.login({ login: this.loginValue, password: this.passwordValue }, res => {
                 this.$ls.token = res.access_token
+                this.$ls.current_user = res.user_id
                 console.log(res)
             })
         },
@@ -43,11 +52,9 @@ export default {
                 },
             }, (res) => {this.items = res})
         },
-        logout() {
-          this.$api.auth.logout({access_token: this.$ls.token}, () => this.$ls.removeItem('token'))
-        }
+
     },
-    mounted() {
+    created() {
         console.log('token', this.$ls.token)
     },
 }

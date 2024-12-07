@@ -81,5 +81,6 @@ class UserOut(UserBase):
 
 
 class Token(BaseModelConfig):
+    user_id: UUID
     access_token: str
     token_type: str = Field(default='bearer')

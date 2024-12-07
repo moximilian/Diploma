@@ -32,7 +32,7 @@ const makeOnError =
  * For Development mode redirect on login page
  * @param { String } url
  */
-const redirect = url => window.location.replace(url || '/auth/logout')
+const redirect = url => window.location.replace(url || '/auth/login')
 /**
  * @param { Object } res
  * @returns { Object | String | { value: Object, text: String } } parsed body
@@ -85,7 +85,7 @@ const handlersByStatusCode = {
     202: parseHandler,
     203: makeRedirectHandler('[203] Redirect.', '/'),
     400: makeErrorHandler('[400] Bad Request.'),
-    401: makeRedirectHandler('[401] Unauthorized.', '/auth/logout'),
+    401: makeRedirectHandler('[401] Unauthorized.', '/auth/login'),
     403: makeErrorHandler('[403] Method Not Allowed!.'),
     404: makeErrorHandler('[404] Not Found!.'),
     405: makeErrorHandler('[405] Method Not Allowed!.'),

@@ -5,7 +5,8 @@ Users logic
 from fastapi import APIRouter, Depends
 
 import schemas
-from crud.users import User, authorised_user
+from crud.users import User
+from crud.auth import authorised_user
 
 from database import get_db
 router = APIRouter()

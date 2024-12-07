@@ -25,7 +25,10 @@ const customApi = {
         logout: makeApiFn('/auth/logout'),
     },
     items: {
-        list: makeApiFn('/items/list')
+        list: makeApiFn('/items/list'),
+    },
+    users: {
+        one: makeApiFn('/user/get')
     }
 }
 export const api = new (function () {

@@ -14,12 +14,11 @@
             <input :name="field.name" :type="field.type" :required="field.required" v-model="formData[field.name]"
             />
         </span>
-        <button @click="register">Register</button>
+        <BaseBtn @click="register">Register</BaseBtn>
     </div>
 </template>
 
 <script>
-// import { callApi } from '@/api/api.help'
 export default {
     data() {
         return {
@@ -49,7 +48,7 @@ export default {
     },
     methods: {
         register() {
-            this.$api.auth.register(this.formData, () => {console.log('Eurika!')})
+            this.$api.auth.register(this.formData, () => this.$router.push('/auth/login'))
         },
     },
     mounted() {

@@ -43,7 +43,7 @@ class BaseCRUD():
             raise exc.NotFoundError(field=field)
 
         value = body.get(field)
-        return self.db.query(self.model).filter(model[field] == value).first()
+        return self.db.query(self.model).filter(getattr(self.model, field) == value).first()
 
     def delete(self, body, field='id'):
         """Delete one item from specific table by given field key and value.
