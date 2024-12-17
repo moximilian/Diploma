@@ -3,7 +3,6 @@
         <main>
             <HeaderBar/>
             <router-view />
-            {{ 'Welcome to my new Diploma!'  }}
         </main>
     </div>
 </template>

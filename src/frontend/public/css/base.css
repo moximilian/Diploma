@@ -17,6 +17,18 @@ body {
     --button-height: 40px;
     --border-radius: 12px;
 }
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+}
 .header-container {
     display: flex;
     align-items: center;

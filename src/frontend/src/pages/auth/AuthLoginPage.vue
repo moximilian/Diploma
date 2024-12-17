@@ -8,45 +8,24 @@
         </div>
         <router-link to="/home">Go Back to Home</router-link>
     </div>
-    <div class="form">
-        <input name="login" type="text" required v-model="loginValue" />
-        <input name="password" type="password" required v-model="passwordValue" />
-
-        <BaseBtn @click="authorize">Log In</BaseBtn>
-    </div>
+    <FormBase displayName="login" :onlyEdit="true">
+        <template #form-bottom="{entity}">
+            <BaseBtn @click="authorize(entity)">Log In</BaseBtn>
+        </template>
+    </FormBase>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            loginValue: '',
-            passwordValue: '',
-
-        }
-    },
     methods: {
-        authorize() {
-            this.$api.auth.login({ login: this.loginValue, password: this.passwordValue }, res => {
+        authorize(entity) {
+            this.$api.auth.login({...entity}, res => {
+                if (res.detail) return
                 this.$ls.token = res.access_token
                 this.$ls.current_user = res.user_id
-                console.log(res)
                 this.$router.replace('/home')
             })
         },
-
-
-    },
-    created() {
-        console.log('token', this.$ls.token)
     },
 }
 </script>
-<style>
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
-}
-</style>

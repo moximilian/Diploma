@@ -50,6 +50,7 @@ const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1)
 const sections = [
     { name: 'home', actions: null },
     { name: 'auth', actions: ['login', 'register'] },
+    { name: 'user', actions: ['show', 'edit'] },
 ]
 
 // Generate routes
