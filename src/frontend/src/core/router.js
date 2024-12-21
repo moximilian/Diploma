@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// import LoginPage from "@/pages/login/LoginPage.vue";
-
 function trimSlashes(value) {
     return value ? value.trim().replace(/^\/+|\/+$/g, '') : ''
 }
@@ -31,9 +29,12 @@ const generateRoutes = sections => {
                 const component = importComponent(
                     `${section.name}/${capitalize(section.name)}${capitalize(action)}Page`
                 )
+                console.log(`${section.name}/${capitalize(section.name)}${capitalize(action)}Page`)
+                let pathAction = `/:action(${action})`
+                const path = section.useId ? `/${section.name}/${pathAction}/:id` : `/${section.name}/${pathAction}`
                 routes.push({
-                    path: `/${section.name}/${action}`, // Example: /persons/show
-                    name: `${section.name}-${action}`, // Example: persons-show
+                    path,
+                    name: `${section.name}-${action}`,
                     component,
                 })
             })
@@ -46,11 +47,11 @@ const generateRoutes = sections => {
 // Helper function for capitalization
 const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1)
 
-// Define sections
+// Define sections with useId property
 const sections = [
-    { name: 'home', actions: null },
-    { name: 'auth', actions: ['login', 'register'] },
-    { name: 'user', actions: ['show', 'edit'] },
+    { name: 'home', actions: null, useId: false },
+    { name: 'auth', actions: ['login', 'register'], useId: false },
+    { name: 'user', actions: ['show', 'edit'], useId: true }, // useId is true for user actions
 ]
 
 // Generate routes

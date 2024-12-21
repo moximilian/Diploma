@@ -4,7 +4,7 @@
             <div class="header">
                 <BaseBtn v-if="!isAuthorized" @click="toRegisterPage"> Sign Up </BaseBtn>
                 <div v-else class="flex-container-row">
-                    <span> {{ currentUser?.name }} {{ currentUser?.surname }} </span>
+                    <router-link :to="`/user/show/${currentUser?.id}`">{{ currentUser?.name }}</router-link>
                     <BaseBtn @click="toHomePage"> Home </BaseBtn>
                     <BaseBtn @click="logout" :disabled="!isAuthorized"> Log Out </BaseBtn>
                 </div>
@@ -59,7 +59,6 @@ export default {
         },
     },
     created() {
-        console.log(this.currentUserId)
         if (this.currentUserId !== null) this.getCurrentUser()
     },
 }

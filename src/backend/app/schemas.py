@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from uuid import UUID
+from typing import Optional
 import datetime
 
 PASSWORD_PATTERN = r'^[a-zA-Z0-9!@#$%^&*()\-+=?]*$'
@@ -46,15 +47,16 @@ class BaseItemIn(BaseModelConfig):
 
 
 class UserBase(BaseModelConfig):
-    name: str
-    surname: str
-    last_name: str = Field(min_length=0, max_length=189, default='')
-    login: str = LoginField()
-    image_name: str = Field(min_length=0, max_length=256, default='')
-    image_data: bytes = Field(default=b'', alias="image_data")
+    name:  Optional[str] = None
+    surname:  Optional[str] = None
+    last_name:  Optional[str] = Field(min_length=0, max_length=189, default='')
+    image_name:  Optional[str] = Field(
+        min_length=0, max_length=256, default='')
+    image_data:  Optional[bytes] = Field(default=b'', alias="image_data")
 
 
 class UserCreate(UserBase):
+    login: str = LoginField()
     password: str = PasswordField()
     password_confirm: str = PasswordField()
 
@@ -76,8 +78,13 @@ class RequestBodyOne(BaseModelConfig):
 
 class UserOut(UserBase):
     id: UUID
+    login: str = LoginField()
     password_set: bool = Field(default=True)
     registered_at: datetime.datetime
+
+
+class UserInUpdate(UserBase):
+    id: UUID
 
 
 class Token(BaseModelConfig):

@@ -28,8 +28,9 @@ const customApi = {
         list: makeApiFn('/items/list'),
     },
     users: {
-        one: makeApiFn('/user/get')
-    }
+        one: makeApiFn('/user/get'),
+        update: makeApiFn('/user/update'),
+    },
 }
 export const api = new (function () {
     this.api = null

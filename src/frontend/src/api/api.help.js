@@ -76,16 +76,20 @@ const makeErrorHandler = msg =>
         checkString(res.body) || makeOnError(res.errors)(msg)
         return res
     }, parseHandler)
-const makeRedirectHandler = (msg, path) => res => (
-    redirect(path), makeOnError(res.errors)(msg), res
+const makeRedirectHandler = (msg, path, cb) => res => (
+    cb?.(), redirect(path), makeOnError(res.errors)(msg), res
 )
+const emptyLS = () => {
+    new LocalStorage().setItemEncrypt('current_user', null)
+    new LocalStorage().setItemEncrypt('token', null)
+}
 const handlersByStatusCode = {
     200: parseHandler,
     201: parseHandler,
     202: parseHandler,
     203: makeRedirectHandler('[203] Redirect.', '/'),
     400: makeErrorHandler('[400] Bad Request.'),
-    401: makeRedirectHandler('[401] Unauthorized.', '/auth/login'),
+    401: makeRedirectHandler('[401] Unauthorized.', '/auth/login', emptyLS),
     403: makeErrorHandler('[403] Method Not Allowed!.'),
     404: makeErrorHandler('[404] Not Found!.'),
     405: makeErrorHandler('[405] Method Not Allowed!.'),

@@ -1,18 +1,19 @@
 <template>
     <div class="form" v-if="displayRule">
+        <slot name="form-top"> </slot>
         <div class="label-type-field" v-for="(field, index) of displayRule" :key="index">
             <span>{{ field.props.name }}</span>
             <component
                 :is="displayComponent(field)"
+                v-if="isEdit"
                 v-bind="field.props"
                 @changeValue="onChangeValue"
-            >
-            </component>
+            />
+            <ShowValueField v-else v-bind="field.props" />
         </div>
         <slot name="form-bottom" :entity="entity" :isValid="isValidForm">
-            <BaseBtn v-if="isEdit" @click="$emit('onSave', entity)" :disabled="!isValidForm">
-                Save
-            </BaseBtn>
+            <BaseBtn v-if="isEdit" @click="onSave" :disabled="!isValidForm"> Save </BaseBtn>
+            <BaseBtn v-if="isShow && entityId" @click="toEdit"> Edit </BaseBtn>
         </slot>
     </div>
 </template>
@@ -23,6 +24,7 @@ export default {
     props: {
         displayName: { type: String, default: () => '' },
         onlyEdit: { type: Boolean, default: () => false },
+        defaults: { type: Object, default: null },
     },
     data() {
         return {
@@ -37,10 +39,12 @@ export default {
             return this.displayName + 'Display'
         },
         displayRule() {
-            return this.displayRules?.[this.displayNameR] ?? null
+            let displayRule = this.displayRules?.[this.displayNameR] ?? null
+            if (displayRule) displayRule = this.injectWithValues(displayRule)
+            return displayRule
         },
         isShow() {
-            return this.action === 'show' && this.onlyEdit
+            return this.action === 'show' || this.onlyEdit
         },
         isEdit() {
             return this.action === 'edit' || this.onlyEdit
@@ -51,8 +55,22 @@ export default {
         isValidForm() {
             return this.requiredForm && this.sameValidationForm
         },
+        entityId() {
+            return this.$route.params?.id ?? null
+        },
     },
     methods: {
+        injectWithValues(enryRule) {
+            this.defaults &&
+                enryRule.map(rule => {
+                    rule.props.value = this.defaults[rule.props.name]
+                })
+            return enryRule
+        },
+        onSave() {
+            console.log('emit')
+            this.$emit('onSave', this.entity)
+        },
         // @todo: переписать валидацию, сделать её на каждое поле а не на всю форму сразу
         // checkValidation() {
         //     this.displayRule?.map(rule => {
@@ -68,11 +86,16 @@ export default {
         //         this.requiredForm = this.requiredForm && isValidRequired
         //     })
         // },
+        toEdit() {
+            const editPath = this.$route.path.replace('show', 'edit')
+            console.log(editPath)
+            this.entityId && this.$router.push({ path: `${editPath}` })
+        },
         componentProps(field) {
             return { ...field.props }
         },
         displayComponent(field) {
-            return this.isShow ? 'span' : field.display
+            return field.display
         },
         onChangeValue(value, name) {
             this.entity[name] = value

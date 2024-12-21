@@ -19,12 +19,16 @@ async def change_password(body: schemas.PasswordsChange, db=Depends(get_db), cur
 
 
 @router.post('/user/get', response_model=schemas.UserOut)
-async def change_password(body: schemas.RequestBodyOne, db=Depends(get_db), current_user=Depends(authorised_user)):
+async def get_user(body: schemas.RequestBodyOne, db=Depends(get_db), current_user=Depends(authorised_user)):
     controller = User(db, current_user)
     return controller.get(body)
 
+@router.post('/user/update', response_model=schemas.UserOut)
+async def update_user(body: schemas.UserInUpdate, db=Depends(get_db), current_user=Depends(authorised_user)):
+    controller = User(db, current_user)
+    return controller.update(body)
 
 @router.post('/user/delete', response_model=schemas.UserOut)
-async def change_password(body: schemas.RequestBodyOne, db=Depends(get_db), current_user=Depends(authorised_user)):
+async def delete_user(body: schemas.RequestBodyOne, db=Depends(get_db), current_user=Depends(authorised_user)):
     controller = User(db, current_user)
     return controller.mark_deleted(body)

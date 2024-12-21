@@ -1,5 +1,6 @@
 <template>
-    <FormBase displayName="user" :defaults="entity"></FormBase>
+    <FormBase displayName="user" :defaults="entity" @onSave="entity => saveUser(entity)">
+    </FormBase>
 </template>
 <script>
 export default {
@@ -8,6 +9,14 @@ export default {
             userId: null,
             entity: null,
         }
+    },
+    methods: {
+        saveUser(entity) {
+            this.$api.users.update({ ...entity, id: this.userId }, res => {
+                if (res.detail) return
+                this.$router.replace(`/user/show/${this.userId}`)
+            })
+        },
     },
     created() {
         this.userId = this.$route.params.id

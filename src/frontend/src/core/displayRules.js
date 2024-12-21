@@ -9,7 +9,7 @@ const registerDisplay = [
     },
     {
         display: 'InputField',
-        props: { name: 'lastname', value: '', required: false, type: 'text' },
+        props: { name: 'last_name', value: '', required: false, type: 'text' },
     },
     {
         display: 'InputField',
@@ -41,7 +41,32 @@ const loginDisplay = [
         props: { name: 'password', value: '', required: true, type: 'password' },
     },
 ]
+
+const userDisplay = [
+    {
+        display: 'InputField',
+        props: { name: 'name', value: '', required: false, type: 'text' },
+    },
+    {
+        display: 'InputField',
+        props: { name: 'surname', value: '', required: true, type: 'text' },
+    },
+    {
+        display: 'InputField',
+        props: { name: 'last_name', value: '', required: false, type: 'text' },
+    },
+    {
+        display: 'InputField',
+        props: { name: 'login', value: '', required: true, disabled: true, type: 'text' },
+    },
+    {
+        display: 'InputField',
+        props: { name: 'registered_at', value: '', required: true, disabled: true, type: 'text' },
+    },
+]
 export default {
     registerDisplay,
     loginDisplay,
+
+    userDisplay,
 }

@@ -49,7 +49,7 @@ class BaseCRUD():
         """Delete one item from specific table by given field key and value.
 
         Args:
-            value (schemas.RequestBodyOne) Request body
+            body (schemas.RequestBodyOne) Request body
             field (str): Field key of model of which type is searched. Defaults to 'id'
 
         Returns:
@@ -62,11 +62,40 @@ class BaseCRUD():
         item_to_delete = self.get(body)
         if not item_to_delete:
             raise exc.NotFoundError(field=field)
-        # return self.db.delete(self.model).where(model[field] == value) check what works
         self.db.delete(item_to_delete)
         self.db.commit()
         self.db.refresh(item_to_delete)
         return item_to_delete
+    
+    def _is_value_empty(self, value) -> bool:
+        null_values = [None, '', 'null', 'None', b'']
+        return value in null_values
+
+    def _is_immutable_field(self, field) -> bool:
+        immutable_fields = ['id', 'login']
+        return field in immutable_fields
+    
+    def update(self, body):
+        """Update one item from one specific table by given fields
+
+        Args:
+            body (schemas.RequestBodyOne) Request body
+
+        Returns:
+            Item in DB that was found in db.\n
+        """
+        item_to_update = self.get(body)
+        if not item_to_update:
+            raise exc.NotFoundError()
+        for key, value in body.dict().items():
+            if not self._is_value_empty(value) and not self._is_immutable_field(key):
+                # print(f'Updated field {key} with value = {value}')
+                setattr(item_to_update, key, value)
+        
+        self.db.commit()
+        self.db.refresh(item_to_update)
+        
+        return item_to_update
 
     def mark_deleted(self, body, field):
         """Mark one item as deleted from specific table by given field key and value.
