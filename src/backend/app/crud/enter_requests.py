@@ -27,7 +27,7 @@ class EnterRequestsCRUD(BaseCRUD):
         
         is_group_open = group.get('is_open', False)
         if is_group_open:
-            GroupsCRUD(self.db, self.user).enter_group({'id': group_id})
+            return GroupsCRUD(self.db, self.user).enter_group({'id': group_id})
 
         new_enter_request = m.EnterRequest(
             user_id = self.user.get('id'),
