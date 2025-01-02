@@ -13,6 +13,7 @@ from sqlalchemy import (
     false,
     LargeBinary
 )
+from sqlalchemy.orm import class_mapper, ColumnProperty
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -25,6 +26,13 @@ class BaseModel:
 
     def get(self, key, default=None):
         return getattr(self, key, default)
+
+    def dict(self):
+        result = {}                                                                                                                                                                                  
+        for prop in class_mapper(self.__class__).iterate_properties:                                                                                                                                 
+            if isinstance(prop, ColumnProperty):                                                                                                                                                     
+                result[prop.key] = getattr(self, prop.key)                                                                                                                                           
+        return result
 
 
 class Item(Base, BaseModel):
@@ -103,7 +111,7 @@ class EnterRequest(Base, BaseModel):
         UUID(as_uuid=True),
         ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
     )
-    is_approved = Column(Boolean, default=False, server_default=false())
+    is_approved = Column(Boolean, default=None, nullable=True)
 
 
 class Participant(Base, BaseModel):

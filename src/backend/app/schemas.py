@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from uuid import UUID
-from typing import Optional
+from typing import Optional, List, Any
 import datetime
 
 PASSWORD_PATTERN = r'^[a-zA-Z0-9!@#$%^&*()\-+=?]*$'
@@ -27,7 +27,7 @@ class BaseModelConfig(BaseModel):
 
     class Config:
         from_attributes = True
-
+        orm_mode = True
 
 class ItemBase(BaseModelConfig):
     name: str
@@ -75,6 +75,9 @@ class PasswordsChange(BaseModelConfig):
 class RequestBodyOne(BaseModelConfig):
     id: UUID
 
+class RequestBodyList(BaseModelConfig):
+    filters: dict = Field(default = {})
+    
 
 class UserOut(UserBase):
     id: UUID
@@ -91,3 +94,38 @@ class Token(BaseModelConfig):
     user_id: UUID
     access_token: str
     token_type: str = Field(default='bearer')
+
+
+class GroupBase(BaseModelConfig):
+    creator_id: UUID = None
+    name: str
+    description: str
+    is_open: bool = Field(default=True)
+    max_participants_count: int = Field(default=1)
+    is_deleted: bool = Field(default=False)
+
+class GroupOut(GroupBase):
+    id: UUID
+
+class GroupUpdateIn(BaseModelConfig):
+    id: UUID
+    name: str = None
+    description: str = None
+    is_open: bool = Field(default=True)
+    max_participants_count: int = Field(default=1)
+
+class BaseListResponse(BaseModelConfig):
+    rows: List[Any] = Field(default_factory = list)
+    totalCount: int = Field(default = 0)
+
+
+class BaseEnterRequestCreate(BaseModelConfig): 
+    group_id: UUID
+
+class EnterRequestOut(BaseEnterRequestCreate):
+    id: UUID
+    user_id: UUID
+    is_approved: Optional[bool] = None
+
+class EnterRequestUpdate(RequestBodyOne):
+    is_approved: bool
