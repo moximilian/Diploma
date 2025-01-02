@@ -73,16 +73,16 @@ class EnterRequestsCRUD(BaseCRUD):
         
         return self.delete(body)
 
-    def _get_incoming_requests(self, body):
-        query = (self.db.query(m.EnterRequest)
+    def _get_incoming_requests(self, query):
+        query = (query
             .join(m.Group, m.EnterRequest.group_id == m.Group.id)
             .filter(m.Group.creator_id == self.user.get('id'), m.Group.is_open == False, m.Group.is_deleted == False)
         )
-        return query.all()
+        return query
 
-    def _get_outgoing_requests(self, body):
-        query = self.db.query(m.EnterRequest).filter(m.EnterRequest.user_id == self.user.get('id'))
-        return query.all()
+    def _get_outgoing_requests(self, query):
+        query = query.filter(m.EnterRequest.user_id == self.user.get('id'))
+        return query
 
     def read_items(self, body):
         """Read request items with request body for list request.
@@ -96,7 +96,7 @@ class EnterRequestsCRUD(BaseCRUD):
                 body (dict): request body with filters
 
             Returns: 
-                BaseListResponse          
+                BaseListResponse      
         """
         filters = body.get('filters', {})
         wheres = filters.get('wheres', [])
@@ -105,14 +105,17 @@ class EnterRequestsCRUD(BaseCRUD):
             'INCOMING': self._get_incoming_requests,
             'OUTGOING': self._get_outgoing_requests
         }
+        query = self.db.query(m.EnterRequest)
         for where in wheres:
             column = where.get('column')
             if column == 'type':
                 value = where.get('value')
                 if value not in type_function.keys():
                     raise exc.ValidationEror('Specified type is not valid: only OUTGOING or INCOMING', field= 'type')
-                rows = type_function.get(value)(body)
+                query = type_function.get(value)(query)
+            else:
+                query = query.filter(getattr(m.EnterRequest, column) == where.get('value'))
+
+        rows = query.all()
 
         return self._transform_response(rows, len(rows))
-
-

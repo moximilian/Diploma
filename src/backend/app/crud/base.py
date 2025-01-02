@@ -1,6 +1,7 @@
 import models as m
 import api.exceptions as exc
 from schemas import BaseListResponse
+from functools import wraps
 
 
 class BaseCRUD():
@@ -9,6 +10,7 @@ class BaseCRUD():
 
     Args:
         db: SqlAlchemy Session instance
+        model: SqlAlchemy orm default model
     """
 
     def __init__(self, db, model):
@@ -37,12 +39,12 @@ class BaseCRUD():
             field (str): Field key of model of which type is searched. Defaults to 'id'
 
         Returns:
-            Item in DB that was found in db.\n
+            Item in DB that was found in db.
             None if provided field is not found on model.
         """
         model = self.model if model is None else model
 
-        if not hasattr(self.model, field):
+        if not hasattr(model, field):
             raise exc.NotFoundError(field=field)
 
         query = self.db.query(model)
@@ -56,12 +58,57 @@ class BaseCRUD():
         return found_item
 
     def _transform_response(self, rows, totalCount):
+        """Transform response into defined format.
+
+        Args:
+            rows (list): List of items to wrap
+            totalCount (int): Total amount of items
+
+        Returns:
+            schemas.BaseListResponse
+            .. code-block:: json
+            {
+                "rows": [],
+                "totalCount" : 0
+            }
+
+
+        """
         rows = [row.dict() for row in rows]
-
-        return BaseListResponse(rows = rows, totalCount =len(rows))
-
+        return BaseListResponse(rows = rows, totalCount = len(rows))
 
     def list(self, body, model = None):
+        """Get one or multiple items in list representation:
+
+        Args:
+            body(schemas.RequestBodyList)
+            .. code-block:: json
+            {
+                "filters": {
+                    "wheres" : [
+                        {
+                            "column":column,
+                            "condition": condition,
+                            "value":value
+                        }
+                    ],
+                    "orders": [
+                        {
+                            "column": column,
+                            "desc": boolean
+                        }
+                    ],
+                    "search" : search value @todo,
+                    "page": integer @todo
+                    "limit": integer @todo
+                }
+            }
+            model (model): sqlalchemy model on which to perform queries. 
+                Defaults to None, uses one in defined in constructor
+
+        Returns:
+            response (schemas.BaseListResponse)
+        """
 
         model = self.model if model is None else model
         filters = body.get('filters', {})
@@ -81,7 +128,6 @@ class BaseCRUD():
 
         rows = query.all()
 
-
         return self._transform_response(rows, len(rows))
 
     def delete(self, body, field='id', model = None):
@@ -90,9 +136,11 @@ class BaseCRUD():
         Args:
             body (schemas.RequestBodyOne) Request body
             field (str): Field key of model of which type is searched. Defaults to 'id'
+            model (model): sqlalchemy model on which to perform queries. 
+                Defaults to None, uses one in defined in constructor
 
         Returns:
-            Item in DB that was found in db.\n
+            Item in DB that was found in db.
             None if provided field is not found on model.
         """
         model = self.model if model is None else model
@@ -119,9 +167,11 @@ class BaseCRUD():
 
         Args:
             body (schemas.RequestBodyOne) Request body
+            model (model): sqlalchemy model on which to perform queries. 
+                Defaults to None, uses one in defined in constructor
 
         Returns:
-            Item in DB that was found in db.\n
+            Item in DB that was found in db.
         """
         model = self.model if model is None else model
         item_to_update = self.get(body, 'id', model)
@@ -136,7 +186,6 @@ class BaseCRUD():
             if not self._is_value_empty(value) and not self._is_immutable_field(key):
                 # print(f'Updated field {key} with value = {value}')
                 valid_values[key] = value
-                # setattr(item_to_update, key, value)
 
         self.db.query(model).filter(getattr(model, 'id') == item_to_update.get('id')).update(
             valid_values
@@ -153,9 +202,12 @@ class BaseCRUD():
         Args:
             value (schemas.RequestBodyOne) Request body
             field (str): Field key of model of which type is searched. Defaults to 'id'
+            restore (bool): Flag by which item can be marked or restored. Defaults to False.as_integer_ratio
+            model (model): sqlalchemy model on which to perform queries. 
+                Defaults to None, uses one in defined in constructor
 
         Returns:
-            Item in DB that was found in db.\n
+            Item in DB that was found in db.
             None if provided field is not found on model.
         """
         model = self.model if model is None else model
