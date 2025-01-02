@@ -220,7 +220,7 @@ class BaseCRUD():
             raise exc.NotFoundError(field=field)
 
         # setattr(item_to_delete, 'is_deleted', (not restore))
-        self.db.query(model).filter(getattr(model, field) == item_to_delete.get(field)).update({'is_deleted': True})
+        self.db.query(model).filter(getattr(model, field) == item_to_delete.get(field)).update({'is_deleted': (not restore)})
         self.db.commit()
         self.db.refresh(item_to_delete)
         
