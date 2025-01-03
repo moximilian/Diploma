@@ -7,8 +7,9 @@ from sqlalchemy import and_
 import models as m
 from crud.base import BaseCRUD
 from crud.groups import GroupsCRUD
-from schemas import GroupOut, RequestBodyOne
+from schemas import GroupOut, RequestBodyOne, BaseEnterRequestCreate, EnterRequestUpdate
 import api.exceptions as exc
+
 
 class EnterRequestsCRUD(BaseCRUD):
 
@@ -16,27 +17,47 @@ class EnterRequestsCRUD(BaseCRUD):
         self.user = user
         super().__init__(db, m.EnterRequest)
 
-    def create_enter_request(self, body):
+    def create_enter_request(self, body: BaseEnterRequestCreate) -> m.EnterRequest:
+        """Create request to enter closed group.
+
+        Args:
+            body (BaseEnterRequestCreate): Body with 'group_id' in it
+
+        Returns:
+            models.EnterRequest: Newly created enrty request
+
+        Raises:
+            ValidationEror: if group_id is not proveded
+            NotFoundError: if group is not exists
+        """
         group_id = body.get('group_id')
         if group_id is None:
-            raise exc.NotFoundError('Group id is not provided')
-        
+            raise exc.ValidationEror('Group id is not provided')
+
         group = self.get({'id': group_id}, 'id', m.Group)
         if group is None:
             raise exc.NotFoundError('Group is not found')
-        
+
         is_group_open = group.get('is_open', False)
         if is_group_open:
             return GroupsCRUD(self.db, self.user).enter_group({'id': group_id})
 
         new_enter_request = m.EnterRequest(
-            user_id = self.user.get('id'),
-            group_id = group_id
+            user_id=self.user.get('id'),
+            group_id=group_id
         )
         new_enter_request = self._save_to_db(new_enter_request)
         return new_enter_request
 
-    def _check_request_valid(self, body):
+    def _check_request_valid(self, body: EnterRequestUpdate) -> bool:
+        """Check if enter request for group that you created.
+
+        Args:
+            body (EnterRequestUpdate): request with request id
+
+        Returns:
+            boolean
+        """
         request = self.get(body)
         group_id = request.get('group_id')
 
@@ -44,17 +65,49 @@ class EnterRequestsCRUD(BaseCRUD):
         creator_id = group.get('creator_id')
         return creator_id == self.user.get('id')
 
-    def approve_request(self, body):
+    def approve_request(self, body: EnterRequestUpdate):
+        """Approve request to your group and let user enter group.
+
+        Args:
+            body (EnterRequestUpdate): request with request id
+
+        Returns:
+            models.EnterRequest: approved enter request
+
+        Raises:
+            ForbiddenError: if you try to approve request group without being it creator
+        """
         if not self._check_request_valid(body):
             raise exc.ForbiddenError('You cant modify this request')
 
-        request_body = {
+        request_approve_body = {
             'id': body.get('id'),
             'is_approved': True
         }
-        return self.update(request_body)
 
-    def revoke_request(self, body):
+        approved_request = self.update(request_approve_body)
+
+        new_participant = m.Participant(
+            user_id=approved_request.get('user_id'),
+            group_id=approved_request.get('group_id')
+        )
+
+        self._save_to_db(new_participant)
+
+        return approved_request
+
+    def revoke_request(self, body: EnterRequestOut):
+        """Revoke request to your group.
+
+        Args:
+            body (EnterRequestUpdate): request with request id
+
+        Returns:
+            models.EnterRequest: revoked enter request
+
+        Raises:
+            ForbiddenError: if you try to revoke request group without being it creator
+        """
         if not self._check_request_valid(body):
             raise exc.ForbiddenError('You cant modify this request')
 
@@ -63,24 +116,52 @@ class EnterRequestsCRUD(BaseCRUD):
             'is_approved': False
         }
         return self.update(request_body)
-    
-    def delete_request(self, body):
+
+    def delete_request(self, body: EnterRequestOut):
+        """Delete your enter request.
+
+        Args:
+            body (EnterRequestOut): body with request id
+
+        Returns:
+            models.EnterRequest: deleted enter request
+
+        Raises:
+            ForbiddenError: if you try to delete someone else request
+
+        """
         request_id = body.get('id')
         request = self.get(body)
 
         if request.get('user_id') != self.user.get('id'):
             raise exc.ForbiddenError('You can not delete this request')
-        
+
         return self.delete(body)
 
     def _get_incoming_requests(self, query):
+        """Get query of incomming enter requests to all your groups that you created.
+
+        Args:
+            query: Base query
+
+        Returns:
+            query
+        """
         query = (query
-            .join(m.Group, m.EnterRequest.group_id == m.Group.id)
-            .filter(m.Group.creator_id == self.user.get('id'), m.Group.is_open == False, m.Group.is_deleted == False)
-        )
+                 .join(m.Group, m.EnterRequest.group_id == m.Group.id)
+                 .filter(m.Group.creator_id == self.user.get('id'), m.Group.is_open == False, m.Group.is_deleted == False)
+                 )
         return query
 
     def _get_outgoing_requests(self, query):
+        """Get query of outgoing enter requests to all your groups you want enter.
+
+        Args:
+            query: Base query
+
+        Returns:
+            query
+        """
         query = query.filter(m.EnterRequest.user_id == self.user.get('id'))
         return query
 
@@ -91,12 +172,14 @@ class EnterRequestsCRUD(BaseCRUD):
                 OUTGOING: your sent request
             group_ids - optional param to specify groups of which to show requests  
 
+        Args:
+            body (dict): request body with filters
 
-            Args:
-                body (dict): request body with filters
+        Returns: 
+            BaseListResponse  
 
-            Returns: 
-                BaseListResponse      
+        Raises:
+            ValidationEror: if you tried to get unknown type of requests
         """
         filters = body.get('filters', {})
         wheres = filters.get('wheres', [])
@@ -111,10 +194,12 @@ class EnterRequestsCRUD(BaseCRUD):
             if column == 'type':
                 value = where.get('value')
                 if value not in type_function.keys():
-                    raise exc.ValidationEror('Specified type is not valid: only OUTGOING or INCOMING', field= 'type')
+                    raise exc.ValidationEror(
+                        'Specified type is not valid: only OUTGOING or INCOMING', field='type')
                 query = type_function.get(value)(query)
             else:
-                query = query.filter(getattr(m.EnterRequest, column) == where.get('value'))
+                query = query.filter(
+                    getattr(m.EnterRequest, column) == where.get('value'))
 
         rows = query.all()
 

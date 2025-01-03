@@ -16,10 +16,12 @@ async def create_enter_request(item: schemas.BaseEnterRequestCreate, db=Depends(
     controller = EnterRequestsCRUD(db, user)
     return controller.create_enter_request(item)
 
+
 @router.post('/groups/requests/approve', response_model=schemas.EnterRequestOut)
 async def create_enter_request(item: schemas.EnterRequestUpdate, db=Depends(get_db), user=Depends(authorised_user)):
     controller = EnterRequestsCRUD(db, user)
     return controller.approve_request(item)
+
 
 @router.post('/groups/requests/revoke', response_model=schemas.EnterRequestOut)
 async def create_enter_request(item: schemas.EnterRequestUpdate, db=Depends(get_db), user=Depends(authorised_user)):
@@ -31,6 +33,7 @@ async def create_enter_request(item: schemas.EnterRequestUpdate, db=Depends(get_
 async def read_items(request_body: schemas.RequestBodyList, db=Depends(get_db), user=Depends(authorised_user)):
     controller = EnterRequestsCRUD(db, user)
     return controller.read_items(request_body)
+
 
 @router.post('/groups/requests/delete', response_model=schemas.EnterRequestOut)
 async def read_items(request_body: schemas.RequestBodyOne, db=Depends(get_db), user=Depends(authorised_user)):

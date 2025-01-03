@@ -34,6 +34,7 @@ class InternalError(BaseException):
     def __init__(self, message: str = 'Internal Error', field: t.Union[str, list] = None):
         super().__init__(code=500, message=message, field=field)
 
+
 class ForbiddenError(BaseException):
     def __init__(self, message: str = 'Requested item is forbidden to read', field: t.Union[str, list] = None):
         super().__init__(code=403, message=message, field=field)
