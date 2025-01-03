@@ -139,7 +139,7 @@ class EnterRequestsCRUD(BaseCRUD):
         return self.delete(body)
 
     def _get_incoming_requests(self, query):
-        """Get query of incomming enter requests to all your groups that you created.
+        """Get query of incomming enter requests to all your closed groups.
 
         Args:
             query: Base query
@@ -149,8 +149,11 @@ class EnterRequestsCRUD(BaseCRUD):
         """
         query = (query
                  .join(m.Group, m.EnterRequest.group_id == m.Group.id)
-                 .filter(m.Group.creator_id == self.user.get('id'), m.Group.is_open == False, m.Group.is_deleted == False)
-                 )
+                 .filter(
+                     m.Group.creator_id == self.user.get('id'),
+                     m.Group.is_open == False,
+                     m.Group.is_deleted == False
+                 ))
         return query
 
     def _get_outgoing_requests(self, query):
