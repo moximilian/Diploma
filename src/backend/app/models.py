@@ -111,6 +111,7 @@ class EnterRequest(Base, BaseModel):
         UUID(as_uuid=True),
         ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
     )
+    # datetime !!!
     is_approved = Column(Boolean, default=None, nullable=True)
 
 
@@ -129,11 +130,16 @@ class Participant(Base, BaseModel):
     )
 
 
-class Event(Base, BaseModel):
-    __tablename__ = 'events'
+class EventTemplate(Base, BaseModel):
+    __tablename__ = 'events_template'
 
     id = Column(UUID(as_uuid=True), primary_key=True,
                 default=uuid.uuid4, index=True)
+
+    group_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
 
     # userepeat_id = Column(
     #     UUID(as_uuid=True),
@@ -141,7 +147,4 @@ class Event(Base, BaseModel):
     # )
     name = Column(String(256), nullable=False)
     description = Column(String(1024), nullable=True)
-    datetime = Column('datetime',
-                      DateTime(), default=func.now())
-    duration = Column(Integer(), server_default='0')
     max_participants_count = Column(Integer, server_default='1')
