@@ -117,7 +117,7 @@ class BaseCRUD():
         query = self.db.query(model)
         if hasattr(model, 'is_deleted'):
             query = query.filter(getattr(model, 'is_deleted') == False)
-
+        query, wheres = self._make_custom_query(query, body)
         for where in wheres:
             query = query.filter(
                 getattr(model, where['column']) == where['value'])
@@ -129,6 +129,9 @@ class BaseCRUD():
         rows = query.all()
 
         return self._transform_response(rows, len(rows))
+
+    def _make_custom_query(self, query, body):
+        return query
 
     def delete(self, body, field='id', model=None):
         """Delete one item from specific table by given field key and value.

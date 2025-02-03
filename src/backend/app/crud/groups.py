@@ -88,6 +88,18 @@ class GroupsCRUD(BaseCRUD):
         self._save_to_db(new_participant)
         return group_to_enter
 
+    def _make_custom_query(self, query, body):
+        filters = body.get('filters', {})
+        wheres = filters.get('wheres', [])
+        new_wheres = []
+        for where in wheres:
+            if where.get('column') == 'participant_id':
+                participant_id = where.get('value')
+                query = query.join(m.Participant, getattr(m.Group, 'id') == getattr(
+                    m.Participant, 'group_id')).where(getattr(m.Participant, 'user_id') == participant_id)
+            else: new_wheres.append(where)
+        return query, new_wheres
+
     def leave_group(self, body: RequestBodyOne) -> dict:
         """Leave someones group.
 

@@ -25,6 +25,7 @@ export default {
         displayName: { type: String, default: () => '' },
         onlyEdit: { type: Boolean, default: () => false },
         defaults: { type: Object, default: null },
+        defaultAction: { type: String, default: null },
     },
     data() {
         return {
@@ -40,17 +41,20 @@ export default {
         },
         displayRule() {
             let displayRule = this.displayRules?.[this.displayNameR] ?? null
-            if (displayRule) displayRule = this.injectWithValues(displayRule)
+            if (displayRule && !this.isNew) displayRule = this.injectWithValues(displayRule)
             return displayRule
         },
         isShow() {
             return this.action === 'show' || this.onlyEdit
         },
+        isNew() {
+            return this.action === 'new'
+        },
         isEdit() {
-            return this.action === 'edit' || this.onlyEdit
+            return this.isNew || this.action === 'edit' || this.onlyEdit
         },
         action() {
-            return this.$route?.params?.action
+            return this.defaultAction ?? this.$route?.params?.action
         },
         isValidForm() {
             return this.requiredForm && this.sameValidationForm
@@ -68,7 +72,6 @@ export default {
             return enryRule
         },
         onSave() {
-            console.log('emit')
             this.$emit('onSave', this.entity)
         },
         // @todo: переписать валидацию, сделать её на каждое поле а не на всю форму сразу
@@ -88,7 +91,6 @@ export default {
         // },
         toEdit() {
             const editPath = this.$route.path.replace('show', 'edit')
-            console.log(editPath)
             this.entityId && this.$router.push({ path: `${editPath}` })
         },
         componentProps(field) {

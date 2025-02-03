@@ -31,7 +31,7 @@ const generateRoutes = sections => {
                 )
                 console.log(`${section.name}/${capitalize(section.name)}${capitalize(action)}Page`)
                 let pathAction = `/:action(${action})`
-                const path = section.useId ? `/${section.name}/${pathAction}/:id` : `/${section.name}/${pathAction}`
+                const path = section.useId && !['list', 'new'].includes(action) ? `/${section.name}/${pathAction}/:id` : `/${section.name}/${pathAction}`
                 routes.push({
                     path,
                     name: `${section.name}-${action}`,
@@ -52,6 +52,7 @@ const sections = [
     { name: 'home', actions: null, useId: false },
     { name: 'auth', actions: ['login', 'register'], useId: false },
     { name: 'user', actions: ['show', 'edit'], useId: true }, // useId is true for user actions
+    {name: 'groups', actions: ['list', 'show', 'edit', 'new'], useId: true}
 ]
 
 // Generate routes

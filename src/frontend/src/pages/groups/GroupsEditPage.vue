@@ -1,6 +1,6 @@
 <template>
-    <router-link :to="`/groups/list?user_id=${this.userId}`">My created groups</router-link>
-    <FormBase displayName="user" :defaults="entity"></FormBase>
+    <FormBase displayName="groups" :defaults="entity" @onSave="entity => saveUser(entity)">
+    </FormBase>
 </template>
 <script>
 export default {
@@ -10,12 +10,20 @@ export default {
             entity: null,
         }
     },
+    methods: {
+        saveUser(entity) {
+            this.$api.groups.update({ ...entity, id: this.userId }, res => {
+                if (res.detail) return
+                this.$router.replace(`/groups/show/${this.userId}`)
+            })
+        },
+    },
     created() {
         this.userId = this.$route.params.id
         if (!this.userId) {
             return console.error('User ID is not given')
         }
-        this.$api.users.one({ id: this.userId }, res => {
+        this.$api.groups.one({ id: this.userId }, res => {
             if (res.detail) return console.error('Error during API call')
             this.entity = res
         })

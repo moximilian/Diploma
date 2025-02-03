@@ -31,6 +31,15 @@ const customApi = {
         one: makeApiFn('/user/get'),
         update: makeApiFn('/user/update'),
     },
+    groups: {
+        insert: makeApiFn('/groups/create'),
+        one: makeApiFn('/groups/get'),
+        list: makeApiFn('/groups/list'),
+        update: makeApiFn('/groups/update'),
+        delete: makeApiFn('/groups/delete'),
+        enter: makeApiFn('/groups/enter'),
+        leave: makeApiFn('/groups/leave'),
+    }
 }
 export const api = new (function () {
     this.api = null
