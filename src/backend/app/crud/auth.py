@@ -39,7 +39,6 @@ async def authorised_user(token: str = Depends(oauth2_scheme), db: Session = Dep
         AuthorisationError: If provided token is mismatched or provided login does not exist
 
     """
-    print(token)
     if Authorisation(db)._is_token_revoked(token):
         raise exc.AuthorisationError('Token is expired. Log in again')
     try:
