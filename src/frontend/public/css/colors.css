@@ -1,0 +1,14 @@
+:root {
+    --white-rgb: 255, 255, 255;
+    --main-color-rgb: 5, 5, 231;
+    --background-color-rbg: 240, 240, 255;
+
+
+    --white-color: rgb(var(--white-rgb));
+    --background-color:rgb(var(--background-color-rbg));
+    --button-background-color:rgb(var(--main-color-rgb));
+    --button-background-color-hover:rgba(var(--main-color-rgb), 0.6);
+    --button-background-color-focus:rgba(var(--main-color-rgb), 0.9);
+
+    
+}

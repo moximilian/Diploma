@@ -9,9 +9,9 @@
 ## On macOS and Linux:
 
 - `python3 -m venv .venv`
-- `source venv/bin/activate`
+- `source .venv/bin/activate`
 
-# Установка зависимостей:
+## Установка зависимостей для локальной сборки:
 
 __Необходимая версия Python > 3.11__
 

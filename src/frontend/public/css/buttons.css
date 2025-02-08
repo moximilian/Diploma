@@ -1,0 +1,26 @@
+.base-btn {
+    background-color: var(--button-background-color);
+    color: var(--white-color);
+    min-width: var(--button-width);
+    height: var(--button-height);
+    border-radius: var(--border-radius);
+    border: none;
+    transition: all 0.2s;
+    font-size: 20px;
+    padding-left:10px;
+    padding-right:10px;
+}
+.base-btn:hover {
+    background-color: var(--button-background-color-hover);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.base-btn.disabled {
+    background-color: var(--button-background-color-hover);
+    cursor:not-allowed;
+
+}
+.green-button:active{
+    background-color: var(--button-background-color-focus);
+    color:white
+}

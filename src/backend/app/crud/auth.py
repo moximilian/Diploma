@@ -39,7 +39,6 @@ async def authorised_user(token: str = Depends(oauth2_scheme), db: Session = Dep
         AuthorisationError: If provided token is mismatched or provided login does not exist
 
     """
-    print(token)
     if Authorisation(db)._is_token_revoked(token):
         raise exc.AuthorisationError('Token is expired. Log in again')
     try:
@@ -57,7 +56,7 @@ async def authorised_user(token: str = Depends(oauth2_scheme), db: Session = Dep
 
 class Authorisation(BaseCRUD):
     def __init__(self, db: Session):
-        super().__init__(db)
+        super().__init__(db, m.User)
 
     def register(self, body: UserCreate) -> UserOut:
         """Register user.
@@ -144,11 +143,12 @@ class Authorisation(BaseCRUD):
         if not user:
             raise exc.ValidationEror(field=['login', 'password'])
 
+        # self._change_failed_attempt(user, 0)
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = self._create_access_token(
             data={'sub': user.login}, expires_delta=access_token_expires
         )
-        return {'access_token': access_token, 'token_type': 'bearer'}
+        return {'access_token': access_token, 'token_type': 'bearer', 'user_id': user.get('id')}
 
     def _verify_token(self, username: str, password: str) -> t.Union[UserOut, bool]:
         """Verify if user exists and given password match one in db.
@@ -165,6 +165,21 @@ class Authorisation(BaseCRUD):
         if not user or not self._verify_password(password, user.get('password')):
             return False
         return user
+
+    # def _change_failed_attempt(self, user: m.User, new_count) -> m.User:
+    #     """Add failed attempt to user
+
+    #     Args:
+    #         user (m.User): current user
+
+    #     Returns:
+    #         user (m.User): current user
+    #     """
+    #     # Make base function
+    #     user = self.db.update(m.User).where(m.User.id == user.id ).values(failed_attempts_count=new_count)
+    #     self.db.commit()
+    #     self.db.refresh(user)
+    #     return user
 
     def _verify_password(self, plain_password: str, hashed_password: str) -> bool:
         """Verify plain password's hash matches one in db.

@@ -16,6 +16,8 @@ async def register(body: schemas.UserCreate, db=Depends(get_db)):
     controller = Authorisation(db)
     return controller.register(body)
 
+# @TODO create py script to create admin with default password
+
 
 @router.post('/auth/login', response_model=schemas.Token)
 async def login(body: schemas.UserLogin, db=Depends(get_db)):

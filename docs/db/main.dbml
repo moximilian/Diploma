@@ -32,12 +32,13 @@ Ref: users.photo_id > images.id
 //     user_id uuid
 // } 
 // Ref: auth_sessions.user_id > users.id
-
+ 
 Table group_enter_requests {
     id uuid [primary key]
     user_id uuid
     group_id uuid
     is_approved boolean
+    datetime datetime
 }
 
 Table group_participants {
@@ -78,8 +79,7 @@ Table slots {
     name varchar
     description varchar
     is_open boolean
-    time time 
-    weekday varchar
+    datetime datetime
     duration integer
     max_participants_count integer
 }  
@@ -88,7 +88,9 @@ Table rapids {
     id uuid [primary key]
     weekdays array [null]
     start_date timestamp
-    end_date timestamp  
+    end_date timestamp
+    datetime datetime
+    duration integer
     months array [null]
 }
 
@@ -97,33 +99,32 @@ Ref: slot_participants.slot_id > slots.id
 Ref: slots.creator_id > users.id 
 Ref: slots.repeat_id > rapids.id
 
-Table events {
+Table events { //составной ключ??
+    id uuid [primary key]
+    template_id uuid
+    datetime datetime
+}
+Ref: events.template_id > events_template.id
+
+Table events_template {
     id uuid [primary key]
     repeat_id uuid
+    group_id uuid
     name varchar
     description varchar
-    weekday varchar
-    time time 
-    duration integer
     max_participants_count integer
 }
-Ref: events.repeat_id > rapids.id
+Ref: events_template.repeat_id > rapids.id
+Ref: events_template.group_id > groups.id
 
-Table group_events {
-    id uuid [primary key]
-    group_id uuid
-    event_id uuid
-} 
-Ref: group_events.event_id > events.id
-Ref: group_events.group_id > groups.id
 
 Table group_event_participants {
     id uuid [primary key]
-    group_event_id uuid
+    event_id uuid
     participant_id uuid
     is_attended boolean
     is_paid boolean
     custom json
 }
-Ref: group_event_participants.group_event_id > group_events.id
+Ref: group_event_participants.event_id > events.id
 Ref: group_event_participants.participant_id > group_participants.id 

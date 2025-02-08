@@ -13,6 +13,7 @@ from sqlalchemy import (
     false,
     LargeBinary
 )
+from sqlalchemy.orm import class_mapper, ColumnProperty
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -25,6 +26,13 @@ class BaseModel:
 
     def get(self, key, default=None):
         return getattr(self, key, default)
+
+    def dict(self):
+        result = {}
+        for prop in class_mapper(self.__class__).iterate_properties:
+            if isinstance(prop, ColumnProperty):
+                result[prop.key] = getattr(self, prop.key)
+        return result
 
 
 class Item(Base, BaseModel):
@@ -51,7 +59,7 @@ class User(Base, BaseModel):
     last_name = Column(String(128), nullable=True)
     login = Column(String(128), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
-    registered_at = Column('password_expires_at',
+    registered_at = Column('registered_at',
                            DateTime(), default=func.now())
     failed_attempts_count = Column(Integer(), server_default='0')
     is_deleted = Column(Boolean, default=False, server_default=false())
@@ -73,3 +81,70 @@ class Image(Base, BaseModel):
                 default=uuid.uuid4, index=True)
     image_name = Column(String(256), nullable=False)
     image_data = Column(LargeBinary(length=(2**32)-1), default=b'')
+
+
+class Group(Base, BaseModel):
+    __tablename__ = 'groups'
+    id = Column(UUID(as_uuid=True), primary_key=True,
+                default=uuid.uuid4, index=True)
+    creator_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+    name = Column(String(256), nullable=False)
+    description = Column(String(1024), nullable=True)
+    is_open = Column(Boolean, default=False, server_default=false())
+    max_participants_count = Column(Integer, server_default='1')
+    is_deleted = Column(Boolean, default=False, server_default=false())
+
+
+class EnterRequest(Base, BaseModel):
+    __tablename__ = 'group_enter_requests'
+
+    id = Column(UUID(as_uuid=True), primary_key=True,
+                default=uuid.uuid4, index=True)
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+    group_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+    # datetime !!!
+    is_approved = Column(Boolean, default=None, nullable=True)
+
+
+class Participant(Base, BaseModel):
+    __tablename__ = 'group_participants'
+
+    id = Column(UUID(as_uuid=True), primary_key=True,
+                default=uuid.uuid4, index=True)
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+    group_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+
+
+class EventTemplate(Base, BaseModel):
+    __tablename__ = 'events_template'
+
+    id = Column(UUID(as_uuid=True), primary_key=True,
+                default=uuid.uuid4, index=True)
+
+    group_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    )
+
+    # userepeat_id = Column(
+    #     UUID(as_uuid=True),
+    #     ForeignKey('rapids.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
+    # )
+    name = Column(String(256), nullable=False)
+    description = Column(String(1024), nullable=True)
+    max_participants_count = Column(Integer, server_default='1')
