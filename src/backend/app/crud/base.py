@@ -2,6 +2,7 @@ import models as m
 import api.exceptions as exc
 from schemas import BaseListResponse
 from functools import wraps
+import typing as t
 
 
 class BaseCRUD():
@@ -17,7 +18,7 @@ class BaseCRUD():
         self.db = db
         self.model = model
 
-    def _save_to_db(self, item):
+    def _save_to_db(self, item: t.Dict[str, t.Any]):
         """Create new Item in db and return its new glory.
 
         Args:
@@ -229,3 +230,19 @@ class BaseCRUD():
         self.db.refresh(item_to_delete)
 
         return item_to_delete
+
+    def insert(self, request_body) -> dict:
+        if not isinstance(request_body, list):
+            request_body = [request_body]
+        print(request_body[0].model_dump().items(), type(request_body[0]))
+        inserted_items = [
+            self.model(
+                **{
+                    k: v for k, v in item.model_dump().items() if k in self.model.__table__.columns
+                }
+            ) for item in request_body
+        ]
+        created_items = []
+        for item in inserted_items:
+            created_items.append(self._save_to_db(item))
+        return created_items

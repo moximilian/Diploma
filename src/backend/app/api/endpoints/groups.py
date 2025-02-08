@@ -8,10 +8,11 @@ import schemas
 from crud.groups import GroupsCRUD
 from crud.auth import authorised_user
 from database import get_db
+from models import Group
 router = APIRouter()
 
 
-@router.post('/groups/create', response_model=schemas.GroupOut)
+@router.post('/groups/create', response_model=None)
 async def create_group(item: schemas.GroupBase, db=Depends(get_db), user=Depends(authorised_user)):
     controller = GroupsCRUD(db, user)
     return controller.create_group(item)

@@ -3,10 +3,9 @@ Logic to work with DB
 """
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
-
 import models as m
 from crud.base import BaseCRUD
-from schemas import GroupOut, RequestBodyOne
+from schemas import GroupOut, RequestBodyOne, GroupBase
 import api.exceptions as exc
 
 
@@ -14,7 +13,7 @@ class GroupsCRUD(BaseCRUD):
     """CRUD logic to work with groups.
     """
 
-    def __init__(self, db: Session, auth_user: GroupOut):
+    def __init__(self, db: Session, auth_user):
         """ Initialize class.
 
         Args:
@@ -24,24 +23,18 @@ class GroupsCRUD(BaseCRUD):
         super().__init__(db, m.Group)
         self.user = auth_user
 
-    def create_group(self, item: GroupOut) -> m.Group:
+    def create_group(self, request_body: GroupBase) -> m.Group:
         """ Create group based on given parametres.
 
         Args:
-            item (GroupOut): Parametres for new group to create
+            item (GroupBase): Parametres for new group to create
 
         Returns:
             models.Group: new created group with ID
         """
-        new_group = self.model(
-            creator_id=self.user.get('id'),
-            name=item.get('name', ''),
-            description=item.get('description', ''),
-            is_open=item.get('is_open', True),
-            max_participants_count=item.get('max_participants_count', 1),
-            is_deleted=item.get('is_deleted', False),
-        )
-        new_group = self._save_to_db(new_group)
+
+        request_body.creator_id = self.user.get('id')
+        new_group = super().insert(request_body)
         return new_group
 
     def enter_group(self, body: RequestBodyOne) -> m.Group:
@@ -74,8 +67,7 @@ class GroupsCRUD(BaseCRUD):
 
         max_participants_count = group_to_enter.get('max_participants_count')
 
-        all_participants = self.db.query(m.Participant).filter(
-            getattr(m.Participant, 'group_id') == group_id).all()
+        all_participants = group_to_enter.participants
 
         if len(all_participants) == max_participants_count:
             raise exc.ForbiddenError(
