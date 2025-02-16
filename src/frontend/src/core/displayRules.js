@@ -3,28 +3,29 @@ const ls = new LocalStorage()
 const registerDisplay = [
     {
         display: 'InputField',
-        props: { name: 'name', value: '', required: true, type: 'text' },
+        props: { title: 'Имя', name: 'name', value: '', required: true, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'surname', value: '', required: true, type: 'text' },
+        props: { title: 'Фамилия', name: 'surname', value: '', required: true, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'last_name', value: '', required: false, type: 'text' },
+        props: { title: 'Отчество', name: 'last_name', value: '', required: false, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'login', value: '', required: true, type: 'text' },
+        props: { title: 'Логин', name: 'login', value: '', required: true, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'password', value: '', required: true, type: 'password' },
+        props: { title: 'Пароль', name: 'password', value: '', required: true, type: 'password' },
     },
     {
         display: 'InputField',
         props: {
             name: 'password_confirm',
+            title: 'Повторите пароль',
             value: '',
             required: true,
             type: 'password',
@@ -36,57 +37,84 @@ const registerDisplay = [
 const loginDisplay = [
     {
         display: 'InputField',
-        props: { name: 'login', value: '', required: true, type: 'text' },
+        props: { title: 'Логин', name: 'login', value: '', required: true, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'password', value: '', required: true, type: 'password' },
+        props: { title: 'Пароль', name: 'password', value: '', required: true, type: 'password', },
     },
 ]
 
 const userDisplay = [
     {
         display: 'InputField',
-        props: { name: 'name', value: '', required: false, type: 'text' },
+        props: { title: 'Имя', name: 'name', value: '', required: false, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'surname', value: '', required: true, type: 'text' },
+        props: { title: 'Фамилия', name: 'surname', value: '', required: true, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'last_name', value: '', required: false, type: 'text' },
+        props: { title: 'Отчество', name: 'last_name', value: '', required: false, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'login', value: '', required: true, disabled: true, type: 'text' },
+        props: {
+            title: 'Логин',
+            name: 'login',
+            value: '',
+            required: true,
+            disabled: true,
+            type: 'text',
+        },
     },
     {
         display: 'InputField',
-        props: { name: 'registered_at', value: '', required: true, disabled: true, type: 'text' },
+        props: {
+            title: 'Зарегистрирован',
+            name: 'registered_at',
+            value: '',
+            required: true,
+            disabled: true,
+            type: 'text',
+        },
     },
 ]
 
-const groupsDisplay =  [
+const groupsDisplay = [
     {
         display: 'InputField',
-        props: { name: 'creator_id', value: ls.current_user, disabled: true, required: true, type: 'text' },
+        props: {
+            name: 'creator_id',
+            value: ls.current_user,
+            disabled: true,
+            required: true,
+            title: 'Создатель',
+            type: 'text',
+        },
     },
     {
         display: 'InputField',
-        props: { name: 'name', value: '', required: true, type: 'text' },
+        props: { title: 'Название', name: 'name', value: '', required: true, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'description', value: '', required: false, type: 'text' },
+        props: { title: 'Описание', name: 'description', value: '', required: false, type: 'text' },
     },
     {
         display: 'InputField',
-        props: { name: 'is_open', value: true, required: true, type: 'checkbox' },
+        props: { title: 'Открыта', name: 'is_open', value: true, required: true, type: 'checkbox' },
     },
     {
         display: 'InputField',
-        props: { name: 'max_participants_count', value: 8, required: true, type: 'number' },
+        props: {
+            title: 'Максимальное количество участников',
+            name: 'max_participants_count',
+            value: 8,
+            required: true,
+            type: 'number',
+        },
     },
 ]
 export default {

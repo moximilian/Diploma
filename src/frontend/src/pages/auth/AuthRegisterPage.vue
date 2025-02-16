@@ -1,18 +1,13 @@
 <template>
-    <div>
-        <h1>Register Page</h1>
-        <p>Please register in to access more features.</p>
-        <div>
-            <p>Have an account?</p>
-            <router-link to="/auth/login">Login</router-link>
-        </div>
-        <router-link to="/home">Go Back to Home</router-link>
+    <div class="auth-form">
+        <div class="page-title">Вход</div>
+        <FormView displayName="register" action="edit" @onSave="register">
+            <template #form-bottom="{ entity }">
+                <BaseBtn @click="register(entity)">Зарегистрироваться</BaseBtn>
+                <span>*Нажимая кнопку, соглашаюсь с <a href="">условиями обработки данных</a></span>
+            </template>
+        </FormView>
     </div>
-    <FormBase
-        displayName="register"
-        :onlyEdit="true"
-        @onSave="register"
-    />
 </template>
 
 <script>

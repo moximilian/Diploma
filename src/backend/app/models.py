@@ -192,7 +192,7 @@ class Event(Base, BaseModel):
     max_participants_count = Column(Integer, server_default='1')
 
     event_participants = relationship(
-        "EventParticipant", backref="event", foreign_keys="EventParticipant.participant_id")
+        "EventParticipant", backref="event", foreign_keys="EventParticipant.event_id")
 
 
 class EventParticipant(Base, BaseModel):

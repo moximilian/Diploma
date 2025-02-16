@@ -1,6 +1,6 @@
 <template>
     <div class="table-base-container">
-        <slot name="before"> </slot>
+        <slot name="before"></slot>
         <div class="table-base-body">
             <div class="table-base-header table-base-row">
                 <div v-for="key of keys" :key="key" class="table-cell">

@@ -204,16 +204,16 @@ class EventParticipanUpdateIn(EventParticipantModel):
 
 class RapidModel(BaseModelConfig):
     id: UUID
-    weekdays: Optional[List[str, Any]] = None
-    months: Optional[List[str, Any]] = None
+    weekdays: List[Any] = None
+    months: List[Any] = None
     start_date: datetime.datetime
     end_date: datetime.datetime
     duration_mins: int = 1
 
 
 class RapidInsertIn(BaseModelConfig):
-    weekdays: Optional[List[str, Any]] = None
-    months: Optional[List[str, Any]] = None
+    weekdays: List[Any] = None
+    months: List[Any] = None
     start_date: datetime.datetime
     end_date: datetime.datetime
     duration_mins: int = 1
@@ -256,4 +256,4 @@ class SlotParticipantModel(BaseModelConfig):
     slot_id: UUID
     is_attended: bool
     is_paid: bool
-    custom: Optional[Dict[List, any]] = None
+    custom: Dict[List[Any], Any] = None
