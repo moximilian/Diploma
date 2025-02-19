@@ -12,7 +12,7 @@
                 <BaseBtn 
                     v-if="canModify" 
                     :disabled="!isValidForm"
-                    @click="onSave" 
+                    @click="onSave(entity)" 
                 > Сохранить </BaseBtn>
                 <BaseBtn 
                     v-if="isShow && entityId" 
@@ -66,8 +66,8 @@ export default {
                 })
             return enryRule
         },
-        onSave() {
-            this.$emit('onSave', this.entity)
+        onSave(entity) {
+            this.$emit('onSave', entity)
         },
         toEdit() {
             const editPath = this.$route.path.replace('show', 'edit')

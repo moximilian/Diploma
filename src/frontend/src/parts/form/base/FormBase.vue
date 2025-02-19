@@ -66,5 +66,11 @@ export default {
             this.entity[name] = value
         },
     },
+    created() {
+        this.displayRule.map((rule) => {
+            const key = rule.props.name
+            this.entity[key] = rule.props.value
+        })
+    }
 }
 </script>

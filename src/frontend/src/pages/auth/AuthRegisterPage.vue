@@ -1,6 +1,6 @@
 <template>
     <div class="auth-form">
-        <div class="page-title">Вход</div>
+        <div class="page-title">Регистрация</div>
         <FormView displayName="register" action="edit" @onSave="register">
             <template #form-bottom="{ entity }">
                 <BaseBtn @click="register(entity)">Зарегистрироваться</BaseBtn>

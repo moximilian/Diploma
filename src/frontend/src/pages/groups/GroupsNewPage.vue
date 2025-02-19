@@ -12,7 +12,7 @@ export default {
     },
     methods: {
         saveGroup(entity) {
-            this.$api.groups.insert({ ...entity, id: this.groupId }, res => {
+            this.$api.groups.insert({ ...entity}, res => {
                 if (res.detail) return
                 this.$router.replace(`/groups/show/${this.groupId}`)
             })
