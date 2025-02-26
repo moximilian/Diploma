@@ -1,6 +1,14 @@
 <template>
-    <FormBase displayName="user" :defaults="entity" @onSave="entity => saveUser(entity)">
-    </FormBase>
+    <FormView
+        displayName="user"
+        action="edit"
+        :defaults="entity"
+    >
+    <template #form-bottom="{entity}">
+        <BaseBtn @click="saveUser(entity)">Сохранить</BaseBtn>
+        <BaseBtn @click="toShow">Назад</BaseBtn>
+    </template>
+    </FormView>
 </template>
 <script>
 export default {
@@ -17,6 +25,9 @@ export default {
                 this.$router.replace(`/user/show/${this.userId}`)
             })
         },
+        toShow() {
+            this.$router.replace(`/user/show/${this.userId}`)
+        }
     },
     created() {
         this.userId = this.$route.params.id

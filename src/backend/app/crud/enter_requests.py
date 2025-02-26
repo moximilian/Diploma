@@ -7,7 +7,7 @@ from sqlalchemy import and_
 import models as m
 from crud.base import BaseCRUD
 from crud.groups import GroupsCRUD
-from schemas import GroupOut, RequestBodyOne, BaseEnterRequestCreate, EnterRequestUpdate
+from schemas import GroupOut, RequestBodyOne, BaseEnterRequestCreate, EnterRequestUpdate, EnterRequestOut
 import api.exceptions as exc
 
 

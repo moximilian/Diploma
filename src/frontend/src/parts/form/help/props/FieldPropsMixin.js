@@ -3,6 +3,7 @@ export default {
         value: { type: [Array, Object, Number, String, Boolean], default: null },
         name: { type: [Array, String], default: null },
         placeholder: { type: String, default: null },
+        title: { type: String, default: null },
         autofocus: { type: Boolean, default: () => false },
         disabled: { type: Boolean, default: () => false },
         afterInputFormat: { type: Function, default: null },

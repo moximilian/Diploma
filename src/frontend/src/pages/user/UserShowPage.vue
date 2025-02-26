@@ -1,6 +1,5 @@
 <template>
-    <router-link :to="`/groups/list?user_id=${this.userId}`">My created groups</router-link>
-    <FormBase displayName="user" :defaults="entity"></FormBase>
+    <FormView displayName="user" :defaults="entity" action="show"></FormView>
 </template>
 <script>
 export default {

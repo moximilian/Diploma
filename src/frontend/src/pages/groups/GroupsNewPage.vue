@@ -1,20 +1,20 @@
 <template>
-    <FormBase displayName="groups" @onSave="entity => saveUser(entity)">
-    </FormBase>
+    <FormView  action="new" displayName="groups" @onSave="entity => saveGroup(entity)">
+    </FormView>
 </template>
 <script>
 export default {
     data() {
         return {
-            userId: null,
+            groupId: null,
             entity: null,
         }
     },
     methods: {
-        saveUser(entity) {
-            this.$api.groups.insert({ ...entity, id: this.userId }, res => {
+        saveGroup(entity) {
+            this.$api.groups.insert({ ...entity}, res => {
                 if (res.detail) return
-                this.$router.replace(`/groups/show/${this.userId}`)
+                this.$router.replace(`/groups/show/${this.groupId}`)
             })
         },
     },

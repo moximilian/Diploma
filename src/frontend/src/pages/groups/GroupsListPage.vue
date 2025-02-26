@@ -1,7 +1,7 @@
 <template>
     <TableView :keys="keys" displayName="groups" :defaultFilters="filters">
         <template #before>
-            <BaseBtn @click="$router.replace('/groups/new')">Create group</BaseBtn>
+            <BaseBtn @click="$router.replace('/groups/new')">Создать группу</BaseBtn>
         </template>
     </TableView>
 </template>

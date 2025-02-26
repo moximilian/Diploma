@@ -1,7 +1,6 @@
 <template>
     <div class="flex-container-column">
         <BaseBtn @click="getItems" :disabled="!isAuthorized">Test Items request after login</BaseBtn>
-        {{ items }}
     </div>
 </template>
 

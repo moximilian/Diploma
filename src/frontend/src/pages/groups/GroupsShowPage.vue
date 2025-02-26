@@ -1,21 +1,20 @@
 <template>
-    <router-link to="/groups/list">My created groups</router-link>
-    <FormBase displayName="groups" :defaults="entity"></FormBase>
+    <FormView displayName="groups" action="show" :defaults="entity"></FormView>
 </template>
 <script>
 export default {
     data() {
         return {
-            userId: null,
+            groupId: null,
             entity: null,
         }
     },
     created() {
-        this.userId = this.$route.params.id
-        if (!this.userId) {
+        this.groupId = this.$route.params.id
+        if (!this.groupId) {
             return console.error('User ID is not given')
         }
-        this.$api.groups.one({ id: this.userId }, res => {
+        this.$api.groups.one({ id: this.groupId }, res => {
             if (res.detail) return console.error('Error during API call')
             this.entity = res
         })
