@@ -84,35 +84,15 @@ class Authorisation(BaseCRUD):
 
         hashed_password = self._hash_password(password)
 
-        added_image = self._add_image(body)
 
         new_user = m.User(name=body.get('name'),
                           surname=body.get('surname'),
                           last_name=body.get('last_name', ''),
                           login=login,
                           password=hashed_password,
-                          photo_id=added_image.get('id')
                           )
         new_user = self._save_to_db(new_user)
         return new_user
-
-    def _add_image(self, body: UserCreate) -> t.Union[dict, m.Image]:
-        """Add provided image to images table
-
-        Args:
-            `body` (UserCreate): request body
-
-        Returns:
-            Dict if provided image is empty. \n
-            m.Image created in db for save in users
-        """
-        image_name = body.get('image_name', None)
-        if not image_name:
-            return {'id': None}
-
-        new_image = m.Image(image_name=image_name,
-                            image_data=body.get('image_data', b''))
-        return self._save_to_db(new_image)
 
     def _hash_password(self, password: str) -> str:
         """Hash password with bcrypt module.

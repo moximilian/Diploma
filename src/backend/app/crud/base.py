@@ -159,7 +159,7 @@ class BaseCRUD():
         return item_to_delete
 
     def _is_value_empty(self, value) -> bool:
-        null_values = [None, '', 'null', 'None', b'']
+        null_values = ['', 'null', 'None', b'']
         return value in null_values
 
     def _is_immutable_field(self, field) -> bool:

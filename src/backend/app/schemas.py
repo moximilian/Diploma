@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from uuid import UUID
-from typing import Optional, List, Any, Dict
+from typing import Optional, List, Any, Dict, Union
 import datetime
+import base64
+from api import exceptions as exc
 
 PASSWORD_PATTERN = r'^[a-zA-Z0-9!@#$%^&*()\-+=?]*$'
 
@@ -52,9 +54,9 @@ class UserBase(BaseModelConfig):
     name:  Optional[str] = None
     surname:  Optional[str] = None
     last_name:  Optional[str] = Field(min_length=0, max_length=189, default='')
-    image_name:  Optional[str] = Field(
-        min_length=0, max_length=256, default='')
-    image_data:  Optional[bytes] = Field(default=b'', alias="image_data")
+    photo_id: Optional[UUID] = None
+    
+    role_name: str = Field(min_length=1, default='student')
 
 
 class UserCreate(UserBase):
@@ -73,6 +75,27 @@ class UserOut(UserBase):
 class UserInUpdate(UserBase):
     id: UUID
 
+# Image
+
+class ImageCreate(BaseModelConfig):
+    image_name: str = Field(),
+    image_data: Union[bytes, str]
+
+     # Валидатор для преобразования base64 строки в bytes
+    @field_validator('image_data', mode='before')
+    def decode_base64(cls, value):
+        if isinstance(value, str):
+            # Убираем префикс "data:image/png;base64," если он есть
+            if value.startswith('data:'):
+                value = value.split(',', 1)[1]
+            try:
+                return base64.b64decode(value)
+            except Exception:
+                raise exc.InternalError()
+        return value
+
+class ImageInOut(ImageCreate):
+    id: UUID
 # Auth
 
 

@@ -26,8 +26,4 @@ class User(BaseCRUD):
         hashed_new_password = self.authCRUD._hash_password(
             body.get('new_password'))
 
-        self.current_user = self.db.update(m.User).where(
-            m.User.id == self.current_user.id).values(password=hashed_new_password)
-        self.db.commit()
-        self.db.refresh(self.current_user)
-        return self.current_user
+        return super().update({'password': hashed_new_password, 'id': self.current_user.id })

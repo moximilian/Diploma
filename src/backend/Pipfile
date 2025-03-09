@@ -15,6 +15,7 @@ uuid = "*"
 bcrypt = "*"
 typing = "*"
 python-jose = "*"
+pybase64 = "*"
 
 [dev-packages]
 

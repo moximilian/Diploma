@@ -21,7 +21,7 @@
         />
         <slot name="afterInput" v-bind="slotProps">
             <i
-                v-if="realValue !== '' && focused && clearbtn"
+                v-if="realValue !== '' && focused && hasClearnBtn"
                 class="icon icon-clear"
                 @mousedown="clear"
             ></i>
@@ -50,7 +50,7 @@ export default {
             return {
                 value: this.realValue,
                 focused: this.focused,
-                clearbtn: this.clearbtn,
+                hasClearnBtn: this.hasClearnBtn,
                 clear: this.clear,
             }
         },

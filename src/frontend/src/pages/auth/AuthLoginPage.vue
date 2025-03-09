@@ -17,6 +17,7 @@ export default {
                 if (res?.detail) return
                 this.$ls.token = res.access_token
                 this.$ls.current_user = res.user_id
+                this.$store.commit('setUser', res.user_id)
                 this.$router.replace('/home')
             })
         },

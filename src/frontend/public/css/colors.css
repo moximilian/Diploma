@@ -4,12 +4,24 @@
     --background-color-rbg: 255,255,255;
     --gray-rgb: 200, 200, 200;
     --light-gray-rgb: 244, 247, 247;
+    --main-dark-rgb: 58, 77, 89;
 
     --white-color: rgb(var(--white-rgb));
     --background-color:rgb(var(--background-color-rbg));
-    --button-background-color:rgb(var(--main-color-rgb));
-    --button-background-color-hover:rgba(var(--main-color-rgb), 0.6);
-    --button-background-color-focus:rgba(var(--main-color-rgb), 0.9);
+    --main-color:rgb(var(--main-color-rgb));
+    --main-color-hover:rgba(var(--main-color-rgb), 0.6);
+    --main-color-focus:rgba(var(--main-color-rgb), 0.9);
     --gray-color:rgb(var(--gray-rgb));
     --light-gray-color:rgb(var(--light-gray-rgb));
+
+    --add-dark-color1: #61717a; /*джинса RGB 58 77 89, 0.8 непрозрачный (--main-dark-rgb)*/
+    --add-dark-color2: rgba(var(--main-dark-rgb), 0.2); /*джинса RGB 58 77 89 с прозрачностью 0.2*/
+    /*джинса RGB 58 77 89 с прозрачностью 0.05*/
+    --add-dark-color3: rgba(var(--main-dark-rgb), 0.05);
+    --add-dark-color4: #d8dbde; /*джинса RGB 58 77 89, 0.2 непрозрачный (--main-dark-rgb)*/
+    --add-dark-color5: #f5f6f7; /*джинса RGB 58 77 89, 0.05 непрозрачный (--main-dark-rgb)*/
+    --add-dark-color6: #9ca6ac; /*джинса RGB 58 77 89, 0.5 непрозрачный (--main-dark-rgb)*/
+    --add-dark-color7: #dce3ec; /*светло-серый из ББ RGB 220 227 236, непрозрачный*/
+    --add-dark-color8: rgba(var(--main-dark-rgb), 0.1); /*джинса RGB 58 77 89 с прозрачностью 0.2*/
+    --form-border-color:rgb(216, 219, 222);
 }

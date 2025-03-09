@@ -5,7 +5,7 @@ export default {
         type: { type: String, default: () => 'text' },
         readonly: { type: Boolean, default: () => false },
         size: { type: Number, default: null },
-        clearbtn: { type: Boolean, default: true },
+        hasClearnBtn: { type: Boolean, default: true },
         min: { type: Number, default: null },
         max: { type: Number, default: null },
     },

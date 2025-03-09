@@ -16,6 +16,14 @@ exports.returnObject = (object, keys = null, noneValues = 'not set') => {
         {}
     )
 }
+exports.addGroupEventListeners = (target = document, events = {}, controller = new AbortController()) => {
+    Object.entries(events).forEach(([name, fn]) => target.addEventListener(
+        name,
+        fn,
+        { signal: controller.signal }
+    ))
+    return controller
+}
 
 exports.compose =
     (...fns) =>

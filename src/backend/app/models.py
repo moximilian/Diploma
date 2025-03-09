@@ -67,6 +67,7 @@ class User(Base, BaseModel):
                            DateTime(), default=func.now())
     failed_attempts_count = Column(Integer(), server_default='0')
     is_deleted = Column(Boolean, default=False, server_default=false())
+    role_name=Column(String(128), nullable=False, server_default='sudent')
 
     # Relationships
     photo = relationship("Image", backref="user", foreign_keys=[photo_id])

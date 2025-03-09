@@ -8,7 +8,7 @@ from api.api import app_router
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(client_max_body_size=50 * 1024 * 1024)
 
 app.include_router(app_router)
 

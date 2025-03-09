@@ -8,7 +8,7 @@ input {
 }
 input:focus {
     outline: none;
-    border-color: var(--button-background-color);
+    border-color: var(--main-color);
 }
 
 input.field-input {
@@ -48,3 +48,76 @@ input.field-input:disabled {
     align-items: flex-start;
 }
 
+
+
+/* Field dropdown */
+
+/* Search field */
+.fieldSearch {
+}
+.fieldSearch > .fieldString {
+    align-items: center;
+    display: flex;
+}
+
+/* Select field */
+.fieldSelect > .icon-arrow-up {
+    transform: rotate(180deg);
+}
+.fieldSelect .field-input:read-only {
+    cursor: pointer;
+}
+.field-dropdown {
+    display: none;
+    background-color: var(--white-color);
+    border: solid var(--form-border-color) 1px;
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    z-index: 4;
+    max-width: 100%;
+}
+.field-dropdown.innit-position {
+    left: 0;
+    top: 0;
+}
+.afterInputTitle {
+    margin-top: 8px;
+    color: #5A5E6A;
+    font-size: 80%;
+}
+.field-suggestions {
+    max-height: var(--select-options-height);
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid var( --main-color-rgb);
+}
+
+
+.field-dropdown > .field + .field-suggestions {
+    padding-top: calc(var(--general-marg-small) / 2);
+}
+.field-suggestion,
+.field-suggestion-empty:not(:empty) {
+    display: block;
+    padding: calc(var(--general-marg-small) / 2) 8px;
+}
+.field-suggestion {
+    display: flex;
+    cursor: pointer;
+    padding: 2px 8px;
+}
+
+.field-suggestion.selected {
+    background: var(--add-dark-color4);
+}
+.field-suggestion.disabled {
+    color: var(--add-dark-color1);
+}
+.field-suggestion:hover,
+.field-suggestion.hovered {
+    background: var(--add-dark-color8);
+}
+.field-suggestion-empty {
+    text-align: center;
+}

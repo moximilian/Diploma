@@ -1,5 +1,5 @@
 <template>
-    <button class="base-btn" :class="{ disabled, outline, inactive }" @click="clickBtn">
+    <button class="base-btn" :class="{ disabled, outline, inactive, special }" @click="clickBtn">
         <slot>{{ $t(`buttons.${value}`, value) }}</slot>
     </button>
 </template>
@@ -11,6 +11,7 @@ export default {
         disabled: { type: Boolean, default: () => false },
         outline: { type: Boolean, default: () => false },
         inactive: { type: Boolean, default: () => false },
+        special: { type: Boolean, default: () => false },
     },
     methods: {
         clickBtn() {

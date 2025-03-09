@@ -9,6 +9,7 @@ import { api } from '@/api/api'
 import { LS } from '@/core/LS'
 import { router } from '@/core/router'
 import { i18n } from '@/core/i18n'
+import { store } from '@/core/store'
 // import { notifications } from '@/core/notifications'
 
 const app = createApp(App)
@@ -24,6 +25,6 @@ app.provide('$t', i18n)
 app.provide('$ls', LS)
 
 // Подключение плагинов
-app.use(LS).use(i18n).use(router).use(api)
+app.use(LS).use(i18n).use(router).use(api).use(store)
 
 app.mount('#app')

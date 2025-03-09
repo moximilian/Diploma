@@ -30,6 +30,12 @@ const customApi = {
     users: {
         one: makeApiFn('/user/get'),
         update: makeApiFn('/user/update'),
+        change_password: makeApiFn('/user/change_password'),
+    },
+    images: {
+        get: makeApiFn('/images/get'),
+        set_user: makeApiFn('/images/set_user'),
+        delete_user: makeApiFn('/images/delete_user'),
     },
     groups: {
         insert: makeApiFn('/groups/create'),

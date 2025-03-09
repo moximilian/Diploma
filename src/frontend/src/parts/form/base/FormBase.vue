@@ -12,6 +12,9 @@
                     <template #beforeInput>
                         <span>{{ field.props.title }}</span>
                     </template>
+                    <template #beforeSelect>
+                        <span>{{ field.props.title }}</span>
+                    </template>
                 </component>
                 <ShowValueField v-else v-bind="field.props" />
             </div>
