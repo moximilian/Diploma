@@ -120,9 +120,15 @@ class BaseCRUD():
             query = query.filter(getattr(model, 'is_deleted') == False)
         query, wheres = self._make_custom_query(query, body)
         for where in wheres:
-            query = query.filter(
-                getattr(model, where['column']) == where['value'])
-
+            condition = where.get('condition')
+            if condition == 'between': 
+                query = query.filter(getattr(model, where['column']).between(*where['value']))
+            elif condition == '!=': 
+                query = query.filter(
+                    getattr(model, where['column']) != where['value'])
+            else:
+                query = query.filter(
+                    getattr(model, where['column']) == where['value'])
         for order in orders:
             query = query.order_by(getattr(model, order['column']).desc(
             ) if order['desc'] else getattr(model, order['column']).asc())

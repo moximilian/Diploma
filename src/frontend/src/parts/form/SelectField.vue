@@ -1,6 +1,6 @@
 <template>
     <div class="field">
-        <slot name="beforeSelect" v-bind="slotProps"></slot>
+        <slot name="beforeInput" v-bind="slotProps"></slot>
         <div ref="triggerElem" class="field fieldSelect" :class="{ multiple, opened }">
             <slot name="fieldInput" v-bind="fieldProps">
                 <StringField

@@ -16,7 +16,7 @@
                     :outline="isSelected('groups')"
                     :inactive="!isSelected('groups')"
                     :special="true"
-                    @click="toMyGroups"
+                    @click="toGroups"
                 >
                     Группы
                 </BaseBtn>
@@ -140,7 +140,7 @@ export default {
         toHomePage() {
             this.$router.push('/home')
         },
-        toMyGroups() {
+        toGroups() {
             this.$router.push(`/groups/list?user_id=${this.currentUserId}`)
         },
         logout() {

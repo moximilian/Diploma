@@ -14,7 +14,7 @@ export default {
         saveGroup(entity) {
             this.$api.groups.insert({ ...entity}, res => {
                 if (res.detail) return
-                this.$router.replace(`/groups/show/${this.groupId}`)
+                this.$router.replace(`/groups/show/${res[0].id}`)
             })
         },
     },

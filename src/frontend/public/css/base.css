@@ -8,6 +8,7 @@
 a {
     color: var(--main-color);
     text-decoration: none;
+    cursor: pointer;
 }
 body {
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -23,6 +24,11 @@ body {
 
     --select-options-height: 200px;
     --general-marg-small: 8px;
+    --switch-min-width: 49px;
+    --general-marg-x-small: 2px;
+    --general-marg-small: 8px;
+    --switch-mark-size: 19px;
+
 }
 
 .auth-header-container {
@@ -48,27 +54,8 @@ body {
     text-decoration: underline;
     text-underline-position: under;
 }
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
-    width:fit-content;
-}
-.form-container {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 .auth-form .form .base-btn {
     min-width: -webkit-fill-available;
-}
-.field {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: flex-start;
 }
 .header-container {
     display: flex;

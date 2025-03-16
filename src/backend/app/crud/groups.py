@@ -89,7 +89,8 @@ class GroupsCRUD(BaseCRUD):
                 participant_id = where.get('value')
                 query = query.join(m.Participant, getattr(m.Group, 'id') == getattr(
                     m.Participant, 'group_id')).where(getattr(m.Participant, 'user_id') == participant_id)
-            else: new_wheres.append(where)
+            else:
+                new_wheres.append(where)
         return query, new_wheres
 
     def leave_group(self, body: RequestBodyOne) -> dict:
@@ -125,3 +126,20 @@ class GroupsCRUD(BaseCRUD):
         participant.delete(synchronize_session=False)
         self.db.commit()
         return {}
+
+    def list(self, request_body):
+        filters = request_body.get('filters')
+        wheres = filters.get('wheres')
+
+        new_wheres = []
+        for where in wheres:
+            if where['column'] == 'creator_id' and where['value'] == 'false':
+                where['condition'] = '!='
+                where['value'] = self.user.id
+            new_wheres.append(where)
+        return super().list({
+            'filters': {
+                'wheres': new_wheres,
+                'orders': filters.get('orders', [])
+            }
+        })

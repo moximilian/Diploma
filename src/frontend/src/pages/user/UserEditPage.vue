@@ -1,19 +1,19 @@
 <template>
-    <div class="page-user-container">
+    <div class="page-container">
         <div class="page user">
-            <div class="select-toggle-wrapper">
+            <div class="page-header-wrapper">
                 <div class="page-title">
                     Профиль
                 </div>
 
-                <div class="select-toggle">
+                <div class="page-right">
                     <div :class="{selected: isUserEditSelected}" @click="select('personalInfo')">Персональная информация</div>
                     <div :class="{selected: !isUserEditSelected}" @click="select('security')">Безопасность</div>
                 </div>
             </div>
 
             <div>
-                <div class="user-form-container" v-if="isUserEditSelected">
+                <div class="page-content" v-if="isUserEditSelected">
                     <FormView displayName="user" action="edit" :defaults="entity">
                         <template #form-bottom="{ entity }">
                             <BaseBtn @click="saveUser(entity)">Сохранить</BaseBtn>
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="user-form-container" v-else>
+                <div class="page-content" v-else>
                     <FormView displayName="passwordChange" action="edit">
                         <template #form-bottom="{ entity }">
                             <BaseBtn @click="updatePassword(entity)">Изменить пароль</BaseBtn>
@@ -39,75 +39,6 @@
         </div>
     </div>
 </template>
-<style>
-.page-user-container {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-}
-
-.page.user {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 1280px;
-}
-
-.select-toggle-wrapper {
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    align-items: center;
-    justify-content: space-between;
-
-    border-bottom: 1px solid var(--gray-color);
-
-}
-.select-toggle {
-    display: flex;
-    flex-direction: row;
-    gap: 80px;
-
-    height: 100%;
-    align-items: center;
-}
-.select-toggle div.selected {
-    display:flex;
-    height: 100%;
-
-    align-items: center;
-    color: var(--main-color);
-    border-bottom: 2px solid var(--gray-color);
-    border-color: var(--main-color);
-}
-
-.user-form-container {
-    display: flex;
-    flex-direction: row;
-    gap: 120px;
-}
-
-.image-container {
-    margin-top: 32px;
-
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-}
-.image-container img {
-    width: 112px;
-    height:112px;
-
-    border-radius: 8px;
-}
-.image-controls {
-    display: flex;
-    flex-direction: column;
-    gap:16px;
-}
-
-
-</style>
 <script>
 export default {
     data() {

@@ -24,4 +24,6 @@
     --add-dark-color7: #dce3ec; /*светло-серый из ББ RGB 220 227 236, непрозрачный*/
     --add-dark-color8: rgba(var(--main-dark-rgb), 0.1); /*джинса RGB 58 77 89 с прозрачностью 0.2*/
     --form-border-color:rgb(216, 219, 222);
+
+    --table-header-bg-color: #E8F6EB
 }

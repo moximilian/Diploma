@@ -128,26 +128,26 @@ const groupsDisplay = [
             value: ls.current_user,
             disabled: true,
             required: true,
-            title: 'Создатель',
+            title: 'Автор',
             type: 'text',
         },
     },
     {
         display: 'StringField',
-        props: { title: 'Название', name: 'name', value: '', required: true, type: 'text' },
+        props: { title: 'Название группы', name: 'name', value: '', required: true, type: 'text' },
     },
     {
         display: 'StringField',
         props: { title: 'Описание', name: 'description', value: '', required: false, type: 'text' },
     },
     {
-        display: 'StringField',
-        props: { title: 'Открыта', name: 'is_open', value: true, required: true, type: 'checkbox' },
+        display: 'SwitchField',
+        props: { title: 'Открытая группа', name: 'is_open', value: true, required: true, type: 'checkbox' },
     },
     {
         display: 'StringField',
         props: {
-            title: 'Максимальное количество участников',
+            title: 'Максимальное кол-во участников',
             name: 'max_participants_count',
             value: 8,
             required: true,
@@ -155,11 +155,61 @@ const groupsDisplay = [
         },
     },
 ]
+
+
+
+//filters
+
+const groupsFilter = [
+    {
+        display: 'StringField',
+        props: {
+            name: 'name',
+            placeholder: 'Поиск',
+            type: 'text',
+        },
+        condition: '='
+    },
+    {
+        display: 'RadioField',
+        props: {
+            name: 'creator_id',
+            title: 'Автор',
+            options: {[ls._current_user]: "Я", [false]: 'Другие'},
+            value: ls._current_user
+        },
+        condition: '='
+
+    },
+    {
+        display: 'RadioField',
+        props: {
+            name: 'is_open',
+            title: 'Тип группы',
+            options: {[true]: 'Открытые', [false]: 'Закрытые'},
+            value: "true"
+        },
+        condition: '='
+    },
+    {
+        display: 'RangeField',
+        props: {
+            name: 'max_participants_count',
+            title: 'Кол-во участников',
+            value: [0, 8],
+            min: 0,
+            max: 45,
+        },
+        condition: 'between'
+    },
+]
+
 export default {
     registerDisplay,
     loginDisplay,
-
     userDisplay,
     groupsDisplay,
     passwordChangeDisplay,
+
+    groupsFilter,
 }
