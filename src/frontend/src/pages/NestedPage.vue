@@ -2,7 +2,7 @@
     <div class="page-container">
         <div class="page user">
             <div class="page-header-wrapper">
-                <div class="page-title">{{title}}</div>
+                <div class="page-title">{{ title }}</div>
                 <div class="page-right">
                     <slot name="page-header-right"></slot>
                 </div>

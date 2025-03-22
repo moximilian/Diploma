@@ -12,7 +12,7 @@
     </TableBase>
     <div class="after-table-continer">
         <div class="after-table">
-            <slot name="after-table"></slot>
+            <slot name="after-table" :rows="rows"></slot>
         </div>
     </div>
 </template>

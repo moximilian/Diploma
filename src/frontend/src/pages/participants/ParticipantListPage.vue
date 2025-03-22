@@ -8,10 +8,17 @@
         :isClickable="false"
     >
         <template #first-item="{ row }">
-            <TableCellCheckBox @clickCheckBox="isChecked => onCheckboxChecked(isChecked, row)" />
+            <TableCellCheckBox
+                v-if="canEdit"
+                @clickCheckBox="isChecked => onCheckboxChecked(isChecked, row)"
+            />
         </template>
-        <template #after-table>
-            <BaseBtn value="Исключить" @click="removeParticipans" />
+        <template #after-table="{ rows }">
+            <BaseBtn
+                v-if="canEdit && rows.length > 0"
+                value="Исключить"
+                @click="removeParticipans"
+            />
         </template>
     </TableView>
 </template>
@@ -20,6 +27,7 @@
 export default {
     props: {
         groupId: { type: String, default: () => '' },
+        entity: { type: Object, default: () => {} },
     },
     data() {
         return {
@@ -48,6 +56,9 @@ export default {
         },
     },
     computed: {
+        canEdit() {
+            return this.$ls.current_user == this.entity?.creator_id ?? false
+        },
         defaultFilters() {
             return {
                 filters: {

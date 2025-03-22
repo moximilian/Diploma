@@ -6,13 +6,13 @@
                 Участники
             </div>
             <div
-                v-if="!entity?.is_open ?? false"
+                v-if="(!entity?.is_open ?? false) && canEdit"
                 :class="{ selected: isSelected('enter_requests') }"
                 @click="select('enter_requests')"
             >
                 Заявки на вступление
             </div>
-            <BaseBtn :disabled="true">Добавить занятие</BaseBtn>
+            <BaseBtn v-if="canEdit" :disabled="true" :outline="true" >Добавить занятие</BaseBtn>
         </template>
         <template #page-content>
             <FormView
@@ -23,11 +23,23 @@
             >
                 <template #form-bottom>
                     <BaseBtn :outline="true" @click="$router.push(`/groups/list`)">Назад</BaseBtn>
-                    <BaseBtn @click="$router.push(`/groups/edit/${groupId}`)">Изменить</BaseBtn>
+                    <BaseBtn
+                        v-if="canEdit"
+                        @click="$router.push(`/groups/edit/${groupId}`)"
+                        >Изменить</BaseBtn
+                    >
                 </template>
             </FormView>
-            <ParticipantListPage v-if="isSelected('participants')" :groupId="groupId" />
-            <EnterRequestsInListPage v-if="isSelected('enter_requests')" :groupId="groupId" />
+            <ParticipantListPage
+                v-if="isSelected('participants')"
+                :groupId="groupId"
+                :entity="entity"
+            />
+            <EnterRequestsInListPage
+                v-if="isSelected('enter_requests') && canEdit"
+                :groupId="groupId"
+                :entity="entity"
+            />
         </template>
     </NestedPage>
 </template>
@@ -46,6 +58,11 @@ export default {
 
             selectedOption: 'about',
         }
+    },
+    computed: {
+        canEdit() {
+            return this.$ls.current_user == this.entity?.creator_id ?? false
+        },
     },
     created() {
         this.groupId = this.$route.params.id

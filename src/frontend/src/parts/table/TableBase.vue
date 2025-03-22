@@ -7,20 +7,26 @@
                     {{ titles?.[key?.name] || key?.title || '' }}
                 </div>
             </div>
-            <TableRow
-                v-for="(row, index) in rows"
-                :key="row.id"
-                :row="row"
-                :isClickable="isClickable"
-                :class="{ even: index % 2 != 0 }"
-                @clickRow="changeAction"
-            >
-                <slot name="first-item" :row="row"></slot>
-                <div v-for="key of keys" :key="key.name" class="table-cell">
-                    <TableCell :row="row" :keyObj="key" :field="getField(key.name)" />
-                </div>
-                <slot name="last-item" :row="row"></slot>
-            </TableRow>
+            <div v-if="rows.length > 0">
+                <TableRow
+                    v-for="(row, index) in rows"
+                    :key="row.id"
+                    :row="row"
+                    :isClickable="isClickable"
+                    :class="{ even: index % 2 != 0 }"
+                    @clickRow="changeAction"
+                >
+                    <slot name="first-item" :row="row"></slot>
+                    <div v-for="key of keys" :key="key.name" class="table-cell">
+                        <TableCell :row="row" :keyObj="key" :field="getField(key.name)" />
+                    </div>
+                    <slot name="last-item" :row="row"></slot>
+                </TableRow>
+            </div>
+            <div v-else>
+                Нет данных
+            </div>
+
         </div>
     </div>
 </template>

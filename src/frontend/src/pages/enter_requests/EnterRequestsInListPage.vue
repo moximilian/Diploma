@@ -10,9 +10,14 @@
         <template #first-item="{ row }">
             <TableCellCheckBox @clickCheckBox="isChecked => onCheckboxChecked(isChecked, row)" />
         </template>
-        <template #after-table>
-            <BaseBtn :outline="true" value="Отклонить" @click="changeUserStatus('revoke')" />
-            <BaseBtn value="Принять" @click="changeUserStatus('accept')" />
+        <template #after-table="{ rows }">
+            <BaseBtn
+                v-if="rows.length > 0"
+                :outline="true"
+                value="Отклонить"
+                @click="changeUserStatus('revoke')"
+            />
+            <BaseBtn v-if="rows.length > 0" value="Принять" @click="changeUserStatus('accept')" />
         </template>
     </TableView>
 </template>
