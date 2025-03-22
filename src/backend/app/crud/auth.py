@@ -84,17 +84,19 @@ class Authorisation(BaseCRUD):
 
         hashed_password = self._hash_password(password)
 
+        new_body = body
+        new_body.password = hashed_password
+        return super().insert(new_body)[0]
+        # new_user = m.User(name=body.get('name'),
+        #                   surname=body.get('surname'),
+        #                   last_name=body.get('last_name', ''),
+        #                   login=login,
+        #                   password=hashed_password,
+        #                   )
+        # new_user = self._save_to_db(new_user)
+        # return new_user
 
-        new_user = m.User(name=body.get('name'),
-                          surname=body.get('surname'),
-                          last_name=body.get('last_name', ''),
-                          login=login,
-                          password=hashed_password,
-                          )
-        new_user = self._save_to_db(new_user)
-        return new_user
-
-    def _hash_password(self, password: str) -> str:
+    def _hash_password(self, password: t.Optional[str]) -> str:
         """Hash password with bcrypt module.
 
         Args:
@@ -103,6 +105,8 @@ class Authorisation(BaseCRUD):
         Returns:
             hashed_password (str): hashed password.
         """
+        if password is None:
+            return ''
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
     def login(self, auth_creds: UserLogin) -> Token:

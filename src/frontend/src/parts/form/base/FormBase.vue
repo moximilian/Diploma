@@ -1,6 +1,6 @@
 <template>
     <div class="form-container">
-        <div class="form" v-if="displayRule">
+        <div class="form">
             <slot name="form-top"> </slot>
             <div class="label-type-field" v-for="(field, index) of displayRule" :key="index">
                 <component
@@ -15,7 +15,9 @@
                 </component>
                 <ShowValueField v-else v-bind="field.props" />
             </div>
-            <slot name="form-bottom" :entity="entity"> </slot>
+            <div class="form-bottom">
+                <slot name="form-bottom" :entity="entity"> </slot>
+            </div>
         </div>
     </div>
 </template>
@@ -30,48 +32,89 @@ export default {
     data() {
         return {
             entity: {},
+
+            unchangedEntity: {},
             displayRules,
             sameValidationForm: true,
             requiredForm: true,
+
+            displayRule: null,
         }
     },
     computed: {
         displayNameR() {
             return this.displayName + 'Display'
         },
-        displayRule() {
-            let displayRule = this.displayRules?.[this.displayNameR] ?? null
-            if (displayRule && !this.isNew) displayRule = this.injectWithValues(displayRule)
-            return displayRule
+        fieldset() {
+            return this.displayRules?.[this.displayNameR] ?? null
+        },
+        action() {
+            return this.$route?.params?.action
+        },
+        isNew() {
+            return this.action === 'new'
         },
         entityId() {
             return this.$route.params?.id ?? null
         },
     },
+    watch: {
+        displayRule() {
+            this.displayRule.map(rule => {
+                const key = rule.props.name
+                this.entity[key] = this.unchangedEntity[key] ?? rule.props.value
+            })
+        },
+    },
     methods: {
-        injectWithValues(enryRule) {
-            this.defaults &&
-                enryRule.map(rule => {
-                    rule.props.value = this.defaults[rule.props.name]
-                })
-            return enryRule
+        getDisplayRule(cb) {
+            this.displayRule = this.injectWithValues(this.fieldset)
+            cb?.()
+        },
+        injectWithValues(fields) {
+            fields.map(field => {
+                const defaultValue = this.defaults
+                    ? this.defaults[field.props.name]
+                    : field.props.value
+                ![null, undefined].includes(field.displayName)
+                    ? this.getFieldValue(field, defaultValue, finalValue => {
+                          if (!this.unchangedEntity[field.props.name])
+                              this.unchangedEntity[field.props.name] = field.props.value
+                          field.props.value = finalValue
+                      })
+                    : (field.props.value = this.isNew ? '' : defaultValue)
+            })
+            return fields
+        },
+        getFieldValue(field, defaultValue, cb) {
+            if (!defaultValue) return ''
+            this.$api[field.displayName].one({ [field.fieldKey ?? 'id']: defaultValue }, res => {
+                if (res.detail) return defaultValue
+                cb?.(
+                    Array.isArray(field.showName)
+                        ? field.showName.map(field => res[field]).join(' ')
+                        : res[field.showName]
+                )
+            })
         },
         componentProps(field) {
             return { ...field.props }
         },
+
         displayComponent(field) {
             return field.display
         },
         onChangeValue(value, name) {
-            console.log(name, value)
             this.entity[name] = value
         },
     },
     created() {
-        this.displayRule.map((rule) => {
-            const key = rule.props.name
-            this.entity[key] = rule.props.value
+        this.getDisplayRule(() => {
+            this.displayRule.map(rule => {
+                const key = rule.props.name
+                this.entity[key] = rule.props.value
+            })
         })
-    }
+    },
 }
 </script>

@@ -121,7 +121,8 @@ const Buffer = {
         const { calcSize, maxRespSize, maxTotalSize } = Buffer
         return {
             // @ts-ignore
-            add: data => (size += calcSize(data) <= maxRespSize) && size + Buffer.size <= maxTotalSize,
+            add: data =>
+                (size += calcSize(data) <= maxRespSize) && size + Buffer.size <= maxTotalSize,
             sum: data => (Buffer.size += calcSize(data)),
         }
     },
@@ -215,10 +216,8 @@ const handleResult = promise =>
  */
 const makeArguments = ({ path, method, args, headers }) => {
     headers = headers?.['Content-Type']?.includes('form')
-        ?
-          (delete headers['Content-Type'], headers)
-        :
-          {
+        ? (delete headers['Content-Type'], headers)
+        : {
               ...returnObject(headers),
               'Content-Type': 'application/json',
               // @ts-ignore
@@ -264,7 +263,7 @@ export const callApi = async (path, params, cb, statusCodeHandlers) => {
         callXhr,
         makeArguments
     )({ path, ...params }).then(result =>
-        cb(result.body, {
+        cb?.(result.body, {
             ...result,
             ok: result.errors.length === 0,
         })

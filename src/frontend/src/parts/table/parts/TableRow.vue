@@ -1,5 +1,5 @@
 <template>
-    <div class="table-base-row" @click="changeAction">
+    <div class="table-base-row" @click="$emit('clickRow', row)">
         <slot></slot>
     </div>
 </template>
@@ -8,12 +8,6 @@ export default {
     props: {
         row: {type: Object, default: () => {}}
     },
-    methods: {
-        changeAction() {
-            const fullPath = this.$route.path
-            const source = fullPath.split('/')[1]
-            this.$router.push(`/${source}/show/${this.row.id}`)
-        }
-    }
+    emits: ['clickRow'],
 }
 </script>

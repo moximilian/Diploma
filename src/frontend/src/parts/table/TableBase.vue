@@ -4,42 +4,61 @@
         <div class="table-base-body">
             <div class="table-base-header table-base-row">
                 <div v-for="key of keys" :key="key" class="table-cell">
-                    {{ titles[key.name] }}
+                    {{ titles?.[key?.name] || key?.title || '' }}
                 </div>
             </div>
-            <TableRow v-for="row, index in rows" :key="row.id" :row="row" :class="{even: index%2!=0}">
+            <TableRow
+                v-for="(row, index) in rows"
+                :key="row.id"
+                :row="row"
+                :isClickable="isClickable"
+                :class="{ even: index % 2 != 0 }"
+                @clickRow="changeAction"
+            >
+                <slot name="first-item" :row="row"></slot>
                 <div v-for="key of keys" :key="key.name" class="table-cell">
-                    {{ values[row[key.name]] ?? row[key.name] }}
+                    <TableCell :row="row" :keyObj="key" :field="getField(key.name)" />
                 </div>
+                <slot name="last-item" :row="row"></slot>
             </TableRow>
         </div>
     </div>
 </template>
 <script>
 import TableRow from './parts/TableRow.vue'
+import TableCell from './parts/TableCell.vue'
+
 import displayRules from '@/core/displayRules'
 export default {
     props: {
         keys: { type: Array, default: () => [] },
         rows: { type: Array, default: () => [] },
         displayName: { type: String, default: () => '' },
+        isClickable: { type: Boolean, default: () => true },
     },
     data() {
         return {
             titles: {},
-            values: {
-                'true': 'Да',
-                'false': 'Нет'
-            }
+            displayRules: null,
+            fields: [],
         }
     },
     methods: {
+        getField(key) {
+            return this.fields.find(field => field.props.name === key)
+        },
         getAllNames() {
-            const display = displayRules[this.displayName + 'Display']
-            this.titles = display.reduce((titles, field) => {
+            this.fields = displayRules[this.displayName + 'Display']
+            this.titles = this.fields.reduce((titles, field) => {
                 titles[field.props.name] = field.props.title
                 return titles
             }, {})
+        },
+        changeAction(row) {
+            if (!this.isClickable) return
+            const fullPath = this.$route.path
+            const source = fullPath.split('/')[1]
+            this.$router.push(`/${source}/show/${row.id}`)
         },
     },
     created() {
@@ -47,6 +66,7 @@ export default {
     },
     components: {
         TableRow,
+        TableCell,
     },
 }
 </script>

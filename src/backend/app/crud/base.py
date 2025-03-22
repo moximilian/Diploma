@@ -46,17 +46,19 @@ class BaseCRUD():
         model = self.model if model is None else model
 
         if not hasattr(model, field):
-            raise exc.NotFoundError(field=field)
+            raise exc.NotFoundError(message='No such field on modl', field=field)
 
         query = self.db.query(model)
 
         value = body.get(field)
         if value is None:
-            raise exc.NotFoundError(field=field)
+            raise exc.NotFoundError(message='Value is null', field=field)
         found_item = query.filter(getattr(model, field) == value).first()
-        if not found_item or found_item.get('is_deleted', False) == True:
-            raise exc.NotFoundError()
-        return found_item
+
+        if found_item and found_item.get('is_deleted', False):
+            raise exc.NotFoundError('Item is deleted')
+        else:
+            return found_item
 
     def _transform_response(self, rows, totalCount):
         """Transform response into defined format.
@@ -73,7 +75,7 @@ class BaseCRUD():
                 "totalCount" : 0
             }
         """
-        rows = [row.dict() for row in rows]
+        rows = [row.dict() if not isinstance(row, dict) else row for row in rows]
         return BaseListResponse(rows=rows, totalCount=len(rows))
 
     def list(self, body, model=None):
@@ -102,13 +104,16 @@ class BaseCRUD():
                     "limit": integer @todo
                 }
             }
-            model (model): sqlalchemy model on which to perform queries. 
+            model (model): sqlalchemy model on which to perform queries.
                 Defaults to None, uses one in defined in constructor
 
         Returns:
             response (schemas.BaseListResponse)
         """
+        rows = self.get_items(body, model)
+        return self._transform_response(rows, len(rows))
 
+    def get_items(self, body, model=None):
         model = self.model if model is None else model
         filters = body.get('filters', {})
 
@@ -121,9 +126,9 @@ class BaseCRUD():
         query, wheres = self._make_custom_query(query, body)
         for where in wheres:
             condition = where.get('condition')
-            if condition == 'between': 
+            if condition == 'between':
                 query = query.filter(getattr(model, where['column']).between(*where['value']))
-            elif condition == '!=': 
+            elif condition == '!=':
                 query = query.filter(
                     getattr(model, where['column']) != where['value'])
             else:
@@ -132,21 +137,28 @@ class BaseCRUD():
         for order in orders:
             query = query.order_by(getattr(model, order['column']).desc(
             ) if order['desc'] else getattr(model, order['column']).asc())
-
-        rows = query.all()
-
-        return self._transform_response(rows, len(rows))
+        return query.all()
 
     def _make_custom_query(self, query, body):
-        return query
+        filters = body.get('filters', {})
+        wheres = filters.get('wheres', [])
+        return query, wheres
+
+    def _delete_item(self, body, field, model=None):
+        item_to_delete = self.get(body, field, model)
+        if not item_to_delete:
+            raise exc.NotFoundError(field=field)
+        self.db.delete(item_to_delete)
+        self.db.commit()
+        return item_to_delete
 
     def delete(self, body, field='id', model=None):
         """Delete one item from specific table by given field key and value.
 
         Args:
-            body (schemas.RequestBodyOne) Request body
+            body (RequestBodyOne or RequestBodyOnes) Request body
             field (str): Field key of model of which type is searched. Defaults to 'id'
-            model (model): sqlalchemy model on which to perform queries. 
+            model (model): sqlalchemy model on which to perform queries.
                 Defaults to None, uses one in defined in constructor
 
         Returns:
@@ -156,13 +168,13 @@ class BaseCRUD():
         model = self.model if model is None else model
         if not hasattr(model, field):
             raise exc.NotFoundError(field=field)
-
-        item_to_delete = self.get(body, field, model)
-        if not item_to_delete:
-            raise exc.NotFoundError(field=field)
-        self.db.delete(item_to_delete)
-        self.db.commit()
-        return item_to_delete
+        if body.get('ids') and isinstance(body.get('ids'), list):
+            items_to_delete = []
+            for item in body.get('ids'):
+                item_to_delete = self._delete_item({'id': item}, field, model)
+                items_to_delete.append(item_to_delete)
+            return items_to_delete
+        else: return self._delete_item(body, field, model)
 
     def _is_value_empty(self, value) -> bool:
         null_values = ['', 'null', 'None', b'']
@@ -177,7 +189,7 @@ class BaseCRUD():
 
         Args:
             body (schemas.RequestBodyOne) Request body
-            model (model): sqlalchemy model on which to perform queries. 
+            model (model): sqlalchemy model on which to perform queries.
                 Defaults to None, uses one in defined in constructor
 
         Returns:
@@ -193,9 +205,9 @@ class BaseCRUD():
         body = body.dict() if hasattr(body, 'dict') else body
 
         for key, value in body.items():
-            if not self._is_value_empty(value) and not self._is_immutable_field(key):
-                # print(f'Updated field {key} with value = {value}')
-                valid_values[key] = value
+            if self._is_value_empty(value) or self._is_immutable_field(key):
+                continue
+            valid_values[key] = value
 
         self.db.query(model).filter(getattr(model, 'id') == item_to_update.get('id')).update(
             valid_values
@@ -213,7 +225,7 @@ class BaseCRUD():
             value (schemas.RequestBodyOne) Request body
             field (str): Field key of model of which type is searched. Defaults to 'id'
             restore (bool): Flag by which item can be marked or restored. Defaults to False.as_integer_ratio
-            model (model): sqlalchemy model on which to perform queries. 
+            model (model): sqlalchemy model on which to perform queries.
                 Defaults to None, uses one in defined in constructor
 
         Returns:
@@ -240,7 +252,6 @@ class BaseCRUD():
     def insert(self, request_body) -> dict:
         if not isinstance(request_body, list):
             request_body = [request_body]
-        print(request_body[0].model_dump().items(), type(request_body[0]))
         inserted_items = [
             self.model(
                 **{

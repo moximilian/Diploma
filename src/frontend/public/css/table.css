@@ -1,49 +1,61 @@
 .table-base-container {
-  display: flex;
-  flex-direction: column;
-  align-content: flex-start;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 100%;
-  padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 16px;
+    overflow-x: auto; /* Use auto instead of scroll for better UX */
 }
 
 .table-base-body {
     width: 100%;
     display: flex;
     flex-direction: column;
-    overflow-x: auto;
-  }
-  
-  .table-base-row {
+    min-width: max-content; /* Ensure the body expands to fit the content */
+}
+
+.table-base-row {
     display: flex;
-    flex-wrap: nowrap; 
+    flex-wrap: nowrap;
     gap: 10px;
     padding: 8px 0;
-    min-width: fit-content; 
-
+    width: 100%; /* Ensure the row spans the full width */
+    min-width: 1024px;
     border-radius: 8px;
-  }
+}
 
-  .table-base-row.even {
-    background-color: #F4F7F7 ;
-  }
+.table-base-row.even {
+    background-color: #f4f7f7;
+}
 
-
-  .table-base-row:not(.table-base-header):hover {
+.table-base-row:not(.table-base-header):hover {
     background-color: var(--table-header-bg-color);
     cursor: pointer;
-  }
-  
-  .table-cell {
-    flex: 1 0 150px;
+}
+
+.table-cell {
+    flex: 1 0 150px; /* Adjust the minimum width as needed */
     word-break: break-word;
     padding: 8px;
-  }
-  
-  .table-base-header{
+}
+
+.table-base-header {
     font-weight: bold;
     background-color: var(--table-header-bg-color);
     border-radius: 8px;
-  }
-  
+}
+
+.after-table-continer {
+    display: flex;
+    justify-content: flex-end;
+}
+.after-table {
+    display: flex;
+    gap: 10px;
+}
+.table-cell {
+    display: flex;
+    justify-content: center;
+}

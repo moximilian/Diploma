@@ -16,6 +16,7 @@ class User(BaseCRUD):
 
     def change_password(self, body: schemas.PasswordsChange) -> m.User:
         current_password = body.current_password
+        new_password = body.new_password
         if not self.authCRUD._verify_password(current_password, self.current_user.password):
             raise exc.ValidationEror(
                 'Current password is not valid', field='current_password')
@@ -23,7 +24,6 @@ class User(BaseCRUD):
             raise exc.ValidationEror('Passwords do not match', field=[
                                      'new_password', 'new_password_confirm'])
 
-        hashed_new_password = self.authCRUD._hash_password(
-            body.get('new_password'))
+        hashed_new_password = self.authCRUD._hash_password(new_password)
 
         return super().update({'password': hashed_new_password, 'id': self.current_user.id })

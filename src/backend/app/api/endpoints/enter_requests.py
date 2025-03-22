@@ -18,13 +18,13 @@ async def create_enter_request(item: schemas.BaseEnterRequestCreate, db=Depends(
 
 
 @router.post('/groups/requests/approve', response_model=schemas.EnterRequestOut)
-async def create_enter_request(item: schemas.EnterRequestUpdate, db=Depends(get_db), user=Depends(authorised_user)):
+async def approve_enter_request(item: schemas.RequestBodyOne, db=Depends(get_db), user=Depends(authorised_user)):
     controller = EnterRequestsCRUD(db, user)
     return controller.approve_request(item)
 
 
 @router.post('/groups/requests/revoke', response_model=schemas.EnterRequestOut)
-async def create_enter_request(item: schemas.EnterRequestUpdate, db=Depends(get_db), user=Depends(authorised_user)):
+async def revoke_enter_request(item: schemas.RequestBodyOne, db=Depends(get_db), user=Depends(authorised_user)):
     controller = EnterRequestsCRUD(db, user)
     return controller.revoke_request(item)
 
@@ -36,6 +36,6 @@ async def read_items(request_body: schemas.RequestBodyList, db=Depends(get_db), 
 
 
 @router.post('/groups/requests/delete', response_model=schemas.EnterRequestOut)
-async def read_items(request_body: schemas.RequestBodyOne, db=Depends(get_db), user=Depends(authorised_user)):
+async def delete_item(request_body: schemas.RequestBodyOne, db=Depends(get_db), user=Depends(authorised_user)):
     controller = EnterRequestsCRUD(db, user)
     return controller.delete_request(request_body)

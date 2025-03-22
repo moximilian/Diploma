@@ -7,7 +7,11 @@ from sqlalchemy import and_
 import models as m
 from crud.base import BaseCRUD
 from crud.groups import GroupsCRUD
-from schemas import GroupOut, RequestBodyOne, BaseEnterRequestCreate, EnterRequestUpdate, EnterRequestOut
+from crud.participants import ParticipantsCRUD
+
+from crud.users import User
+
+from schemas import GroupOut, RequestBodyOne, BaseEnterRequestCreate, RequestBodyOne, EnterRequestOut, ParticipantCreate
 import api.exceptions as exc
 
 
@@ -15,6 +19,9 @@ class EnterRequestsCRUD(BaseCRUD):
 
     def __init__(self, db, user):
         self.user = user
+        self.userCRUD = User(db, user)
+        self.groupCRUD = GroupsCRUD(db, user)
+        self.participant = ParticipantsCRUD(db, user)
         super().__init__(db, m.EnterRequest)
 
     def create_enter_request(self, body: BaseEnterRequestCreate) -> m.EnterRequest:
@@ -40,7 +47,7 @@ class EnterRequestsCRUD(BaseCRUD):
 
         is_group_open = group.get('is_open', False)
         if is_group_open:
-            return GroupsCRUD(self.db, self.user).enter_group({'id': group_id})
+            return self.groupCRUD.enter_group({'id': group_id})
 
         new_enter_request = m.EnterRequest(
             user_id=self.user.get('id'),
@@ -49,11 +56,11 @@ class EnterRequestsCRUD(BaseCRUD):
         new_enter_request = self._save_to_db(new_enter_request)
         return new_enter_request
 
-    def _check_request_valid(self, body: EnterRequestUpdate) -> bool:
+    def _check_request_valid(self, body: RequestBodyOne) -> bool:
         """Check if enter request for group that you created.
 
         Args:
-            body (EnterRequestUpdate): request with request id
+            body (RequestBodyOne): request with request id
 
         Returns:
             boolean
@@ -65,11 +72,11 @@ class EnterRequestsCRUD(BaseCRUD):
         creator_id = group.get('creator_id')
         return creator_id == self.user.get('id')
 
-    def approve_request(self, body: EnterRequestUpdate):
+    def approve_request(self, body: RequestBodyOne):
         """Approve request to your group and let user enter group.
 
         Args:
-            body (EnterRequestUpdate): request with request id
+            body (RequestBodyOne): request with request id
 
         Returns:
             models.EnterRequest: approved enter request
@@ -87,20 +94,19 @@ class EnterRequestsCRUD(BaseCRUD):
 
         approved_request = self.update(request_approve_body)
 
-        new_participant = m.Participant(
-            user_id=approved_request.get('user_id'),
-            group_id=approved_request.get('group_id')
-        )
-
-        self._save_to_db(new_participant)
-
+        is_not_participant = self.participant.get({'user_id': approved_request.get('user_id')}, 'user_id')
+        if (is_not_participant is None):
+            self.participant.insert(ParticipantCreate(
+                user_id=approved_request.get('user_id'),
+                group_id= approved_request.get('group_id')
+            ))
         return approved_request
 
     def revoke_request(self, body: EnterRequestOut):
         """Revoke request to your group.
 
         Args:
-            body (EnterRequestUpdate): request with request id
+            body (RequestBodyOne): request with request id
 
         Returns:
             models.EnterRequest: revoked enter request
@@ -173,13 +179,13 @@ class EnterRequestsCRUD(BaseCRUD):
             Provide 'type' filter param to specify:
                 INCOMING: requests by other users to groups you created
                 OUTGOING: your sent request
-            group_ids - optional param to specify groups of which to show requests  
+            group_ids - optional param to specify groups of which to show requests
 
         Args:
             body (dict): request body with filters
 
-        Returns: 
-            BaseListResponse  
+        Returns:
+            BaseListResponse
 
         Raises:
             ValidationEror: if you tried to get unknown type of requests
@@ -203,7 +209,6 @@ class EnterRequestsCRUD(BaseCRUD):
             else:
                 query = query.filter(
                     getattr(m.EnterRequest, column) == where.get('value'))
-
         rows = query.all()
 
         return self._transform_response(rows, len(rows))

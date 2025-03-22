@@ -17,3 +17,13 @@
     gap: 5px;
     align-items: flex-start;
 }
+
+.form-bottom {
+    width: 100%;
+    display: flex;
+    gap: 12px;
+}
+
+.form-bottom .base-btn {
+    width: 100%;
+}

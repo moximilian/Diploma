@@ -55,7 +55,7 @@ class UserBase(BaseModelConfig):
     surname:  Optional[str] = None
     last_name:  Optional[str] = Field(min_length=0, max_length=189, default='')
     photo_id: Optional[UUID] = None
-    
+
     role_name: str = Field(min_length=1, default='student')
 
 
@@ -110,7 +110,8 @@ class PasswordsChange(BaseModelConfig):
     new_password_confirm: str = PasswordField()
 
 # Base Requests
-
+class RequestBodyOnes(BaseModelConfig):
+    ids: List[UUID]
 
 class RequestBodyOne(BaseModelConfig):
     id: UUID
@@ -119,6 +120,7 @@ class RequestBodyOne(BaseModelConfig):
 class RequestBodyList(BaseModelConfig):
     filters: dict = Field(default={})
 
+# Base Responses
 
 class BaseListResponse(BaseModelConfig):
     rows: List[Any] = Field(default_factory=list)
@@ -155,6 +157,15 @@ class GroupUpdateIn(BaseModelConfig):
     is_open: bool = Field(default=True)
     max_participants_count: int = Field(default=1)
 
+class ParticipantCreate(BaseModelConfig):
+    user_id: UUID
+    group_id: UUID
+
+
+class Participant(BaseModelConfig):
+    id: UUID
+    user_id: UUID
+    group_id: UUID
 
 # Enter request
 
@@ -170,8 +181,6 @@ class EnterRequestOut(BaseEnterRequestCreate):
     datetime: datetime.datetime
 
 
-class EnterRequestUpdate(RequestBodyOne):
-    is_approved: bool
 
 # Event
 # Insert in, Update in, Model

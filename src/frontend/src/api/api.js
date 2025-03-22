@@ -45,7 +45,16 @@ const customApi = {
         delete: makeApiFn('/groups/delete'),
         enter: makeApiFn('/groups/enter'),
         leave: makeApiFn('/groups/leave'),
-    }
+    },
+    participants: {
+        list: makeApiFn('/participants/list'),
+        delete: makeApiFn('/participants/delete'),
+    },
+    enter_requests: {
+        list: makeApiFn('/groups/requests/list'),
+        revoke: makeApiFn('/groups/requests/revoke'),
+        accept: makeApiFn('/groups/requests/approve'),
+    },
 }
 export const api = new (function () {
     this.api = null

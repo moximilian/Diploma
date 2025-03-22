@@ -1,3 +1,4 @@
+import NestedPage from '@/pages/NestedPage.vue'
 import FormView from '@/parts/form/base/FormView.vue'
 import FilterForm from '@/parts/form/base/FilterForm.vue'
 
@@ -16,8 +17,10 @@ import RadioField from '@/parts/form/RadioField.vue'
 import RangeField from '@/parts/form/RangeField.vue'
 
 import TableView from '@/parts/table/TableView.vue'
+import TableCellCheckBox from '@/parts/table/parts/TableCellCheckBox.vue'
 
 export default {
+    NestedPage,
     FormView,
     FilterForm,
     BaseBtn,
@@ -35,4 +38,5 @@ export default {
 
     ShowValueField,
     TableView,
+    TableCellCheckBox,
 }

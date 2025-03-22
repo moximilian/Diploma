@@ -1,13 +1,9 @@
 <template>
-    <div class="page-container">
-        <div class="page user">
-            <div class="page-header-wrapper">
-                <div class="page-title">Группы</div>
-                <div class="page-right">
-                    <BaseBtn @click="$router.replace('/groups/new')">Создать группу</BaseBtn>
-                </div>
-            </div>
-
+    <NestedPage title="Группы">
+        <template #page-header-right>
+            <BaseBtn @click="$router.replace('/groups/new')">Создать группу</BaseBtn>
+        </template>
+        <template #page-content>
             <div class="page-content-filter">
                 <FilterForm filterName="groups" @changeFilters="changeFilters" />
                 <TableView
@@ -18,8 +14,8 @@
                     :filters="filters"
                 />
             </div>
-        </div>
-    </div>
+        </template>
+    </NestedPage>
 </template>
 <script>
 export default {
@@ -51,7 +47,7 @@ export default {
                             value: this.userId,
                         },
                         {
-                            column:'is_open',
+                            column: 'is_open',
                             value: true,
                         },
                     ],

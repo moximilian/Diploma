@@ -1,14 +1,14 @@
 <template>
-    <FormView
-        displayName="groups"
-        action="edit"
-        :defaults="entity"
-    >
-        <template #form-bottom="{ entity }">
-            <BaseBtn @click="saveGroup(entity)">Сохранить</BaseBtn>
-            <BaseBtn @click="toShow">Назад</BaseBtn>
+    <NestedPage :title="entity?.name">
+        <template #page-content>
+            <FormView v-if="entity" displayName="groups" action="edit" :defaults="entity">
+                <template #form-bottom="{ entity }">
+                    <BaseBtn :outline="true" @click="toShow">Отменить</BaseBtn>
+                    <BaseBtn @click="saveGroup(entity)">Сохранить</BaseBtn>
+                </template>
+            </FormView>
         </template>
-    </FormView>
+    </NestedPage>
 </template>
 <script>
 export default {
@@ -27,7 +27,7 @@ export default {
         },
         toShow() {
             this.$router.replace(`/groups/show/${this.groupId}`)
-        }
+        },
     },
     created() {
         this.groupId = this.$route.params.id

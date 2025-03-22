@@ -1,30 +1,34 @@
 <template>
-    <div class="page-container">
-        <div class="page user">
-            <div class="page-header-wrapper">
-                <div class="page-title">
-                    Профиль
-                </div>
-
-                <div class="page-right">
-                    <div :class="{selected: isUserEditSelected}" @click="select('personalInfo')">Персональная информация</div>
-                    <div :class="{selected: !isUserEditSelected}" @click="select('security')">Безопасность</div>
-                </div>
+    <NestedPage title="Профиль">
+        <template #page-header-right>
+            <div :class="{ selected: isSelected('personalInfo') }" @click="select('personalInfo')">
+                Персональная информация
             </div>
+            <div :class="{ selected: isSelected('security') }" @click="select('security')">
+                Безопасность
+            </div>
+        </template>
 
+        <template #page-content>
             <div>
-                <div class="page-content" v-if="isUserEditSelected">
-                    <FormView displayName="user" action="edit" :defaults="entity">
+                <div class="page-content" v-if="isSelected('personalInfo')">
+                    <FormView v-if="entity" displayName="user" action="edit" :defaults="entity">
                         <template #form-bottom="{ entity }">
                             <BaseBtn @click="saveUser(entity)">Сохранить</BaseBtn>
-                            
                         </template>
                     </FormView>
                     <div class="image-container">
-                        <PhotoField :src="imageSrc"/>
+                        <PhotoField :src="imageSrc" />
                         <div class="image-controls">
-                            <UploadBtn :outline="true" text="Загрузить" accept=".jpg, .png, .jpeg" @onclick="uploadImage"/>
-                            <BaseBtn :outline="true" :disabled="!imageSrc" @click="deleteImage">Удалить</BaseBtn>
+                            <UploadBtn
+                                :outline="true"
+                                text="Загрузить"
+                                accept=".jpg, .png, .jpeg"
+                                @onclick="uploadImage"
+                            />
+                            <BaseBtn :outline="true" :disabled="!imageSrc" @click="deleteImage"
+                                >Удалить</BaseBtn
+                            >
                         </div>
                     </div>
                 </div>
@@ -36,11 +40,13 @@
                     </FormView>
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </NestedPage>
 </template>
 <script>
+import TabsMixin from '@/pages/_help/TabsMixin'
 export default {
+    mixins: [TabsMixin],
     data() {
         return {
             userId: null,
@@ -57,14 +63,9 @@ export default {
             })
         },
         updatePassword(entity) {
-            this.$api.users.change_password({...entity}, (res) => {
+            this.$api.users.change_password({ ...entity }, res => {
                 if (res.detail) return
-
             })
-        },
-
-        select(option) {
-            this.$router.push(`/user/edit/${this.userId}?tab=${option}`)
         },
         fetchUser() {
             this.$api.users.one({ id: this.userId }, res => {
@@ -74,49 +75,40 @@ export default {
             })
         },
         fetchImage(id) {
-            this.$api.images.get({id}, (res) => {
+            this.$api.images.get({ id }, res => {
                 this.$store.commit('setPhoto', res)
             })
         },
         uploadImage(image_data, image_name) {
-            this.$api.images.set_user({
-                image_name, image_data
-            }, (res) => {
-                if (res?.detail) return
-                this.fetchUser()
-            })
+            this.$api.images.set_user(
+                {
+                    image_name,
+                    image_data,
+                },
+                res => {
+                    if (res?.detail) return
+                    this.fetchUser()
+                }
+            )
         },
         deleteImage() {
-            this.$api.images.delete_user({id: this.$store.state.photo_id}, (res) => {
+            this.$api.images.delete_user({ id: this.$store.state.photo_id }, res => {
                 if (res?.detail) return
-                this.$store.commit('setPhoto', {image_data: null, id: null})
+                this.$store.commit('setPhoto', { image_data: null, id: null })
             })
-        }
+        },
     },
     computed: {
-        isUserEditSelected() {
-            return this.selectedOption === 'personalInfo'
-        },
         imageSrc() {
             return this.$store.state.photo64
         },
-        queryTab() {
-            return this.$route.query?.tab ?? 'personalInfo'
-        }
-    },
-    watch: {
-        queryTab() {
-            this.selectedOption = this.queryTab 
-        }
     },
     created() {
-        this.selectedOption = this.queryTab 
         this.userId = this.$route.params.id
         if (!this.userId) {
             return console.error('User ID is not given')
         }
         this.fetchUser()
-
     },
 }
 </script>

@@ -33,11 +33,13 @@ const registerDisplay = [
         display: 'SelectField',
         props: {
             title: 'Я собираюсь быть',
-            value: 'Обучающимся',
+            value: 'student',
             name: 'role_name',
             required: true,
-            // options: ['student', 'teacher'],
-            options: [{ student: 'Обучающимся' }, { teacher: 'Преподавателем' }],
+            options: [
+                { key: 'student', value: 'Обучающимся' },
+                { key: 'teacher', value: 'Преподавателем' },
+            ],
         },
     },
 ]
@@ -131,6 +133,10 @@ const groupsDisplay = [
             title: 'Автор',
             type: 'text',
         },
+        displayName: 'users',
+        fieldKey: 'id',
+        showName: ['name', 'surname', 'last_name'],
+        localKeyName: 'creator_id',
     },
     {
         display: 'StringField',
@@ -142,7 +148,13 @@ const groupsDisplay = [
     },
     {
         display: 'SwitchField',
-        props: { title: 'Открытая группа', name: 'is_open', value: true, required: true, type: 'checkbox' },
+        props: {
+            title: 'Открытая группа',
+            name: 'is_open',
+            value: true,
+            required: true,
+            type: 'checkbox',
+        },
     },
     {
         display: 'StringField',
@@ -156,7 +168,81 @@ const groupsDisplay = [
     },
 ]
 
+const participantsDisplay = [
+    ...userDisplay,
+    {
+        display: 'StringField',
+        props: {
+            title: 'Группа',
+            name: 'group_id',
+            value: '',
+            required: false,
+            disabled: true,
+            type: 'number',
+        },
+    },
+]
 
+const enter_requestsDisplay = [
+    {
+        display: 'StringField',
+        props: {
+            name: 'fio',
+            disabled: true,
+            required: true,
+            title: 'ФИО',
+            type: 'text',
+        },
+        displayName: 'users',
+        fieldKey: 'id',
+        showName: ['name', 'surname', 'last_name'],
+        localKeyName: 'user_id',
+    },
+    {
+        display: 'StringField',
+        props: {
+            name: 'login',
+            disabled: true,
+            required: true,
+            title: 'Логин',
+            type: 'text',
+        },
+        displayName: 'users',
+        fieldKey: 'id',
+        showName: 'login',
+        localKeyName: 'user_id',
+    },
+    {
+        display: 'StringField',
+        props: {
+            title: 'Время отправки',
+            name: 'datetime',
+            value: '',
+            required: false,
+            disabled: true,
+        },
+    },
+    {
+        display: 'StringField',
+        props: {
+            title: 'Время отправки',
+            name: 'datetime',
+            value: '',
+            required: false,
+            disabled: true,
+        },
+    },
+    {
+        display: 'StringField',
+        props: {
+            title: 'Принят в группу',
+            name: 'is_approved',
+            value: '',
+            required: false,
+            disabled: true,
+        },
+    },
+]
 
 //filters
 
@@ -168,28 +254,27 @@ const groupsFilter = [
             placeholder: 'Поиск',
             type: 'text',
         },
-        condition: '='
+        condition: '=',
     },
     {
         display: 'RadioField',
         props: {
             name: 'creator_id',
             title: 'Автор',
-            options: {[ls._current_user]: "Я", [false]: 'Другие'},
-            value: ls._current_user
+            options: { [ls._current_user]: 'Я', [false]: 'Другие' },
+            value: ls._current_user,
         },
-        condition: '='
-
+        condition: '=',
     },
     {
         display: 'RadioField',
         props: {
             name: 'is_open',
             title: 'Тип группы',
-            options: {[true]: 'Открытые', [false]: 'Закрытые'},
-            value: "true"
+            options: { [true]: 'Открытые', [false]: 'Закрытые' },
+            value: 'true',
         },
-        condition: '='
+        condition: '=',
     },
     {
         display: 'RangeField',
@@ -200,7 +285,7 @@ const groupsFilter = [
             min: 0,
             max: 45,
         },
-        condition: 'between'
+        condition: 'between',
     },
 ]
 
@@ -210,6 +295,7 @@ export default {
     userDisplay,
     groupsDisplay,
     passwordChangeDisplay,
-
+    participantsDisplay,
     groupsFilter,
+    enter_requestsDisplay,
 }

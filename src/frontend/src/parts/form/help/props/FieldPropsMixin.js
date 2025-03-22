@@ -1,6 +1,7 @@
 export default {
     props: {
         value: { type: [Array, Object, Number, String, Boolean], default: null },
+        defaultValue: { type: [Array, Object, Number, String, Boolean], default: null },
         name: { type: [Array, String], default: null },
         placeholder: { type: String, default: null },
         title: { type: String, default: null },

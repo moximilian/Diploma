@@ -1,9 +1,20 @@
 <template>
-    <TableBase :keys="keys" :rows="rows" :displayName="displayName">
+    <TableBase :keys="keys" :rows="rows" :displayName="displayName" :isClickable="isClickable">
         <template #before>
             <slot name="before"></slot>
         </template>
+        <template #first-item="{ row }">
+            <slot name="first-item" :row="row"></slot>
+        </template>
+        <template #last-item="{ row }">
+            <slot name="last-item" :row="row"></slot>
+        </template>
     </TableBase>
+    <div class="after-table-continer">
+        <div class="after-table">
+            <slot name="after-table"></slot>
+        </div>
+    </div>
 </template>
 <script>
 import TableBase from './TableBase.vue'
@@ -13,6 +24,7 @@ export default {
         keys: { type: Array, default: () => [] },
         defaultFilters: { type: Object, default: () => {} },
         filters: { type: Object, default: () => {} },
+        isClickable: { type: Boolean, default: () => true },
     },
     data() {
         return {
@@ -22,7 +34,7 @@ export default {
     },
     methods: {
         load() {
-            this.$api[this.displayName].list({filters: this.filters}, res => {
+            this.$api[this.displayName].list({ filters: this.filters }, res => {
                 if (res.detail) return console.error('Error during API call')
                 this.rows = res.rows
                 this.totalCount = res.totalCount

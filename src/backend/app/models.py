@@ -123,8 +123,8 @@ class Group(Base, BaseModel):
     )
     name = Column(String(256), nullable=False)
     description = Column(String(1024), nullable=True)
-    is_open = Column(Boolean, default=False, server_default=false())
-    max_participants_count = Column(Integer, server_default='1')
+    is_open = Column(Boolean, default=False, nullable=False)
+    max_participants_count = Column(Integer)
     is_deleted = Column(Boolean, default=False, server_default=false())
 
     # Relationships
