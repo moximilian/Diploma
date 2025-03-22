@@ -4,7 +4,7 @@
         :keys="keys"
         displayName="participants"
         :defaultFilters="defaultFilters"
-        :filters="defaultFilters"
+        :filters="filters"
         :isClickable="false"
     >
         <template #first-item="{ row }">
@@ -59,16 +59,19 @@ export default {
         canEdit() {
             return this.$ls.current_user == this.entity?.creator_id ?? false
         },
+        filters() {
+            return {
+                wheres: [
+                    {
+                        column: 'group_id',
+                        value: this.groupId,
+                    },
+                ],
+            }
+        },
         defaultFilters() {
             return {
-                filters: {
-                    wheres: [
-                        {
-                            column: 'group_id',
-                            value: this.groupId,
-                        },
-                    ],
-                },
+                filters: this.filters
             }
         },
     },

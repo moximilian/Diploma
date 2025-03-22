@@ -1,10 +1,10 @@
 <template>
     <TableView
-        ref="table"
+        ref="requestsTable"
         :keys="keys"
         displayName="enter_requests"
         :defaultFilters="defaultFilters"
-        :filters="defaultFilters"
+        :filters="filters"
         :isClickable="false"
     >
         <template #first-item="{ row }">
@@ -50,20 +50,23 @@ export default {
             Array.from(this.selectedIds).map(item => {
                 this.$api.enter_requests[status]({ id: item[0] })
             })
-            this.$refs.table.load()
+            this.$refs.requestsTable.load()
         },
     },
     computed: {
+        filters() {
+            return {
+                wheres: [
+                    {
+                        column: 'group_id',
+                        value: this.groupId,
+                    },
+                ],
+            }
+        },
         defaultFilters() {
             return {
-                filters: {
-                    wheres: [
-                        {
-                            column: 'group_id',
-                            value: this.groupId,
-                        },
-                    ],
-                },
+                filters: this.filters,
             }
         },
     },

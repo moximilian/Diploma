@@ -12,7 +12,7 @@
             >
                 Заявки на вступление
             </div>
-            <BaseBtn v-if="canEdit" :disabled="true" :outline="true" >Добавить занятие</BaseBtn>
+            <BaseBtn v-if="canEdit" :disabled="true" :outline="true">Добавить занятие</BaseBtn>
         </template>
         <template #page-content>
             <FormView
@@ -23,9 +23,7 @@
             >
                 <template #form-bottom>
                     <BaseBtn :outline="true" @click="$router.push(`/groups/list`)">Назад</BaseBtn>
-                    <BaseBtn
-                        v-if="canEdit"
-                        @click="$router.push(`/groups/edit/${groupId}`)"
+                    <BaseBtn v-if="canEdit" @click="$router.push(`/groups/edit/${groupId}`)"
                         >Изменить</BaseBtn
                     >
                 </template>

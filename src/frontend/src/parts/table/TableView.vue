@@ -34,6 +34,7 @@ export default {
     },
     methods: {
         load() {
+            this.rows = []
             this.$api[this.displayName].list({ filters: this.filters }, res => {
                 if (res.detail) return console.error('Error during API call')
                 this.rows = res.rows

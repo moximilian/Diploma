@@ -99,7 +99,7 @@ class EnterRequestsCRUD(BaseCRUD):
             self.participant.insert(ParticipantCreate(
                 user_id=approved_request.get('user_id'),
                 group_id= approved_request.get('group_id')
-            ))
+            ), m.Participant)
         return approved_request
 
     def revoke_request(self, body: EnterRequestOut):

@@ -249,13 +249,14 @@ class BaseCRUD():
 
         return item_to_delete
 
-    def insert(self, request_body) -> dict:
+    def insert(self, request_body, model=None) -> dict:
+        model = self.model if model is None else model
         if not isinstance(request_body, list):
             request_body = [request_body]
         inserted_items = [
-            self.model(
+            model(
                 **{
-                    k: v for k, v in item.model_dump().items() if k in self.model.__table__.columns
+                    k: v for k, v in item.model_dump().items() if k in model.__table__.columns
                 }
             ) for item in request_body
         ]
