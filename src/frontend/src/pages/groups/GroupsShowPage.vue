@@ -2,7 +2,7 @@
     <NestedPage :title="entity?.name">
         <template #page-header-right>
             <div :class="{ selected: isSelected('about') }" @click="select('about')">О группе</div>
-            <div :class="{ selected: isSelected('participants') }" @click="select('participants')">
+            <div v-if="entity?.is_participant || canEdit" :class="{ selected: isSelected('participants') }" @click="select('participants')">
                 Участники
             </div>
             <div
@@ -34,7 +34,7 @@
                 </template>
             </FormView>
             <ParticipantListPage
-                v-if="isSelected('participants')"
+                v-if="isSelected('participants') && entity.is_participant"
                 :groupId="groupId"
                 :entity="entity"
             />
