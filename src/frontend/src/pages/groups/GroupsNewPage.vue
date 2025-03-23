@@ -1,5 +1,5 @@
 <template>
-    <NestedPage title="Создать группу">
+    <NestedPage title="Создать группу" v-if="!isStudent">
         <template #page-content>
             <FormView action="new" displayName="groups" @onSave="entity => saveGroup(entity)">
             </FormView>
@@ -13,6 +13,11 @@ export default {
             groupId: null,
             entity: null,
         }
+    },
+    computed: {
+        isStudent() {
+            return this.$store.getters.isStudent
+        },
     },
     methods: {
         saveGroup(entity) {

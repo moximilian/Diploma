@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import { store } from './store'
+console.log(store.state, 'info')
 function trimSlashes(value) {
     return value ? value.trim().replace(/^\/+|\/+$/g, '') : ''
 }
@@ -31,7 +32,10 @@ const generateRoutes = sections => {
                 )
                 console.log(`${section.name}/${capitalize(section.name)}${capitalize(action)}Page`)
                 let pathAction = `/:action(${action})`
-                const path = section.useId && !['list', 'new'].includes(action) ? `/${section.name}/${pathAction}/:id` : `/${section.name}/${pathAction}`
+                const path =
+                    section.useId && !['list', 'new'].includes(action)
+                        ? `/${section.name}/${pathAction}/:id`
+                        : `/${section.name}/${pathAction}`
                 routes.push({
                     path,
                     name: `${section.name}-${action}`,
