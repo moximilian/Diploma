@@ -148,6 +148,7 @@ class GroupBase(BaseModelConfig):
 
 class GroupOut(GroupBase):
     id: UUID
+    is_participant: bool = Field(default=True)
 
 
 class GroupUpdateIn(BaseModelConfig):

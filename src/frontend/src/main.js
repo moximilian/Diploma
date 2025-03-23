@@ -1,8 +1,8 @@
+import '@/core/define' //вспомогательные функции для базовых объектов
 import App from '@/App.vue'
 import { createApp } from 'vue'
 
 import '@/assets/fontawesome.all.css'
-// import '@/core/define' //вспомогательные функции для базовых объектов
 import components from '@/core/defineComponents'
 
 import { api } from '@/api/api'

@@ -246,7 +246,7 @@ const enter_requestsDisplay = [
 
 //filters
 
-const groupsFilter = [
+const groupsTeacherFilter = [
     {
         display: 'StringField',
         props: {
@@ -289,6 +289,38 @@ const groupsFilter = [
     },
 ]
 
+const groupsStudentFilter = [
+    {
+        display: 'StringField',
+        props: {
+            name: 'name',
+            placeholder: 'Поиск',
+            type: 'text',
+        },
+        condition: '=',
+    },
+    {
+        display: 'RadioField',
+        props: {
+            name: 'is_open',
+            title: 'Тип группы',
+            options: { [true]: 'Открытые', [false]: 'Закрытые' },
+            value: 'true',
+        },
+        condition: '=',
+    },
+    {
+        display: 'RadioField',
+        props: {
+            name: 'is_currrent_participant',
+            title: 'Уже состою',
+            options: { [true]: 'Да', [false]: 'Нет' },
+            value: [true],
+        },
+        condition: '=',
+    },
+]
+
 export default {
     registerDisplay,
     loginDisplay,
@@ -296,6 +328,7 @@ export default {
     groupsDisplay,
     passwordChangeDisplay,
     participantsDisplay,
-    groupsFilter,
+    groupsTeacherFilter,
     enter_requestsDisplay,
+    groupsStudentFilter,
 }

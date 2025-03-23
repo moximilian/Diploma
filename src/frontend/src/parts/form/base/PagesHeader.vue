@@ -22,11 +22,16 @@
                 </BaseBtn>
             </div>
         </div>
-        <div @mouseenter="toggleCard" @mouseleave="() => isTooltipOpen=false" ref="triggerElem">
+        <div @mouseenter="toggleCard" @mouseleave="() => (isTooltipOpen = false)" ref="triggerElem">
             <PhotoField :src="imageSrc" className="profile-pic" />
         </div>
         <teleport to="body">
-            <div class="card" ref="movableElem" @mouseenter="toggleCard" @mouseleave="() => isTooltipOpen=false">
+            <div
+                class="card"
+                ref="movableElem"
+                @mouseenter="toggleCard"
+                @mouseleave="() => (isTooltipOpen = false)"
+            >
                 <div class="card-wrapper" v-if="isTooltipOpen">
                     <div class="naming">
                         <PhotoField :src="imageSrc" className="profile-pic" />
@@ -36,7 +41,9 @@
                     <div class="line"></div>
                     <div class="links">
                         <div class="link">
-                            <router-link :to="`/user/edit/${currentUserId}?tab=personalInfo`"> Профиль </router-link>
+                            <router-link :to="`/user/edit/${currentUserId}?tab=personalInfo`">
+                                Профиль
+                            </router-link>
                         </div>
                         <div class="link">
                             <router-link :to="`/user/edit/${currentUserId}?tab=settings`">
@@ -92,13 +99,15 @@
     width: 90%;
 }
 .links {
-    display:flex;
+    display: flex;
     flex-direction: column;
     gap: 8px;
     width: 100%;
     text-align: left;
 }
-.links .link, .links .link a, .links a {
+.links .link,
+.links .link a,
+.links a {
     color: black;
     padding-left: 16px;
     padding-top: 8px;
@@ -111,7 +120,6 @@
 .gray {
     color: var(--gray-color);
 }
-
 </style>
 <script>
 import SelectPositionMixin from '../help/SelectPositionMixin'
@@ -154,6 +162,7 @@ export default {
             this.$api.users.one({ id: this.$ls.current_user }, res => {
                 this.currentUser = res
                 if (res?.photo_id || this.imageSrc === null) this.fetchImage(res.photo_id)
+                this.$store.commit('setRole', res.role_name)
             }) ?? ''
         },
         fetchImage(id) {

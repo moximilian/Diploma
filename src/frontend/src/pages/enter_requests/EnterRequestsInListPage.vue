@@ -31,6 +31,7 @@ export default {
     data() {
         return {
             keys: [
+                { name: 'slot' },
                 {
                     name: 'fio',
                     title: 'ФИО',

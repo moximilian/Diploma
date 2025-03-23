@@ -23,6 +23,11 @@
             >
                 <template #form-bottom>
                     <BaseBtn :outline="true" @click="$router.push(`/groups/list`)">Назад</BaseBtn>
+                    <BaseBtn
+                        v-if="isStudent && entity.is_participant"
+                        @click="leaveGroup(entity.id)"
+                        >Покинуть</BaseBtn
+                    >
                     <BaseBtn v-if="canEdit" @click="$router.push(`/groups/edit/${groupId}`)"
                         >Изменить</BaseBtn
                     >
@@ -57,9 +62,19 @@ export default {
             selectedOption: 'about',
         }
     },
+    methods: {
+        leaveGroup(id) {
+            this.$api.groups.leave({ id }, () => {
+                this.$router.push(`/groups/list`)
+            })
+        },
+    },
     computed: {
         canEdit() {
             return this.$ls.current_user == this.entity?.creator_id ?? false
+        },
+        isStudent() {
+            return this.$store.getters.isStudent
         },
     },
     created() {

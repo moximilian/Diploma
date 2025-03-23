@@ -11,7 +11,7 @@ from crud.participants import ParticipantsCRUD
 
 from crud.users import User
 
-from schemas import GroupOut, RequestBodyOne, BaseEnterRequestCreate, RequestBodyOne, EnterRequestOut, ParticipantCreate
+from schemas import GroupOut, RequestBodyOne, RequestBodyOne, EnterRequestOut, ParticipantCreate
 import api.exceptions as exc
 
 
@@ -24,11 +24,11 @@ class EnterRequestsCRUD(BaseCRUD):
         self.participant = ParticipantsCRUD(db, user)
         super().__init__(db, m.EnterRequest)
 
-    def create_enter_request(self, body: BaseEnterRequestCreate) -> m.EnterRequest:
+    def create_enter_request(self, body: RequestBodyOne) -> m.EnterRequest:
         """Create request to enter closed group.
 
         Args:
-            body (BaseEnterRequestCreate): Body with 'group_id' in it
+            body (RequestBodyOne): Body with 'group_id' in it
 
         Returns:
             models.EnterRequest: Newly created enrty request
@@ -37,11 +37,11 @@ class EnterRequestsCRUD(BaseCRUD):
             ValidationEror: if group_id is not proveded
             NotFoundError: if group is not exists
         """
-        group_id = body.get('group_id')
+        group_id = body.get('id')
         if group_id is None:
             raise exc.ValidationEror('Group id is not provided')
 
-        group = self.get({'id': group_id}, 'id', m.Group)
+        group = self.get_item({'id': group_id}, 'id', m.Group)
         if group is None:
             raise exc.NotFoundError('Group is not found')
 
@@ -65,10 +65,10 @@ class EnterRequestsCRUD(BaseCRUD):
         Returns:
             boolean
         """
-        request = self.get(body)
+        request = self.get_item(body)
         group_id = request.get('group_id')
 
-        group = self.get({'id': group_id}, 'id', m.Group)
+        group = self.get_item({'id': group_id}, 'id', m.Group)
         creator_id = group.get('creator_id')
         return creator_id == self.user.get('id')
 
@@ -93,9 +93,21 @@ class EnterRequestsCRUD(BaseCRUD):
         }
 
         approved_request = self.update(request_approve_body)
-
-        is_not_participant = self.participant.get({'user_id': approved_request.get('user_id')}, 'user_id')
-        if (is_not_participant is None):
+        participant = self.participant.get_items(
+            {'filters': {
+                'wheres': [
+                    {
+                        'column': 'user_id',
+                        'value': approved_request.get('user_id')
+                    },
+                    {
+                        'column': 'group_id',
+                        'value': approved_request.get('group_id')
+                    }
+                ]
+            }}
+        )
+        if (participant is None or len(participant) == 0):
             self.participant.insert(ParticipantCreate(
                 user_id=approved_request.get('user_id'),
                 group_id= approved_request.get('group_id')
@@ -137,7 +149,7 @@ class EnterRequestsCRUD(BaseCRUD):
 
         """
         request_id = body.get('id')
-        request = self.get(body)
+        request = self.get_item(body)
 
         if request.get('user_id') != self.user.get('id'):
             raise exc.ForbiddenError('You can not delete this request')

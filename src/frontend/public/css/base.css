@@ -28,7 +28,36 @@ body {
     --general-marg-x-small: 2px;
     --general-marg-small: 8px;
     --switch-mark-size: 19px;
+}
 
+.custom-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--main-color);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.custom-checkbox:checked {
+    border-color: var(--main-color);
+    background-color: var(--main-color);
+}
+
+.custom-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 
 .auth-header-container {
@@ -39,7 +68,7 @@ body {
     margin-top: 97px;
     margin-bottom: 66px;
 }
-.auth-header-container .header-item{
+.auth-header-container .header-item {
     font-size: 20px;
     font-weight: 600;
 }
@@ -75,9 +104,9 @@ body {
     width: 100%;
 }
 .profile-pic {
-    width: 48px; 
-    height:48px; 
-    border-radius: 48px; 
+    width: 48px;
+    height: 48px;
+    border-radius: 48px;
     margin-right: 12px;
     margin-left: 12px;
     border: 1px solid var(--main-color);

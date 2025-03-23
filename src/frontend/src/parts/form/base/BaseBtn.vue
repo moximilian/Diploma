@@ -14,8 +14,8 @@ export default {
         special: { type: Boolean, default: () => false },
     },
     methods: {
-        clickBtn() {
-            !this.disabled && this.$emit('click')
+        clickBtn(e) {
+            !this.disabled && this.$emit('click', e)
         },
     },
 }

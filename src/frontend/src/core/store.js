@@ -1,29 +1,36 @@
 import { createStore } from 'vuex'
 
 export const store = createStore({
-    currentUser() {
+    state() {
         return {
             id: null,
             photo64: null,
-            photo_id: null
-        }
-    },
-    getters: {
-        currentUser(currentUser) {
-            return currentUser
+            photo_id: null,
+            roleName: null,
         }
     },
 
+    getters: {
+        isStudent(state) {
+            return state.roleName === 'student'
+        },
+        isTeacher(state) {
+            return state.roleName === 'teacher'
+        },
+    },
 
     mutations: {
-        setUser(currentUser, id) {
-            currentUser.id = id
+        setUser(state, id) {
+            state.id = id
         },
-        setPhoto(currentUser, photo) {
-            currentUser.photo64 = photo.image_data
-            currentUser.photo_id = photo.id
-        }
+        setPhoto(state, photo) {
+            state.photo64 = photo.image_data
+            state.photo_id = photo.id
+        },
+        setRole(state, roleName) {
+            state.roleName = roleName
+        },
     },
 })
 
-console.info(store)
+console.info(store.state, 'store')

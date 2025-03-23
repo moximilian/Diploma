@@ -45,6 +45,8 @@ const customApi = {
         delete: makeApiFn('/groups/delete'),
         enter: makeApiFn('/groups/enter'),
         leave: makeApiFn('/groups/leave'),
+
+        send_request: makeApiFn('/groups/requests/create'),
     },
     participants: {
         list: makeApiFn('/participants/list'),

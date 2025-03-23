@@ -32,7 +32,7 @@ class BaseCRUD():
         self.db.refresh(item)
         return item
 
-    def get(self, body, field='id', model=None):
+    def get_item(self, body, field='id', model=None):
         """Get one item from specific table by given field key and value.
 
         Args:
@@ -60,6 +60,22 @@ class BaseCRUD():
         else:
             return found_item
 
+    def get(self, body, field='id', model=None):
+        """Get one item from specific table by given field key and value.
+
+        Args:
+            value (schemas.RequestBodyOne) Request body
+            field (str): Field key of model of which type is searched. Defaults to 'id'
+
+        Returns:
+            Item in DB that was found in db.
+            None if provided field is not found on model.
+        """
+        return self._make_output([self.get_item(body, field, model)])[0]
+
+    def _make_output(self, rows):
+        return rows
+
     def _transform_response(self, rows, totalCount):
         """Transform response into defined format.
 
@@ -75,8 +91,16 @@ class BaseCRUD():
                 "totalCount" : 0
             }
         """
+
+        rows = self._make_output(rows)
         rows = [row.dict() if not isinstance(row, dict) else row for row in rows]
         return BaseListResponse(rows=rows, totalCount=len(rows))
+
+
+    def _transform_boolean(self, where):
+        if isinstance(where, dict) and where.get('value') and where.get('value') in ['false', 'true']:
+            where['value'] = where['value'].lower() in ("yes", "true", "t", "1")
+        return where
 
     def list(self, body, model=None):
         """Get one or multiple items in list representation:
@@ -123,29 +147,32 @@ class BaseCRUD():
         query = self.db.query(model)
         if hasattr(model, 'is_deleted'):
             query = query.filter(getattr(model, 'is_deleted') == False)
-        query, wheres = self._make_custom_query(query, body)
+        query, wheres = self._make_custom_query(query, wheres)
         for where in wheres:
             condition = where.get('condition')
+            where = self._transform_boolean(where)
             if condition == 'between':
                 query = query.filter(getattr(model, where['column']).between(*where['value']))
             elif condition == '!=':
                 query = query.filter(
                     getattr(model, where['column']) != where['value'])
+            elif condition == 'in':
+                query = query.filter(
+                    getattr(model, where['column']).in_(where['value']))
             else:
                 query = query.filter(
                     getattr(model, where['column']) == where['value'])
         for order in orders:
             query = query.order_by(getattr(model, order['column']).desc(
             ) if order['desc'] else getattr(model, order['column']).asc())
+
         return query.all()
 
-    def _make_custom_query(self, query, body):
-        filters = body.get('filters', {})
-        wheres = filters.get('wheres', [])
+    def _make_custom_query(self, query, wheres):
         return query, wheres
 
     def _delete_item(self, body, field, model=None):
-        item_to_delete = self.get(body, field, model)
+        item_to_delete = self.get_item(body, field, model)
         if not item_to_delete:
             raise exc.NotFoundError(field=field)
         self.db.delete(item_to_delete)
@@ -196,7 +223,7 @@ class BaseCRUD():
             Item in DB that was found in db.
         """
         model = self.model if model is None else model
-        item_to_update = self.get(body, 'id', model)
+        item_to_update = self.get_item(body, 'id', model)
         if not item_to_update:
             raise exc.NotFoundError()
 
@@ -237,7 +264,7 @@ class BaseCRUD():
             print(f'{model} do not have `is_deleted` property')
             raise exc.InternalError()
 
-        item_to_delete = self.get(body, field, model)
+        item_to_delete = self.get_item(body, field, model)
         if not item_to_delete:
             raise exc.NotFoundError(field=field)
 

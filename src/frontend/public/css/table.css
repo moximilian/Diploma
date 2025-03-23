@@ -31,7 +31,7 @@
 }
 
 .table-base-row:not(.table-base-header):hover {
-    background-color: var(--table-header-bg-color);
+    background-color: rgba(var(--main-dark-rgb), 0.1);
     cursor: pointer;
 }
 
@@ -58,4 +58,10 @@
 .table-cell {
     display: flex;
     justify-content: center;
+    min-width: 150px;
+}
+
+.table-cell .base-btn {
+    padding: 0;
+    width: 100%;
 }

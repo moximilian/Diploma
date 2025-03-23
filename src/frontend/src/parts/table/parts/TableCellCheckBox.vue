@@ -1,6 +1,6 @@
 <template>
     <TableCell>
-        <input type="checkbox" @change="click" :checked="isChecked" />
+        <input type="checkbox" class="custom-checkbox" @change="click" :checked="isChecked" />
     </TableCell>
 </template>
 <script>

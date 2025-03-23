@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.post('/groups/requests/create', response_model=schemas.EnterRequestOut)
-async def create_enter_request(item: schemas.BaseEnterRequestCreate, db=Depends(get_db), user=Depends(authorised_user)):
+async def create_enter_request(item: schemas.RequestBodyOne, db=Depends(get_db), user=Depends(authorised_user)):
     controller = EnterRequestsCRUD(db, user)
     return controller.create_enter_request(item)
 

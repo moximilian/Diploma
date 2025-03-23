@@ -2,7 +2,7 @@
 Logic to work with DB
 """
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 import models as m
 from crud.base import BaseCRUD
 from schemas import GroupOut, RequestBodyOne, GroupBase
@@ -56,7 +56,7 @@ class GroupsCRUD(BaseCRUD):
         if group_id is None:
             raise exc.ValidationEror('Group id is a required property')
 
-        group_to_enter = self.get(body)
+        group_to_enter = self.get_item(body)
         if group_to_enter is None:
             raise exc.NotFoundError('Requested group is not found')
 
@@ -80,17 +80,28 @@ class GroupsCRUD(BaseCRUD):
         self._save_to_db(new_participant)
         return group_to_enter
 
-    def _make_custom_query(self, query, body):
-        filters = body.get('filters', {})
-        wheres = filters.get('wheres', [])
+    def _make_custom_query(self, query, wheres):
         new_wheres = []
         for where in wheres:
+            if where.get('column') == 'is_currrent_participant':
+                where = super()._transform_boolean(where)
+                is_paricipant = where.get('value')
+                if is_paricipant:
+                    query = query.join(m.Participant, getattr(m.Group, 'id') == getattr(
+                        m.Participant, 'group_id')).where(getattr(m.Participant, 'user_id') == self.user.id)
+                else:
+                    query = query.outerjoin(m.Participant, getattr(m.Group, 'id') == getattr(
+                        m.Participant, 'group_id')).where(or_(
+                                    m.Participant.user_id.is_(None),  # Нет участников
+                                    m.Participant.user_id != self.user.id
+                                ))
+                continue
             if where.get('column') == 'participant_id':
                 participant_id = where.get('value')
                 query = query.join(m.Participant, getattr(m.Group, 'id') == getattr(
                     m.Participant, 'group_id')).where(getattr(m.Participant, 'user_id') == participant_id)
-            else:
-                new_wheres.append(where)
+                continue
+            new_wheres.append(where)
         return query, new_wheres
 
     def leave_group(self, body: RequestBodyOne) -> dict:
@@ -111,7 +122,7 @@ class GroupsCRUD(BaseCRUD):
         if group_id is None:
             raise exc.ValidationEror('Group id is a required property')
 
-        group_to_leave = self.get(body)
+        group_to_leave = self.get_item(body)
         if group_to_leave is None:
             raise exc.NotFoundError('Requested group is not found')
 
@@ -126,6 +137,18 @@ class GroupsCRUD(BaseCRUD):
         participant.delete(synchronize_session=False)
         self.db.commit()
         return {}
+
+    def _make_output(self, rows):
+        result = []
+        for row in rows:
+            row_dict = row.dict()
+            print(row.participants)
+            is_participant = [participant for participant in row.participants if participant.user_id == self.user.id]
+            row_dict['is_participant'] = len(is_participant) != 0
+            row_dict['participant_count'] = len(row.participants)
+            result.append(row_dict)
+
+        return result
 
     def list(self, request_body):
         filters = request_body.get('filters')

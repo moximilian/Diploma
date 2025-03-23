@@ -31,14 +31,6 @@ export default {
     },
     data() {
         return {
-            keys: [
-                {
-                    name: 'fio',
-                    title: 'ФИО участника',
-                    format: row => [row.name, row.surname, row.last_name].join(' '),
-                },
-                { name: 'login' },
-            ],
             selectedIds: new Map(),
         }
     },
@@ -56,6 +48,17 @@ export default {
         },
     },
     computed: {
+        keys() {
+            return [
+                ...(this.canEdit ? [{ name: 'slot' }] : []),
+                {
+                    name: 'fio',
+                    title: 'ФИО участника',
+                    format: row => [row.name, row.surname, row.last_name].join(' '),
+                },
+                { name: 'login' },
+            ]
+        },
         canEdit() {
             return this.$ls.current_user == this.entity?.creator_id ?? false
         },
@@ -71,7 +74,7 @@ export default {
         },
         defaultFilters() {
             return {
-                filters: this.filters
+                filters: this.filters,
             }
         },
     },

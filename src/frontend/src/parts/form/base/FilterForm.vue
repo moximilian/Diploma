@@ -49,7 +49,7 @@
     font-weight: 800;
     font-size: 16px;
 }
-.filter-content{
+.filter-content {
     display: flex;
     flex-direction: column;
 }
@@ -110,10 +110,11 @@ export default {
         },
         resetForm() {
             this.displayFilters.forEach((filter, index) => {
-                ![null, undefined].includes(filter.props.value) && this.onChangeValue(filter.props.value, filter.props.name, filter.condition)
+                ![null, undefined].includes(filter.props.value) &&
+                    this.onChangeValue(filter.props.value, filter.props.name, filter.condition)
                 this.$refs[`filter_${index}`].value = filter.props.value
             })
-        }
+        },
     },
 }
 </script>

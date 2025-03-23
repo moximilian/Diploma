@@ -17,6 +17,8 @@ import RadioField from '@/parts/form/RadioField.vue'
 import RangeField from '@/parts/form/RangeField.vue'
 
 import TableView from '@/parts/table/TableView.vue'
+import TableCell from '@/parts/table/parts/TableCell.vue'
+
 import TableCellCheckBox from '@/parts/table/parts/TableCellCheckBox.vue'
 
 export default {
@@ -38,5 +40,6 @@ export default {
 
     ShowValueField,
     TableView,
+    TableCell,
     TableCellCheckBox,
 }
