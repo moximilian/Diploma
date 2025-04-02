@@ -9,13 +9,13 @@
     >
         <template #first-item="{ row }">
             <TableCellCheckBox
-                v-if="canEdit"
+                v-if="isGroupAdmin"
                 @clickCheckBox="isChecked => onCheckboxChecked(isChecked, row)"
             />
         </template>
         <template #after-table="{ rows }">
             <BaseBtn
-                v-if="canEdit && rows.length > 0"
+                v-if="isGroupAdmin && rows.length > 0"
                 value="Исключить"
                 @click="removeParticipans"
             />
@@ -50,7 +50,7 @@ export default {
     computed: {
         keys() {
             return [
-                ...(this.canEdit ? [{ name: 'slot' }] : []),
+                ...(this.isGroupAdmin ? [{ name: 'slot' }] : []),
                 {
                     name: 'fio',
                     title: 'ФИО участника',
@@ -59,7 +59,7 @@ export default {
                 { name: 'login' },
             ]
         },
-        canEdit() {
+        isGroupAdmin() {
             return this.$ls.current_user == this.entity?.creator_id ?? false
         },
         filters() {

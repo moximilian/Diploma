@@ -92,9 +92,9 @@ class GroupsCRUD(BaseCRUD):
                 else:
                     query = query.outerjoin(m.Participant, getattr(m.Group, 'id') == getattr(
                         m.Participant, 'group_id')).where(or_(
-                                    m.Participant.user_id.is_(None),  # Нет участников
-                                    m.Participant.user_id != self.user.id
-                                ))
+                            m.Participant.user_id.is_(None),  # Нет участников
+                            m.Participant.user_id != self.user.id
+                        ))
                 continue
             if where.get('column') == 'participant_id':
                 participant_id = where.get('value')
@@ -142,8 +142,8 @@ class GroupsCRUD(BaseCRUD):
         result = []
         for row in rows:
             row_dict = row.dict()
-            print(row.participants)
-            is_participant = [participant for participant in row.participants if participant.user_id == self.user.id]
+            is_participant = [
+                participant for participant in row.participants if participant.user_id == self.user.id]
             row_dict['is_participant'] = len(is_participant) != 0
             row_dict['participant_count'] = len(row.participants)
             result.append(row_dict)
@@ -156,7 +156,7 @@ class GroupsCRUD(BaseCRUD):
 
         new_wheres = []
         for where in wheres:
-            if where['column'] == 'creator_id' and where['value'] == 'false':
+            if where['column'] == 'creator_id' and (where['value'] == 'false' or where['value'] == 'null'):
                 where['condition'] = '!='
                 where['value'] = self.user.id
             new_wheres.append(where)
