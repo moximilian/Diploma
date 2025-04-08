@@ -4,9 +4,9 @@
         <FormView displayName="register" action="edit" @onSave="register">
             <template #form-bottom="{ entity }">
                 <BaseBtn @click="register(entity)">Зарегистрироваться</BaseBtn>
-                <span>*Нажимая кнопку, соглашаюсь с <a href="">условиями обработки данных</a></span>
             </template>
         </FormView>
+        <span>*Нажимая кнопку, соглашаюсь с <a href="">условиями обработки данных</a></span>
     </div>
 </template>
 
@@ -17,5 +17,10 @@ export default {
             this.$api.auth.register(entity, () => this.$router.push('/auth/login'))
         },
     },
+    mounted() {
+        if (![null, '', undefined].includes(this.$ls.token)) {
+            this.$router.replace('/home')
+        }
+    }
 }
 </script>

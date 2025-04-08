@@ -26,7 +26,8 @@ export const NOTI_ERRORS_TIMEOUT = getSetting('NOTI_ERRORS_TIMEOUT') + '' === 't
 export const API_DOMAIN = (!isProductionMode && process.env.VUE_APP_PROXY) || BASE_URL
 export const USE_MOCK_ACL = !isProductionMode && process.env.VUE_APP_USE_MOCK_ACL === 'true'
 export const API_TIMING_MS = !isProductionMode && 100
-
+export const YANDEX_CLIENT_ID = getSetting('YANDEX_CLIENT_ID')
+export const GOOGLE_CLIENT_ID = getSetting('GOOGLE_CLIENT_ID')
 /** Other */
 export const API_PREFIX =
     API_DOMAIN.endsWith('/') && API_PATH.startsWith('/')

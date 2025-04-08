@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { store } from './store'
+import LocalStorage from '@/core/LocalStorage'
 console.log(store.state, 'info')
 function trimSlashes(value) {
     return value ? value.trim().replace(/^\/+|\/+$/g, '') : ''
@@ -21,8 +22,8 @@ const generateRoutes = sections => {
 
         if (!section?.actions?.length) {
             routes.push({
-                path: `/${section.name}`, // Example: /login
-                name: `${section.name}`, // Example: login
+                path: `/${section.name}`,
+                name: `${section.name}`,
                 component: defaultComponent,
             })
         } else {
@@ -53,19 +54,42 @@ const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1)
 
 // Define sections with useId property
 const sections = [
-    { name: 'home', actions: null, useId: false },
     { name: 'auth', actions: ['login', 'register'], useId: false },
-    { name: 'user', actions: ['show', 'edit'], useId: true }, // useId is true for user actions
-    {name: 'groups', actions: ['list', 'show', 'edit', 'new'], useId: true}
+    { name: 'home', actions: null, useId: false },
+    { name: 'user', actions: ['show', 'edit'], useId: true },
+    { name: 'groups', actions: ['list', 'show', 'edit', 'new'], useId: true },
 ]
 
 // Generate routes
 const routes = generateRoutes(sections)
+
+routes.push(
+    {
+        path: '/auth/yandex-callback',
+        component: () => import('@/pages/auth/YandexCallback.vue'),
+    },
+    {
+        path: '/:catchAll(.*)',
+        redirect: () => {
+            return { path: '/home', query: {} }
+        },
+    }
+)
 console.log('RoutesBuild: ', routes)
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
+})
+
+router.beforeEach(to => {
+    console.log(to, store.getters.isUserSet)
+    if (
+        !to.path.includes('auth') &&
+        [null, undefined, ''].includes(new LocalStorage().getItemDecrypt('token'))
+    ) {
+        return { path: '/auth/login' }
+    }
 })
 
 export { router }

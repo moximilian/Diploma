@@ -57,6 +57,7 @@ class UserBase(BaseModelConfig):
     photo_id: Optional[UUID] = None
 
     role_name: str = Field(min_length=1, default='student')
+    is_external_auth: bool = Field(default=False)
 
 
 class UserCreate(UserBase):

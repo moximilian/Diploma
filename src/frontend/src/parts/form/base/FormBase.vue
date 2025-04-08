@@ -15,7 +15,7 @@
                 </component>
                 <ShowValueField v-else v-bind="field.props" />
             </div>
-            <div class="form-bottom">
+            <div class="form-bottom" id="form-bottom">
                 <slot name="form-bottom" :entity="entity"> </slot>
             </div>
         </div>

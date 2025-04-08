@@ -19,6 +19,7 @@
         "cross-fetch": "^3.1.5",
         "crypto-js": "^4.1.1",
         "date-fns": "^2.29.3",
+        "jwt-decode": "^4.0.0",
         "mitt": "^3.0.0",
         "node-scp": "^0.0.23",
         "readline-sync": "^1.4.10",

@@ -110,6 +110,19 @@ const userDisplay = [
         props: { title: 'Отчество', name: 'last_name', value: '', required: false, type: 'text' },
     },
     {
+        display: 'SelectField',
+        props: {
+            title: 'Я являюсь',
+            value: 'student',
+            name: 'role_name',
+            required: true,
+            options: [
+                { key: 'student', value: 'Обучающимся' },
+                { key: 'teacher', value: 'Преподавателем' },
+            ],
+        },
+    },
+    {
         display: 'StringField',
         props: {
             title: 'Зарегистрирован',

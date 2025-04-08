@@ -248,6 +248,61 @@ const makeArguments = ({ path, method, args, headers }) => {
 }
 
 /**
+ * Универсальная функция для отправки HTTP-запросов
+ * @param {string} url - URL для запроса
+ * @param {string} method - HTTP метод (GET, POST, PUT, DELETE и т.д.)
+ * @param {Object} headers - Заголовки запроса
+ * @param {Object} body - Тело запроса (для POST/PUT)
+ * @param {function} callback - Функция обратного вызова (принимает response, error)
+ */
+export const sendRequest = (url, method, headers, body, callback) => {
+    // Создаем конфигурацию запроса
+    const config = {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers // Добавляем переданные заголовки
+      }
+    };
+  
+    // Добавляем тело запроса для методов, которые его поддерживают
+    if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase()) && body) {
+      config.body = JSON.stringify(body);
+    }
+  
+    // Выполняем запрос
+    fetch(url, config)
+      .then(async response => {
+        // Парсим ответ (учитываем, что ответ может быть не JSON)
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          data = await response.text();
+        }
+  
+        // Проверяем статус ответа
+        if (!response.ok) {
+          throw {
+            status: response.status,
+            message: data.message || 'Request failed',
+            data
+          };
+        }
+  
+        // Вызываем колбэк с данными
+        callback(data, null);
+      })
+      .catch(error => {
+        // Вызываем колбэк с ошибкой
+        callback(null, error instanceof Error ? error : {
+          message: error.message || 'Network error',
+          ...error
+        });
+      });
+  }
+
+/**
  * Use in api/index as method for api
  *
  * @param { String } path

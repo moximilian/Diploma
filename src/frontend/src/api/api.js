@@ -1,6 +1,6 @@
 // @ts-check
 
-import { callApi as baseCallApi } from '@/api/api.help'
+import { callApi as baseCallApi, sendRequest } from '@/api/api.help'
 import { reactive } from 'vue'
 
 // import { Confirmation } from '@/core/notifications'
@@ -23,6 +23,17 @@ const customApi = {
         login: makeApiFn('/auth/login'),
         register: makeApiFn('/auth/register'),
         logout: makeApiFn('/auth/logout'),
+        yandexGetData: (token, format, cb) => {
+            sendRequest(
+                `https://login.yandex.ru/info?format=${format}`,
+                'GET',
+                {
+                    Authorization: token,
+                },
+                null,
+                cb
+            )
+        },
     },
     items: {
         list: makeApiFn('/items/list'),

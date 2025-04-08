@@ -45,7 +45,7 @@
                                 Профиль
                             </router-link>
                         </div>
-                        <div class="link">
+                        <div class="link" v-if="!currentUser?.is_external_auth">
                             <router-link :to="`/user/edit/${currentUserId}?tab=settings`">
                                 Настройки
                             </router-link>

@@ -4,7 +4,11 @@
             <div :class="{ selected: isSelected('personalInfo') }" @click="select('personalInfo')">
                 Персональная информация
             </div>
-            <div :class="{ selected: isSelected('security') }" @click="select('security')">
+            <div
+                v-if="!entity?.is_external_auth"
+                :class="{ selected: isSelected('security') }"
+                @click="select('security')"
+            >
                 Безопасность
             </div>
         </template>
