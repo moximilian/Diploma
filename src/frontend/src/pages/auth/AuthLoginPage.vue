@@ -75,7 +75,7 @@ export default {
                 google.accounts.id.prompt() // also display the One Tap dialog
                 /* eslint-enable no-undef */
             } catch (error) {
-                console.error('Yandex auth error:', error)
+                console.error('Google auth error:', error)
             }
         },
         async initYandexAuth() {
