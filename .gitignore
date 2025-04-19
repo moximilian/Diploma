@@ -3,6 +3,6 @@ src/backend/venv
 src/backend/.venv
 
 src/backend/Pipfile.lock
-
+.DS_Store
 src/backend/app/.env.development.local
 src/frontend/node-modules
