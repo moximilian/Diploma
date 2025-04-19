@@ -191,18 +191,47 @@ class EnterRequestOut(BaseEnterRequestCreate):
 class EventModel(BaseModelConfig):
     id: UUID
     group_id: UUID
-    repeat_id: UUID
+
+    weekdays: list = None
+    months: list = None
+    start_date: datetime.date = None
+    start_time: datetime.time = None
+    end_time: datetime.time = None
+
+
     name: str = None
     description: str = None
-    max_participants_count: int = Field(default=1)
+    price: int = None
 
 
 class EventInsertIn(BaseModelConfig):
     group_id: UUID
-    repeat_id: UUID
+
+    weekdays: list = None
+    months: list = None
+    start_date: datetime.date = None
+    start_time: datetime.time = None
+    end_time: datetime.time = None
+
     name: str = None
     description: str = None
-    max_participants_count: int = Field(default=1)
+    price: int =None
+
+    @field_validator('start_date', mode='before')
+    def parse_date(cls, value):
+        if isinstance(value, str):
+            try:
+                # Парсинг формата dd.mm.yyyy
+                day, month, year = map(int, value.split('.'))
+                return datetime.date(year, month, day)
+            except ValueError:
+                try:
+                    # Парсинг формата dd-mm-yyyy
+                    day, month, year = map(int, value.split('-'))
+                    return datetime.date(year, month, day)
+                except ValueError:
+                    raise exc.ValidationEror("Date must be in format dd.mm.yyyy or dd-mm-yyyy")
+        return value
 
 
 class EventUpdateIn(EventModel):

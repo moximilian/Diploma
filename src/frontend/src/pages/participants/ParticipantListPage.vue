@@ -15,7 +15,7 @@
         </template>
         <template #after-table="{ rows }">
             <BaseBtn
-                v-if="isGroupAdmin && rows.length > 0"
+                v-if="isGroupAdmin && rows?.length > 0"
                 value="Исключить"
                 @click="removeParticipans"
             />

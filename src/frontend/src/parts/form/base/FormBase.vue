@@ -34,7 +34,7 @@ export default {
             entity: {},
 
             unchangedEntity: {},
-            displayRules,
+            displayRules: structuredClone(displayRules),
             sameValidationForm: true,
             requiredForm: true,
 
@@ -82,7 +82,7 @@ export default {
                               this.unchangedEntity[field.props.name] = field.props.value
                           field.props.value = finalValue
                       })
-                    : (field.props.value = this.isNew ? '' : defaultValue)
+                    : (field.props.value = defaultValue)
             })
             return fields
         },

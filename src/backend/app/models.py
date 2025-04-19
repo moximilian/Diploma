@@ -14,6 +14,8 @@ from sqlalchemy import (
     LargeBinary,
     JSON,
     PickleType,
+    Time,
+    Date
 )
 from sqlalchemy.ext.mutable import MutableList
 
@@ -178,6 +180,10 @@ class Event(Base, BaseModel):
 
     id = Column(UUID(as_uuid=True), primary_key=True,
                 default=uuid.uuid4, index=True)
+    
+    name = Column(String(256), nullable=False)
+    description = Column(String(1024), nullable=True)
+
 
     group_id = Column(
         UUID(as_uuid=True),
@@ -186,12 +192,10 @@ class Event(Base, BaseModel):
 
     repeat_id = Column(
         UUID(as_uuid=True),
-        ForeignKey('rapids.id', onupdate='CASCADE', ondelete='RESTRICT'), nullable=False
+        ForeignKey('rapids.id', onupdate='CASCADE', ondelete='RESTRICT'), nullable=True
     )
 
-    name = Column(String(256), nullable=False)
-    description = Column(String(1024), nullable=True)
-    max_participants_count = Column(Integer, server_default='1')
+    price = Column(Integer, nullable = True)
 
     event_participants = relationship(
         "EventParticipant", backref="event", foreign_keys="EventParticipant.event_id")
@@ -233,10 +237,13 @@ class Rapid(Base, BaseModel):
                     default=[])
 
     start_date = Column('start_date',
-                        DateTime(), default=func.now())
-    end_date = Column('end_date',
-                      DateTime(), nullable=True)
-    duration_mins = Column(Integer, server_default='1')
+                        Date(), default=func.now())
+    start_time = Column('start_time',
+                      Time(), nullable=True)
+
+    end_time = Column('end_time',
+                    Time(), nullable=True)
+    
 
     events = relationship("Event", backref="rapid",
                           foreign_keys="Event.repeat_id")

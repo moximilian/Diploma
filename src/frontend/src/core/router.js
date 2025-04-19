@@ -58,6 +58,8 @@ const sections = [
     { name: 'home', actions: null, useId: false },
     { name: 'user', actions: ['show', 'edit'], useId: true },
     { name: 'groups', actions: ['list', 'show', 'edit', 'new'], useId: true },
+    { name: 'events', actions: ['show', 'edit', 'new'], useId: true },
+
 ]
 
 // Generate routes

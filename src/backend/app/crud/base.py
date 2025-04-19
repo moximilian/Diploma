@@ -32,7 +32,7 @@ class BaseCRUD():
         self.db.refresh(item)
         return item
 
-    def get_item(self, body, field='id', model=None):
+    def get_item(self, body, field='id', model=None) -> m.BaseModel:
         """Get one item from specific table by given field key and value.
 
         Args:
@@ -76,12 +76,11 @@ class BaseCRUD():
     def _make_output(self, rows):
         return rows
 
-    def _transform_response(self, rows, totalCount):
+    def _transform_response(self, rows):
         """Transform response into defined format.
 
         Args:
             rows (list): List of items to wrap
-            totalCount (int): Total amount of items
 
         Returns:
             schemas.BaseListResponse
@@ -91,8 +90,9 @@ class BaseCRUD():
                 "totalCount" : 0
             }
         """
-
+        print(rows)
         rows = self._make_output(rows)
+        print(rows)
         rows = [row.dict() if not isinstance(row, dict) else row for row in rows]
         return BaseListResponse(rows=rows, totalCount=len(rows))
 
@@ -283,7 +283,7 @@ class BaseCRUD():
         inserted_items = [
             model(
                 **{
-                    k: v for k, v in item.model_dump().items() if k in model.__table__.columns
+                    k: v for k, v in (item.items() if isinstance(item, dict) else item.model_dump().items()) if k in model.__table__.columns
                 }
             ) for item in request_body
         ]

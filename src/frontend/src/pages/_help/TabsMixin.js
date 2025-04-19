@@ -4,6 +4,11 @@ export default {
             return this.$route.query?.tab ?? this.selectedOption
         },
     },
+    data() {
+        return {
+            selectedOption: ''
+        }
+    },
     methods: {
         select(option) {
             this.$router.push(`${this.$route.path}?tab=${option}`)

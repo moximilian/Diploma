@@ -16,7 +16,7 @@
             >
                 Заявки на вступление
             </div>
-            <BaseBtn v-if="isGroupAdmin" :disabled="true" :outline="true">Добавить занятие</BaseBtn>
+            <BaseBtn v-if="isGroupAdmin" :outline="true" @click="$router.push(`/events/new?group_id=${groupId}&name=${entity.name}`)">Добавить занятие</BaseBtn>
         </template>
         <template #page-content>
             <FormView

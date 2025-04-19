@@ -15,6 +15,13 @@
     border: none !important;
 }
 
+.base-btn.small {
+    padding-top:3px;
+    padding-right:16px;
+    padding-left:16px;
+
+}
+
 .base-btn.outline {
     background-color: var(--white-color);
     color: var(--main-color);

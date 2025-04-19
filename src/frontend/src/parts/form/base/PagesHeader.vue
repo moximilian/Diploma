@@ -146,7 +146,7 @@ export default {
             return this.$route?.fullPath.search(page) === 1
         },
         toHomePage() {
-            this.$router.push('/home')
+            this.$router.push('/home?tab=today')
         },
         toGroups() {
             this.$router.push(`/groups/list?user_id=${this.currentUserId}`)

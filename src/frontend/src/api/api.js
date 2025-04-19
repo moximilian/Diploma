@@ -68,6 +68,12 @@ const customApi = {
         revoke: makeApiFn('/groups/requests/revoke'),
         accept: makeApiFn('/groups/requests/approve'),
     },
+    events: {
+        insert: makeApiFn('/events/create'),
+        one: makeApiFn('/events/get'),
+        list: makeApiFn('/events/list'),
+
+    }
 }
 export const api = new (function () {
     this.api = null

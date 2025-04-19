@@ -1,6 +1,5 @@
 <template>
-    <div class="flex-container-column">
-    </div>
+    <TimeTable />
 </template>
 
 <script>

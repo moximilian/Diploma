@@ -195,6 +195,103 @@ const participantsDisplay = [
         },
     },
 ]
+const eventsDisplay = [
+    {
+        display: 'StringField',
+        props: {
+            name: 'name',
+            required: true,
+            title: 'Название',
+            placeholder: 'Например, Авиамоделирование',
+            type: 'text',
+        },
+    },
+    {
+        display: 'StringField',
+        props: {
+            name: 'description',
+            required: true,
+            title: 'Описание',
+            type: 'text',
+        },
+    },
+    {
+        display: 'StringField',
+        props: {
+            name: 'Price',
+            required: true,
+            title: 'Цена',
+            type: 'number',
+        },
+    },
+    {
+        display: 'StringField',
+        props: {
+            name: 'start_date',
+            required: true,
+            title: 'Дата',
+            type: 'text',
+        },
+    },
+    {
+        display: 'StringField',
+        props: {
+            name: 'start_time',
+            title: 'Начало',
+            required: true,
+        },
+    },
+    {
+        display: 'StringField',
+        props: {
+            name: 'end_time',
+            title: 'Конец',
+            required: true,
+        },
+    },
+    {
+        display: 'SelectField',
+        props: {
+            name: 'weekdays',
+            title: 'Дни недели',
+            value: [],
+            options: [
+                { key: 1, value: 'Понедельник' },
+                { key: 2, value: 'Вторник' },
+                { key: 3, value: 'Среда' },
+                { key: 4, value: 'Четверг' },
+                { key: 5, value: 'Пятница' },
+                { key: 6, value: 'Суббота' },
+                { key: 7, value: 'Воскресенье' },
+            ],
+            multiple: true,
+        },
+    },
+    {
+        display: 'SelectField',
+        props: {
+            name: 'months',
+            title: 'Месяцы',
+            value: [],
+            options: [
+                { key: 1, value: 'Январь' },
+                { key: 2, value: 'Февраль' },
+                { key: 3, value: 'Март' },
+                { key: 4, value: 'Апрель' },
+                { key: 5, value: 'Май' },
+                { key: 6, value: 'Июнь' },
+                { key: 7, value: 'Июль' },
+                { key: 8, value: 'Август' },
+                { key: 9, value: 'Сентябрь' },
+                { key: 10, value: 'Октябрь' },
+                { key: 11, value: 'Ноябрь' },
+                { key: 12, value: 'Декабрь' },
+            ],
+            multiple: true,
+        },
+    },
+]
+
 
 const enter_requestsDisplay = [
     {
@@ -302,6 +399,7 @@ const groupsTeacherFilter = [
     },
 ]
 
+
 const groupsStudentFilter = [
     {
         display: 'StringField',
@@ -344,4 +442,5 @@ export default {
     groupsTeacherFilter,
     enter_requestsDisplay,
     groupsStudentFilter,
+    eventsDisplay,
 }
