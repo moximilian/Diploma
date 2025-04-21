@@ -8,7 +8,7 @@
         >
             <div class="block" v-if="index % blocksInHour == 0">
                 <div v-if="viewHours">{{ getHour(index) }}</div>
-                <div class="line"></div>
+                <div class="line" v-if="currentTimeBlock !== index"></div>
             </div>
             <div class="line-current-time" v-if="currentTimeBlock === index"></div>
         </div>

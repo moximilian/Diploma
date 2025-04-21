@@ -223,4 +223,4 @@ class EnterRequestsCRUD(BaseCRUD):
                     getattr(m.EnterRequest, column) == where.get('value'))
         rows = query.all()
 
-        return self._transform_response(rows, len(rows))
+        return self._transform_response(rows)

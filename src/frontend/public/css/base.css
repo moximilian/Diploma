@@ -139,6 +139,9 @@ body {
     border-radius: 8px;
     padding: 20px;
 }
+.border-right {
+    border-right: 1px solid lightgray;
+}
 
 
 /* Month Picker */

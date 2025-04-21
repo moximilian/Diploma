@@ -1,11 +1,15 @@
 <template>
     <div class="timetable-week border">
         <div v-for="(day, index) of currentWeek" :key="index" class="timetable-day">
-            <div class="flex-container-column" :style="{marginBottom: '20px'}">
+            <div class="flex-container-column" :style="{ marginBottom: '20px' }">
                 <div>{{ wdays[index] }}</div>
                 <div>{{ day.date.split('-')[2] }}</div>
             </div>
-            <TimeTableDay :currentDay="new Date(day.date)" :viewHours="index == 0" />
+            <TimeTableDay
+                :currentDay="new Date(day.date)"
+                :viewHours="index == 0"
+                class="border-right"
+            />
         </div>
     </div>
 </template>
@@ -38,7 +42,7 @@ export default {
     watch: {
         currentDateShow() {
             this.getCurrentWeekIndex()
-        }
+        },
     },
     computed: {
         currentDateShow() {

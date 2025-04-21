@@ -135,7 +135,7 @@ class BaseCRUD():
             response (schemas.BaseListResponse)
         """
         rows = self.get_items(body, model)
-        return self._transform_response(rows, len(rows))
+        return self._transform_response(rows)
 
     def get_items(self, body, model=None):
         model = self.model if model is None else model
