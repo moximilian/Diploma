@@ -25,6 +25,7 @@
                 <TimeTableMonth
                     v-if="isSelected('month')"
                     :current="stopMonth"
+                    ref="month"
                     :selectedDates="selectedDates"
                     :minShowDate="min"
                     :maxShowDate="max"
@@ -38,6 +39,7 @@
                 <TimeTableWeek
                     v-if="isSelected('week')"
                     :current="stopMonth"
+                    ref="week"
                     :selectedDates="selectedDates"
                 />
             </div>
@@ -102,6 +104,14 @@ export default {
             },
         }
     },
+    watch: {
+        wheres: {
+            handler() {
+                this.fetchEvents()
+            },
+            deep: true,
+        },
+    },
     computed: {
         currentDateLabel() {
             const date = this.selectedDates[0] ?? new Date()
@@ -110,8 +120,35 @@ export default {
                 ? `${date.getDate()} ${
                       this.monthsLabelsChanged[date.getMonth()]
                   } ${date.getFullYear()}`
-                : `${this.monthsLabels[this.stopMonth.m]} ${this.stopMonth.y}`
+                : `${this.monthsLabels[this.stopMonth?.m ?? 0]} ${this.stopMonth?.y ?? 0}`
         },
+        isStudent() {
+            return this.$store.getters.isStudent
+        },
+        wheres() {
+            return {
+                today: [{
+                    column: 'start_date',
+                    condition: '=',
+                    value: new Date()
+                }],
+                day: [{
+                    column: 'start_date',
+                    condition: '=',
+                    value: new Date(this.stateDate)
+                }],
+                week: this.$refs?.week?.firstLastDaysWeek() ? [{
+                    column: 'start_date',
+                    condition: 'between',
+                    value: this.$refs?.week?.firstLastDaysWeek()
+                }] : [],
+                month: this.$refs?.month?.firstLastDaysMonth() ? [{
+                    column: 'start_date',
+                    condition: 'between',
+                    value: this.$refs?.month?.firstLastDaysMonth()
+                }] : [],
+            }?.[this.selectedOption] ?? []
+        }
     },
     methods: {
         selectDate(date) {
@@ -162,19 +199,28 @@ export default {
             this.selectDate(new Date())
             this.select('today')
         },
+        fetchEvents() {
+            this.$api.events.list({
+            filters: {
+                wheres: [
+                    {
+                        column: 'role',
+                        value: {
+                            [true]: 'student',
+                            [false]: 'teacher',
+                        }[this.isStudent],
+                    },
+                    ...this.wheres
+                ],
+            },
+        }, (res) => {
+            console.log('events', {res})
+        })
+        }
     },
     created() {
         this.selectToday()
-        this.$api.events.list(
-            {
-                filters: {
-                    wheres: [],
-                },
-            },
-            res => {
-                console.log(res, '!!!')
-            }
-        )
+        this.fetchEvents()
     },
     components: {
         DateCalendar,

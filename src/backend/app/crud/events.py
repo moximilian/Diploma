@@ -20,7 +20,7 @@ class EventsCRUD(BaseCRUD):
                 db (Session): DB session
                 auth_user (models.User): User that performs actions in this crud
             """
-        super().__init__(db, m.Event)
+        super().__init__(db, m.Event, [m.Event, m.Rapid])
         self.rapid = BaseCRUD(db, m.Rapid)
         self.rapid_keys = ['weekdays', 'months', 'start_date', 'start_time', 'end_time']
 
@@ -55,7 +55,20 @@ class EventsCRUD(BaseCRUD):
         return {**event.dict(), **rapid_dict}
     
     def _make_custom_query(self, query, wheres):
-        return query.join(m.Rapid, m.Event.repeat_id == m.Rapid.id), wheres
+        new_wheres = []
+        for where in wheres:
+            if where['column'] == 'role':
+                if where['value'] == 'teacher':
+                    query = query = query.join(m.Rapid, m.Event.repeat_id == m.Rapid.id)\
+                            .join(m.Group, m.Event.group_id == m.Group.id)\
+                            .filter(m.Group.creator_id == self.user.get('id'))
+                elif where['value'] == 'student':
+                    query = query.join(m.Rapid, m.Event.repeat_id == m.Rapid.id)\
+                        .join(m.Participant, m.Event.group_id == m.Participant.group_id)\
+                        .filter(m.Participant.user_id == self.user.get('id'))
+            else: new_wheres.append(where)
+
+        return query, new_wheres
 
     def list(self, request_body: RequestBodyOne): 
         events = super().get_items(request_body)

@@ -47,6 +47,12 @@ export default {
         dateShown() {
             return this.datetime ? this.datetime.toShowDate() : ''
         },
+        monthActiveDays() {
+            return this.currentMonthDays.flat()
+                .filter((day) => !day.class.includes('unactive'))
+                .map(day => new Date(day.date))
+        },
+
     },
     methods: {
         prevMonth() {
@@ -63,6 +69,9 @@ export default {
                 return
             }
             this.$emit('selectDate', date, type)
+        },
+        firstLastDaysMonth() {
+            return [this.monthActiveDays[0], this.monthActiveDays.at(-1)]
         },
         setTime(time) {
             this.$emit('setTime', time)

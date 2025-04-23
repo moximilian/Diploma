@@ -6,11 +6,19 @@
             :key="index"
             :style="{ height: blockSizeMins + 'px' }"
         >
-            <div class="block" v-if="index % blocksInHour == 0">
-                <div v-if="viewHours">{{ getHour(index) }}</div>
-                <div class="line" v-if="currentTimeBlock !== index"></div>
+            <div class="block" v-if="index % blocksInHour == 0 && currentTimeBlock !== index">
+                <div class="semi-transparent-black-color" v-if="isShowHours">
+                    {{ getHour(index) }}
+                </div>
+                <div class="line"></div>
             </div>
-            <div class="line-current-time" v-if="currentTimeBlock === index"></div>
+            <div class="block" v-if="currentTimeBlock === index">
+                <div class="main-color" v-if="isShowHours">{{ new Date().toShowTime() }}</div>
+                <div
+                    class="line-current-time"
+                    :class="{ ['semi-transparent']: !isShowCurrTimeLine }"
+                ></div>
+            </div>
         </div>
     </div>
 </template>
@@ -20,11 +28,12 @@ export default {
     props: {
         currentDay: { type: Array, default: () => [] },
         blockSizeMins: { type: Number, default: () => 10 },
-        viewHours: { type: Boolean, default: () => true },
+        isShowHours: { type: Boolean, default: () => true },
+        isShowCurrTimeLine: { type: Boolean, default: () => true },
     },
     data() {
         return {
-            blocksInHour: 1,
+            blocksInHour: 10,
         }
     },
     methods: {
@@ -43,12 +52,13 @@ export default {
             const hours = date.getHours()
             let newIndex = (hours - 1) * this.blocksInHour
             const mins = date.getMinutes()
-            newIndex += mins % this.blocksInHour
+            newIndex += (mins % this.blocksInHour) + 1
             return newIndex + 1
         },
     },
     created() {
         this.blocksInHour = 60 / this.blockSizeMins
+        
     },
 }
 </script>

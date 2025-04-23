@@ -7,7 +7,8 @@
             </div>
             <TimeTableDay
                 :currentDay="new Date(day.date)"
-                :viewHours="index == 0"
+                :isShowHours="index == 0"
+                :isShowCurrTimeLine="currentDate === day.date"
                 class="border-right"
             />
         </div>
@@ -51,6 +52,9 @@ export default {
         currentWeek() {
             return this.currentMonthDays[this.currentWeekIndex]
         },
+        currentDate() {
+            return new Date().toShowDate(false)
+        },
     },
     methods: {
         getCurrentWeekIndex() {
@@ -63,6 +67,12 @@ export default {
                 })
             })
             this.currentWeekIndex = foundIndex
+        },
+        firstLastDaysWeek() {
+            return this.currentWeek
+                .map(day => new Date(day.date))
+                .filter((_, index) => index === 0 || index === 6)
+                .sort()
         },
     },
     created() {

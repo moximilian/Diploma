@@ -14,9 +14,10 @@ class BaseCRUD():
         model: SqlAlchemy orm default model
     """
 
-    def __init__(self, db, model):
+    def __init__(self, db, model, joined_models = []):
         self.db = db
         self.model = model
+        self.joined_models = [model] if len(joined_models) == 0 else joined_models
 
     def _save_to_db(self, item: t.Dict[str, t.Any]):
         """Create new Item in db and return its new glory.
@@ -101,6 +102,14 @@ class BaseCRUD():
         if isinstance(where, dict) and where.get('value') and where.get('value') in ['false', 'true']:
             where['value'] = where['value'].lower() in ("yes", "true", "t", "1")
         return where
+    
+    def _get_column_from_joined_models(self, column_name):
+        for model in self.joined_models:
+            if hasattr(model, column_name):
+                return getattr(model, column_name)
+            if column_name in model.__table__.columns:
+                return model.__table__.columns[column_name]
+        raise ValueError(f"Column '{column_name}' not found in any of the provided models")
 
     def list(self, body, model=None):
         """Get one or multiple items in list representation:
@@ -151,17 +160,15 @@ class BaseCRUD():
         for where in wheres:
             condition = where.get('condition')
             where = self._transform_boolean(where)
+            column = self._get_column_from_joined_models(where['column'])
             if condition == 'between':
-                query = query.filter(getattr(model, where['column']).between(*where['value']))
+                query = query.filter(column.between(*where['value']))
             elif condition == '!=':
-                query = query.filter(
-                    getattr(model, where['column']) != where['value'])
+                query = query.filter(column != where['value'])
             elif condition == 'in':
-                query = query.filter(
-                    getattr(model, where['column']).in_(where['value']))
+                query = query.filter(column.in_(where['value']))
             else:
-                query = query.filter(
-                    getattr(model, where['column']) == where['value'])
+                query = query.filter(column == where['value'])
         for order in orders:
             query = query.order_by(getattr(model, order['column']).desc(
             ) if order['desc'] else getattr(model, order['column']).asc())
