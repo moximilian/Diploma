@@ -20,6 +20,7 @@ import TableView from '@/parts/table/TableView.vue'
 import TableCell from '@/parts/table/parts/TableCell.vue'
 
 import TimeTable from '@/parts/TimeTable.vue'
+import DatePicker from '@/parts/dates/DatePicker.vue'
 
 
 import TableCellCheckBox from '@/parts/table/parts/TableCellCheckBox.vue'
@@ -40,6 +41,7 @@ export default {
     UploadBtn,
     RadioField,
     RangeField,
+    DatePicker,
 
     ShowValueField,
     TableView,

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, field_serializer
 from uuid import UUID
 from typing import Optional, List, Any, Dict, Union
 import datetime
@@ -187,9 +187,9 @@ class EnterRequestOut(BaseEnterRequestCreate):
 # Event
 # Insert in, Update in, Model
 
-
-class EventModel(BaseModelConfig):
+class EventModelOut(BaseModelConfig):
     id: UUID
+    repeat_id: UUID
     group_id: UUID
 
     weekdays: list = None
@@ -198,10 +198,47 @@ class EventModel(BaseModelConfig):
     start_time: datetime.time = None
     end_time: datetime.time = None
 
+    name: str = None
+    description: Optional[str] = None
+    price: int = None
+    
+    @field_serializer('description')
+    def serialize_description(self, description: Optional[str]) -> Optional[str]:
+        return '' if description is None else description
+
+    @field_serializer('start_date')
+    def serialize_date(self, dt: Optional[datetime.date]) -> Optional[str]:
+        return dt.strftime('%d-%m-%Y') if dt else None
+class EventModel(BaseModelConfig):
+    id: UUID
+    repeat_id: UUID
+    group_id: UUID
+
+    weekdays: list = None
+    months: list = None
+    start_date: datetime.date = None
+    start_time: datetime.time = None
+    end_time: datetime.time = None
 
     name: str = None
     description: str = None
-    price: int = None
+    price: int =None
+    
+    @field_validator('start_date', mode='before')
+    def parse_date(cls, value):
+        if isinstance(value, str):
+            try:
+                # Парсинг формата dd.mm.yyyy
+                day, month, year = map(int, value.split('.'))
+                return datetime.date(year, month, day)
+            except ValueError:
+                try:
+                    # Парсинг формата dd-mm-yyyy
+                    day, month, year = map(int, value.split('-'))
+                    return datetime.date(year, month, day)
+                except ValueError:
+                    raise exc.ValidationEror("Date must be in format dd.mm.yyyy or dd-mm-yyyy")
+        return value
 
 
 class EventInsertIn(BaseModelConfig):

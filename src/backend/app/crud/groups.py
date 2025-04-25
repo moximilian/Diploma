@@ -141,6 +141,8 @@ class GroupsCRUD(BaseCRUD):
     def _make_output(self, rows):
         result = []
         for row in rows:
+            if row is None:
+                continue
             row_dict = row.dict()
             is_participant = [
                 participant for participant in row.participants if participant.user_id == self.user.id]

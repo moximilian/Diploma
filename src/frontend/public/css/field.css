@@ -68,14 +68,12 @@ input.field-input:disabled {
     cursor: pointer;
 }
 .field-dropdown {
-    display: none;
     background-color: var(--white-color);
     border: solid var(--form-border-color) 1px;
     border-radius: var(--border-radius-sm);
     box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.1);
     position: absolute;
     z-index: 4;
-    max-width: 100%;
 }
 .field-dropdown.innit-position {
     left: 0;

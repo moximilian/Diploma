@@ -17,10 +17,11 @@ async def create_event(item: schemas.EventInsertIn, db=Depends(get_db), user=Dep
     return controller.create_event(item)
 
 
-@router.post('/events/get', response_model=schemas.EventModel)
+@router.post('/events/get', response_model=schemas.EventModelOut)
 async def get_item(item: schemas.RequestBodyOne, db=Depends(get_db), user=Depends(authorised_user)):
     controller = EventsCRUD(db, user)
-    return controller.get(item)
+    recieved_item = controller.get(item)
+    return recieved_item
 
 
 @router.post('/events/list', response_model=schemas.BaseListResponse)
@@ -29,13 +30,13 @@ async def get_list(item: schemas.RequestBodyList, db=Depends(get_db), user=Depen
     return controller.list(item)
 
 
-@router.post('/events/update', response_model=schemas.EventModel)
-async def update(item: schemas.EventInsertIn, db=Depends(get_db), user=Depends(authorised_user)):
+@router.post('/events/update', response_model=schemas.EventModelOut)
+async def update(item: schemas.EventModel, db=Depends(get_db), user=Depends(authorised_user)):
     controller = EventsCRUD(db, user)
     return controller.update(item)
 
 
-@router.post('/events/delete', response_model=schemas.EventModel)
+@router.post('/events/delete', response_model=schemas.EventModelOut)
 async def delete(item: schemas.RequestBodyOne, db=Depends(get_db), user=Depends(authorised_user)):
     controller = EventsCRUD(db, user)
     return controller.mark_deleted(item)

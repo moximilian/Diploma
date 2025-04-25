@@ -202,7 +202,7 @@ const eventsDisplay = [
             name: 'name',
             required: true,
             title: 'Название',
-            placeholder: 'Например, Авиамоделирование',
+            placeholder: '',
             type: 'text',
         },
     },
@@ -218,14 +218,14 @@ const eventsDisplay = [
     {
         display: 'StringField',
         props: {
-            name: 'Price',
+            name: 'price',
             required: true,
             title: 'Цена',
             type: 'number',
         },
     },
     {
-        display: 'StringField',
+        display: 'DatePicker',
         props: {
             name: 'start_date',
             required: true,
@@ -289,6 +289,20 @@ const eventsDisplay = [
             ],
             multiple: true,
         },
+    },
+    {
+        display: 'StringField',
+        props: {
+            name: 'group_id',
+            disabled: true,
+            required: true,
+            title: 'Группа',
+            type: 'text',
+        },
+        displayName: 'groups',
+        fieldKey: 'id',
+        showName: 'name',
+        localKeyName: 'id',
     },
 ]
 

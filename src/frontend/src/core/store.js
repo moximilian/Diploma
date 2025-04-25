@@ -1,5 +1,8 @@
 import { createStore } from 'vuex'
 
+const STUDENT_ROLE = 'student'
+const TEACHER_ROLE = 'teacher'
+
 export const store = createStore({
     state() {
         return {
@@ -12,10 +15,10 @@ export const store = createStore({
 
     getters: {
         isStudent(state) {
-            return state.roleName === 'student'
+            return state.roleName === STUDENT_ROLE
         },
         isTeacher(state) {
-            return state.roleName === 'teacher'
+            return state.roleName === TEACHER_ROLE
         },
     },
 

@@ -8,8 +8,11 @@
             <TimeTableDay
                 :currentDay="new Date(day.date)"
                 :isShowHours="index == 0"
+                :blockSizeMins="25"
                 :isShowCurrTimeLine="currentDate === day.date"
                 class="border-right"
+                :fromWeek="true"
+                :events="getDayEvents(day.date)"
             />
         </div>
     </div>
@@ -34,6 +37,7 @@ export default {
         maxShowDate: { type: Date, default: null },
         minShowDate: { type: Date, default: null },
         maxSelectDays: { type: Number, default: null },
+        events: { type: Array, default: () => [] },
     },
     data() {
         return {
@@ -67,6 +71,9 @@ export default {
                 })
             })
             this.currentWeekIndex = foundIndex
+        },
+        getDayEvents(date) {
+            return this.events.filter(event => event.start_date.split('T')[0] === date)
         },
         firstLastDaysWeek() {
             return this.currentWeek

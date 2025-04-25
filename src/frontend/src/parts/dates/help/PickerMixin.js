@@ -60,19 +60,25 @@ export default {
         setDefault() {
             if (Array.isArray(this.value))
                 return this.value.map((val, i) => val && (this.selectedDates[i] = new Date(val)))
-            if (this.value) return this.selectedDates.push(new Date(this.value))
+            if (this.value) {
+                const value = this.value.split('-').reverse().join('-')
+                return this.selectedDates.push(new Date(value))
+            }
             this.selectedDates = []
         },
-        changeValue(value) {
-            this.$emit('changeValue', value)
+        changeValue(value, name) {
+            this.$emit('changeValue', value, name)
         },
         selectedDateEmit() {
             this.setDateToLS()
-            this.$emit('changeValue', this.giveDates())
+            this.$emit('changeValue', this.giveDates(), this.name)
         },
         getCurrentValue() {
             if (this.value instanceof Date) return this.value
-            if (typeof this.value === 'string' && this.value.trim()) return new Date(this.value)
+            if (typeof this.value === 'string' && this.value.trim()) {
+                const value = this.value.split('-').reverse().join('-')
+                return new Date(value)
+            }
             return new Date()
         },
     },

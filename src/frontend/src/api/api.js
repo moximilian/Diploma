@@ -72,6 +72,7 @@ const customApi = {
         insert: makeApiFn('/events/create'),
         one: makeApiFn('/events/get'),
         list: makeApiFn('/events/list'),
+        update: makeApiFn('/events/update'),
 
     }
 }

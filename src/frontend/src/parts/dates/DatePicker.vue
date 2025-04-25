@@ -1,12 +1,12 @@
 <template>
     <div class="field fieldDate" :class="{ disabled, opened }">
+        <slot name="beforeInput"></slot>
         <StringField
             ref="field"
             :value="date"
             :disabled="disabled"
             :readonly="true"
             :placeholder="$t(placeholder)"
-            @changeValue="selectDate"
             @click="toggle"
         >
             <template v-slot:beforeInput="{ focused }">
@@ -14,6 +14,7 @@
             </template>
         </StringField>
         <DateCalendar
+            v-if="opened"
             class="field-dropdown"
             :current="stopMonth"
             :selectedDates="selectedDates"
@@ -35,7 +36,8 @@ export default {
     mixins: [PickerMixin],
     props: {
         value: { type: [Array, String, Date], default: null },
-        placeholder: { type: String, default: () => 'select_date' },
+        name: { type: String, default: () => '' },
+        placeholder: { type: String, default: () => 'Выберите дату' },
         min: { type: [Array, String, Date], default: null },
         max: { type: [Array, String, Date], default: null },
     },
@@ -65,6 +67,7 @@ export default {
                 this.changeValue(date)
                 setTimeout(() => this.close(), 200)
             }
+            this.$emit('changeValue', this.date, this.name)
         },
     },
     components: { DateCalendar },

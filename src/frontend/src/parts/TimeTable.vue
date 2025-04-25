@@ -30,17 +30,24 @@
                     :minShowDate="min"
                     :maxShowDate="max"
                 />
-                <TimeTableDay v-if="isSelected('today')" :currentDay="new Date()" class="border" />
+                <TimeTableDay
+                    v-if="isSelected('today')"
+                    :currentDay="new Date()"
+                    class="border"
+                    :events="events"
+                />
                 <TimeTableDay
                     v-if="isSelected('day')"
                     :currentDay="selectedDates[0]"
                     class="border"
+                    :events="events"
                 />
                 <TimeTableWeek
                     v-if="isSelected('week')"
                     :current="stopMonth"
                     ref="week"
                     :selectedDates="selectedDates"
+                    :events="events"
                 />
             </div>
         </template>
@@ -67,6 +74,8 @@ export default {
             current: null,
             min: null,
             max: null,
+
+            events: [],
 
             monthsLabelsChanged: [
                 'января',
@@ -125,30 +134,53 @@ export default {
         isStudent() {
             return this.$store.getters.isStudent
         },
+        toDate(date) {
+            return new Date(date)
+        },
         wheres() {
-            return {
-                today: [{
-                    column: 'start_date',
-                    condition: '=',
-                    value: new Date()
-                }],
-                day: [{
-                    column: 'start_date',
-                    condition: '=',
-                    value: new Date(this.stateDate)
-                }],
-                week: this.$refs?.week?.firstLastDaysWeek() ? [{
-                    column: 'start_date',
-                    condition: 'between',
-                    value: this.$refs?.week?.firstLastDaysWeek()
-                }] : [],
-                month: this.$refs?.month?.firstLastDaysMonth() ? [{
-                    column: 'start_date',
-                    condition: 'between',
-                    value: this.$refs?.month?.firstLastDaysMonth()
-                }] : [],
-            }?.[this.selectedOption] ?? []
-        }
+            return (
+                {
+                    today: [
+                        {
+                            column: 'start_date',
+                            condition: 'between',
+                            value: [
+                                new Date(new Date().setHours(0, 0, 0)),
+                                new Date(new Date().setHours(23, 59, 59)),
+                            ],
+                        },
+                    ],
+                    day: [
+                        {
+                            column: 'start_date',
+                            condition: 'between',
+                            value: [
+                                new Date(new Date(this.stateDate).setHours(0, 0, 0)),
+                                new Date(new Date(this.stateDate).setHours(23, 59, 59)),
+                            ],
+                        },
+                    ],
+                    week: this.$refs?.week?.firstLastDaysWeek()
+                        ? [
+                              {
+                                  column: 'start_date',
+                                  condition: 'between',
+                                  value: this.$refs?.week?.firstLastDaysWeek(),
+                              },
+                          ]
+                        : [],
+                    month: this.$refs?.month?.firstLastDaysMonth()
+                        ? [
+                              {
+                                  column: 'start_date',
+                                  condition: 'between',
+                                  value: this.$refs?.month?.firstLastDaysMonth(),
+                              },
+                          ]
+                        : [],
+                }?.[this.selectedOption] ?? []
+            )
+        },
     },
     methods: {
         selectDate(date) {
@@ -200,23 +232,28 @@ export default {
             this.select('today')
         },
         fetchEvents() {
-            this.$api.events.list({
-            filters: {
-                wheres: [
-                    {
-                        column: 'role',
-                        value: {
-                            [true]: 'student',
-                            [false]: 'teacher',
-                        }[this.isStudent],
+            this.$api.events.list(
+                {
+                    filters: {
+                        wheres: [
+                            {
+                                column: 'role',
+                                value: {
+                                    [true]: 'student',
+                                    [false]: 'teacher',
+                                }[this.isStudent],
+                            },
+                            ...this.wheres,
+                        ],
                     },
-                    ...this.wheres
-                ],
-            },
-        }, (res) => {
-            console.log('events', {res})
-        })
-        }
+                },
+                res => {
+                    this.events = res.rows.sort((first, second) =>
+                        first.start_date > second.start_date ? -1 : 1
+                    )
+                }
+            )
+        },
     },
     created() {
         this.selectToday()

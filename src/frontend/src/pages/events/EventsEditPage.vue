@@ -1,11 +1,10 @@
 <template>
-    <NestedPage title="Просмотр занятия">
+    <NestedPage title="Редактирование занятия">
         <template #page-content>
-            <FormView
-                v-if="entity"              
-                displayName="events"
-                action="show"
-                :defaults="entity" >
+            <FormView v-if="entity" action="edit" :defaults="entity" displayName="events" >
+                <template #form-bottom="{ entity }">
+                    <BaseBtn v-if="!isStudent" @click="saveEvent(entity)">Сохранить</BaseBtn>
+                </template>
             </FormView>
         </template>
     </NestedPage>
@@ -25,6 +24,14 @@ export default {
         groupName() {
             return this.$route.query.name ?? ''
         }
+    },
+    methods: {
+        saveEvent(entity) {
+            this.$api.events.update({ ...entity, id: this.eventId, repeat_id: this.entity.repeat_id }, res => {
+                if (res.detail) return
+                this.$router.replace(`/events/show/${res.id}`)
+            })
+        },
     },
     created() {
         this.eventId = this.$route.params.id

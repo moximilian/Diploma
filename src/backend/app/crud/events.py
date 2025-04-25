@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 import models as m
 from crud.base import BaseCRUD
-from schemas import EventInsertIn, RequestBodyOne
+from schemas import EventInsertIn, RequestBodyOne, EventModel
 import api.exceptions as exc
 
 
@@ -22,7 +22,7 @@ class EventsCRUD(BaseCRUD):
             """
         super().__init__(db, m.Event, [m.Event, m.Rapid])
         self.rapid = BaseCRUD(db, m.Rapid)
-        self.rapid_keys = ['weekdays', 'months', 'start_date', 'start_time', 'end_time']
+        self.rapid_keys = ['weekdays', 'months', 'start_date', 'start_time', 'end_time', 'repeat_id']
 
         self.user = auth_user        
 
@@ -86,23 +86,28 @@ class EventsCRUD(BaseCRUD):
 
         return super()._transform_response(rows)
 
-    def update(self, request_body: EventInsertIn):
+    def update(self, request_body: EventModel):
         group_id, name = request_body.get('group_id'), request_body.get('name')
+        print(request_body)
         if group_id is None or name is None:
             raise exc.ValidationEror('Group or name is not specified')
         
-        
+
         rapid_request_body = {}
         item_request_body = {}
         for key, value in request_body.model_dump().items():
-            if value is not None and value != '' and key in [*self.rapid_keys, 'repeat_id']:
+            if value is not None and value != '' and key in self.rapid_keys:
                 if (key == 'repeat_id'): rapid_request_body['id'] = value
                 else: 
                     rapid_request_body[key] = value
             else: 
                 item_request_body[key] = value
+        new_rapid_dict = {}
         if len(rapid_request_body.keys()) > 0:
-            new_rapid = self.rapid.update(rapid_request_body)[0]
+            new_rapid = self.rapid.update(rapid_request_body)
             item_request_body['repeat_id'] = new_rapid.id
+        updated_event = super().update(item_request_body)
         
-        return self.update(item_request_body)
+        new_rapid_dict = new_rapid.dict()
+        new_rapid_dict.pop('id', None)
+        return {**updated_event.dict(), **new_rapid_dict}

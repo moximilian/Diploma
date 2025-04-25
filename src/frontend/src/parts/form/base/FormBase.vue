@@ -26,7 +26,7 @@ import displayRules from '@/core/displayRules'
 export default {
     props: {
         displayName: { type: String, default: () => '' },
-        defaults: { type: Object, default: null },
+        defaults: { type: Object, default: () => {} },
         canModify: { type: Boolean, default: () => false },
     },
     data() {
@@ -68,20 +68,20 @@ export default {
     },
     methods: {
         getDisplayRule(cb) {
-            this.displayRule = this.injectWithValues(this.fieldset)
-            cb?.()
+            this.displayRule = this.injectWithValues(this.fieldset, (finalValue, field, defaultValue) => {
+                if (!this.unchangedEntity[field.props.name])
+                    this.unchangedEntity[field.props.name] = defaultValue
+                field.props.value = finalValue
+                cb?.()
+            })
         },
-        injectWithValues(fields) {
-            fields.map(field => {
-                const defaultValue = this.defaults
+        injectWithValues(fields, cb) {
+            fields.forEach(field => {
+                const defaultValue = !Object.isEmpty(this.defaults)
                     ? this.defaults[field.props.name]
                     : field.props.value
                 ![null, undefined].includes(field.displayName)
-                    ? this.getFieldValue(field, defaultValue, finalValue => {
-                          if (!this.unchangedEntity[field.props.name])
-                              this.unchangedEntity[field.props.name] = field.props.value
-                          field.props.value = finalValue
-                      })
+                    ? this.getFieldValue(field, defaultValue, (finalValue) => cb?.(finalValue, field, defaultValue))
                     : (field.props.value = defaultValue)
             })
             return fields
@@ -105,14 +105,16 @@ export default {
             return field.display
         },
         onChangeValue(value, name) {
-            this.entity[name] = value
+            name && (this.entity[name] = value)
         },
     },
     created() {
         this.getDisplayRule(() => {
             this.displayRule.map(rule => {
                 const key = rule.props.name
-                this.entity[key] = rule.props.value
+                const values = {...this.unchangedEntity}
+                console.log(key, this.unchangedEntity,values, '!!!')
+                this.entity[key] = this.unchangedEntity[key] ?? rule.props.value
             })
         })
     },

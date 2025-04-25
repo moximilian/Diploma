@@ -143,11 +143,6 @@ body {
     margin-top: 32px;
 }
 
-.border {
-    border: 1px solid lightgray;
-    border-radius: 8px;
-    padding: 20px;
-}
 .border-right {
     border-right: 1px solid lightgray;
 }
@@ -386,6 +381,7 @@ table.calendar-timetable {
 
 .timetable-day {
     width: 100%;
+    max-width: 1200px;
 } 
 .timetable-day .block {
     width: 100%;
@@ -401,10 +397,14 @@ table.calendar-timetable {
 
 .line-current-time {
     width:100%;
-    border: 2px solid var(--main-color);
+    border: 2px solid red;
+    z-index: 10000;
+}
+.current-time {
+    color: red;
 }
 .semi-transparent {
-    border: 2px solid rgba(var(--main-color-rgb), 0.2);
+    border-color: rgba(255,0,0,0.2)
 }
 
 .timetable-week {
@@ -412,4 +412,35 @@ table.calendar-timetable {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+.timetable-layout > :nth-child(2) {
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.event-block {
+    position: absolute;
+    min-width:100px;
+
+    color: white;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items:flex-start;
+    transition: 0.2s;
+    flex-wrap: nowrap;
+    transition: 0.2s;
+}
+
+.event-block:hover{
+    cursor: pointer;
+    filter: brightness(1.05) saturate(0.8);
+    transition: 0.2s;
+}
+
+.events-blocks {
+    width: 100%;
 }
