@@ -7,7 +7,10 @@
         </template>
         <template #page-content>
             <div class="page-content-filter">
-                <FilterForm :filterName="filterName" @changeFilters="changeFilters" />
+                <FilterForm 
+                    :filterName="filterName"
+                    @changeFilters="changeFilters" 
+                />
                 <TableView
                     ref="table"
                     :keys="keys"
@@ -82,7 +85,7 @@ export default {
     methods: {
         changeFilters(wheres) {
             this.filters.wheres = wheres
-            this.$refs.table.load()
+            this.$refs.table?.load()
         },
         buttonProps(row) {
             return {

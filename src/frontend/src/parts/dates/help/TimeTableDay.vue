@@ -20,12 +20,16 @@
                 ></div>
             </div>
         </div>
-        <div class="events-blocks" v-if="events.length > 0" @mounted="setEventsStyles">
+        <div
+            class="events-blocks"
+            v-if="events.length > 0"
+            :style="{ marginLeft: (isShowHours ? 45 : 0) + 'px' }"
+        >
             <div
                 class="event-block-wrapper"
                 v-for="(event, index) of events"
                 :key="index"
-                :style="{ zIndex: index + 1, marginLeft:  (isShowHours ? 45: 0) + 'px'}"
+                :style="{ zIndex: index + 1 }"
                 @click="$router.push('/events/show/' + event.id)"
             >
                 <div class="event-block" :ref="'event_' + index + currentDay.toShowDate()">
@@ -81,7 +85,7 @@ export default {
         },
         currentDay() {
             this.setEventsStyles()
-        }
+        },
     },
     methods: {
         getHour(index) {
@@ -109,13 +113,12 @@ export default {
             this.maxWidth = Math.abs(timetableRect?.width ?? 0)
         },
         setEventStyles(event, index) {
-            // const hoursCount = this.getEventFullDate(event.start_date, event.end_time).getHours()
-            const startBlock = this.getTimeBlock(
-                this.getEventFullDate(event.start_date, event.start_time)
-            ) + 1
+            const startBlock =
+                this.getTimeBlock(this.getEventFullDate(event.start_date, event.start_time)) + 1
+
             const endBlock = this.getTimeBlock(
                 this.getEventFullDate(event.start_date, event.end_time)
-            )
+            ) + 1
 
             const startTop = startBlock * this.blockSizeMins
             const endTop = endBlock * this.blockSizeMins + 1
@@ -125,13 +128,16 @@ export default {
             const eventEl = this.$refs['event_' + index + this.currentDay.toShowDate()]?.[0]
             if (!eventEl) return setTimeout(() => this.setEventStyles(event, index), 100)
 
-            // console.log('event_' + index + this.currentDay.toShowDate(), this.$refs, eventEl, '!!!')
             if (eventEl) {
-                eventEl.style.minHeight = height + 'px'
+                eventEl.style.height = height + 'px'
                 if (eventEl.style.height < height) eventEl.style.height = height
                 eventEl.style.top = this.topPadding + startTop + 18 + 'px'
                 eventEl.style.backgroundColor = this.blocksColors[index % 5]
-                eventEl.style.width = this.maxWidth - (this.isShowHours ? 45: 0) - (this.fromWeek ? 0 : 22) - 24 + 'px'
+                const width = this.maxWidth -
+                    (this.isShowHours ? 45 : 0) -
+                    (this.fromWeek ? 0 : 22) -
+                    24
+                eventEl.style.width = width + 'px'
             }
         },
         setEventsStyles() {

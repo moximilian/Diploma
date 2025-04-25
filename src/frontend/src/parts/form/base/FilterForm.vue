@@ -15,9 +15,7 @@
                         :is="filter.display"
                         v-bind="filter.props"
                         :ref="`filter_${index}`"
-                        @changeValue="
-                            value => onChangeValue(value, filter.props.name, filter.condition)
-                        "
+                        @changeValue="value => onChangeValue(value, filter.props.name, filter.condition)"
                     >
                         <template #beforeInput>
                             <span class="field-title">{{ filter.props.title }}</span>
@@ -116,5 +114,12 @@ export default {
             })
         },
     },
+    mounted() {
+        this.displayFilters.forEach(filter => {
+            const {value, name} = filter.props
+            if (value) this.onChangeValue(value, name, filter.condition)
+        })
+        this.applyFilters()
+    }
 }
 </script>

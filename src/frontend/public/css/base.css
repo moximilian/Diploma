@@ -430,8 +430,8 @@ table.calendar-timetable {
     flex-direction: column;
     align-content: center;
     align-items:flex-start;
-    transition: 0.2s;
     flex-wrap: nowrap;
+    overflow-y: scroll;
     transition: 0.2s;
 }
 

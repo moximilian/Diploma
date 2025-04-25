@@ -249,7 +249,7 @@ export default {
                 },
                 res => {
                     this.events = res.rows.sort((first, second) =>
-                        first.start_date > second.start_date ? -1 : 1
+                        first.start_time > second.start_time ? 1 : -1
                     )
                 }
             )
