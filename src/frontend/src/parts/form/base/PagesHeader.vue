@@ -78,6 +78,7 @@
     width: 203px !important;
     border-radius: 8px;
     box-shadow: 3px 3px 30px rgba(0, 0, 0, 0.1);
+    z-index: 10000000000;
 }
 .card-wrapper {
     display: flex;

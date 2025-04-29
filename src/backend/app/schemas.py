@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, field_validator, field_serializer
 from uuid import UUID
 from typing import Optional, List, Any, Dict, Union
-import datetime
+import datetime as dt
 import base64
 from api import exceptions as exc
 
@@ -70,7 +70,7 @@ class UserOut(UserBase):
     id: UUID
     login: str = LoginField()
     password_set: bool = Field(default=True)
-    registered_at: datetime.datetime
+    registered_at: dt.datetime
 
 
 class UserInUpdate(UserBase):
@@ -180,7 +180,7 @@ class EnterRequestOut(BaseEnterRequestCreate):
     id: UUID
     user_id: UUID
     is_approved: Optional[bool] = None
-    datetime: datetime.datetime
+    datetime: dt.datetime
 
 
 
@@ -194,9 +194,9 @@ class EventModelOut(BaseModelConfig):
 
     weekdays: list = None
     months: list = None
-    start_date: datetime.date = None
-    start_time: datetime.time = None
-    end_time: datetime.time = None
+    start_date: dt.date = None
+    start_time: dt.time = None
+    end_time: dt.time = None
 
     name: str = None
     description: Optional[str] = None
@@ -207,7 +207,7 @@ class EventModelOut(BaseModelConfig):
         return '' if description is None else description
 
     @field_serializer('start_date')
-    def serialize_date(self, dt: Optional[datetime.date]) -> Optional[str]:
+    def serialize_date(self, dt: Optional[dt.date]) -> Optional[str]:
         return dt.strftime('%d-%m-%Y') if dt else None
 class EventModel(BaseModelConfig):
     id: UUID
@@ -216,9 +216,9 @@ class EventModel(BaseModelConfig):
 
     weekdays: list = None
     months: list = None
-    start_date: datetime.date = None
-    start_time: datetime.time = None
-    end_time: datetime.time = None
+    start_date: dt.date = None
+    start_time: dt.time = None
+    end_time: dt.time = None
 
     name: str = None
     description: str = None
@@ -230,12 +230,12 @@ class EventModel(BaseModelConfig):
             try:
                 # Парсинг формата dd.mm.yyyy
                 day, month, year = map(int, value.split('.'))
-                return datetime.date(year, month, day)
+                return dt.date(year, month, day)
             except ValueError:
                 try:
                     # Парсинг формата dd-mm-yyyy
                     day, month, year = map(int, value.split('-'))
-                    return datetime.date(year, month, day)
+                    return dt.date(year, month, day)
                 except ValueError:
                     raise exc.ValidationEror("Date must be in format dd.mm.yyyy or dd-mm-yyyy")
         return value
@@ -246,9 +246,9 @@ class EventInsertIn(BaseModelConfig):
 
     weekdays: list = None
     months: list = None
-    start_date: datetime.date = None
-    start_time: datetime.time = None
-    end_time: datetime.time = None
+    start_date: dt.date = None
+    start_time: dt.time = None
+    end_time: dt.time = None
 
     name: str = None
     description: str = None
@@ -260,12 +260,12 @@ class EventInsertIn(BaseModelConfig):
             try:
                 # Парсинг формата dd.mm.yyyy
                 day, month, year = map(int, value.split('.'))
-                return datetime.date(year, month, day)
+                return dt.date(year, month, day)
             except ValueError:
                 try:
                     # Парсинг формата dd-mm-yyyy
                     day, month, year = map(int, value.split('-'))
-                    return datetime.date(year, month, day)
+                    return dt.date(year, month, day)
                 except ValueError:
                     raise exc.ValidationEror("Date must be in format dd.mm.yyyy or dd-mm-yyyy")
         return value
@@ -280,7 +280,7 @@ class EventUpdateIn(EventModel):
 class EventParticipantModel(BaseModelConfig):
     id: UUID
     event_id: UUID
-    datetime: datetime.datetime
+    datetime: dt.datetime
     participant_id: UUID
     is_attended: bool
     is_paid: bool
@@ -289,7 +289,7 @@ class EventParticipantModel(BaseModelConfig):
 
 class EventParticipantInsertIn(BaseModelConfig):
     event_id: UUID
-    datetime: datetime.datetime
+    datetime: dt.datetime
     participant_id: UUID
     is_attended: bool
     is_paid: bool
@@ -306,16 +306,16 @@ class RapidModel(BaseModelConfig):
     id: UUID
     weekdays: List[Any] = None
     months: List[Any] = None
-    start_date: datetime.datetime
-    end_date: datetime.datetime
+    start_date: dt.datetime
+    end_date: dt.datetime
     duration_mins: int = 1
 
 
 class RapidInsertIn(BaseModelConfig):
     weekdays: List[Any] = None
     months: List[Any] = None
-    start_date: datetime.datetime
-    end_date: datetime.datetime
+    start_date: dt.datetime
+    end_date: dt.datetime
     duration_mins: int = 1
 
 
@@ -329,19 +329,94 @@ class SlotModel(BaseModelConfig):
     id: UUID
     creator_id: UUID
     repeat_id: UUID
+
+    weekdays: list = None
+    months: list = None
+    start_date: dt.date = None
+    start_time: dt.time = None
+    end_time: dt.time = None
+
     name: str = None
     description: str = None
     max_participants_count: int = Field(default=1)
-    datetime: datetime.datetime
+    price: int = None
+    @field_validator('start_date', mode='before')
+    def parse_date(cls, value):
+        if isinstance(value, str):
+            try:
+                # Парсинг формата dd.mm.yyyy
+                day, month, year = map(int, value.split('.'))
+                return dt.date(year, month, day)
+            except ValueError:
+                try:
+                    # Парсинг формата dd-mm-yyyy
+                    day, month, year = map(int, value.split('-'))
+                    return dt.date(year, month, day)
+                except ValueError:
+                    raise exc.ValidationEror("Date must be in format dd.mm.yyyy or dd-mm-yyyy")
+        return value
+    
+    
+    
+class SlotModelOut(BaseModelConfig):
+    
+    id: UUID
+    creator_id: UUID
+    repeat_id: UUID
+
+    weekdays: list = None
+    months: list = None
+    start_date: dt.date = None
+    start_time: dt.time = None
+    end_time: dt.time = None
+
+    name: str = None
+    description: str = None
+    participants_count: int = Field(default = 0)
+    is_participant: bool = Field(default=False)
+    max_participants_count: int = Field(default=1)
+    price: int = None
+    
+    @field_serializer('start_date')
+    def serialize_date(self, date: Optional[dt.date]) -> Optional[str]:
+        return date.strftime('%d-%m-%Y') if date else None
 
 
 class SlotInsertIn(BaseModelConfig):
     creator_id: UUID
-    repeat_id: UUID
+
+    weekdays: list = None
+    months: list = None
+    start_date: dt.date = None
+    start_time: dt.time = None
+    end_time: dt.time = None
+
     name: str = None
     description: str = None
     max_participants_count: int = Field(default=1)
-    datetime: datetime.datetime
+    price: int = None
+    
+    @field_validator('start_date', mode='before')
+    def parse_date(cls, value):
+        if isinstance(value, str):
+            try:
+                # Парсинг формата dd.mm.yyyy
+                day, month, year = map(int, value.split('.'))
+                return dt.date(year, month, day)
+            except ValueError:
+                try:
+                    # Парсинг формата dd-mm-yyyy
+                    day, month, year = map(int, value.split('-'))
+                    return dt.date(year, month, day)
+                except ValueError:
+                    raise exc.ValidationEror("Date must be in format dd.mm.yyyy or dd-mm-yyyy")
+        return value
+    
+    
+class SlotModelUpdateIn(SlotInsertIn):
+    id: UUID
+
+
 
 
 class SlotUpdateIn(SlotModel):

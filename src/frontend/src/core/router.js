@@ -49,20 +49,18 @@ const generateRoutes = sections => {
     return routes
 }
 
-// Helper function for capitalization
 const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1)
 
-// Define sections with useId property
 const sections = [
     { name: 'auth', actions: ['login', 'register'], useId: false },
     { name: 'home', actions: null, useId: false },
     { name: 'user', actions: ['show', 'edit'], useId: true },
     { name: 'groups', actions: ['list', 'show', 'edit', 'new'], useId: true },
     { name: 'events', actions: ['show', 'edit', 'new'], useId: true },
+    { name: 'slots', actions: ['show', 'edit', 'new'], useId: true },
 
 ]
 
-// Generate routes
 const routes = generateRoutes(sections)
 
 routes.push(

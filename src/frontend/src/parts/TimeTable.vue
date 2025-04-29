@@ -12,16 +12,27 @@
         </template>
         <template #page-content>
             <div class="flex-container-row flex-start timetable-layout">
-                <DateCalendar
-                    :current="stopMonth"
-                    :selectedDates="selectedDates"
-                    :minShowDate="min"
-                    :maxShowDate="max"
-                    @selectDate="selectDate"
-                    @prevMonth="prevMonth"
-                    @nextMonth="nextMonth"
-                    @setMonth="setMonth"
-                />
+                <div class="flex-container-column">
+                    <DateCalendar
+                        :current="stopMonth"
+                        :selectedDates="selectedDates"
+                        :minShowDate="min"
+                        :maxShowDate="max"
+                        @selectDate="selectDate"
+                        @prevMonth="prevMonth"
+                        @nextMonth="nextMonth"
+                        @setMonth="setMonth"
+                    />
+                    <BaseBtn
+                        v-if="!isStudent"
+                        value="Добавить слот"
+                        @click="$router.push('/slots/new')"
+                    />
+                    <div class="page-content-filter" v-if="isStudent">
+                        <FilterForm filterName="slotsStudent" @changeFilters="changeFilters" />
+                    </div>
+                </div>
+
                 <TimeTableMonth
                     v-if="isSelected('month')"
                     :current="stopMonth"
@@ -30,26 +41,30 @@
                     :minShowDate="min"
                     :maxShowDate="max"
                 />
+
                 <TimeTableDay
-                    v-if="isSelected('today')"
+                    v-else-if="isSelected('today')"
                     :currentDay="new Date()"
                     class="border"
                     :events="events"
                 />
                 <TimeTableDay
-                    v-if="isSelected('day')"
+                    v-else-if="isSelected('day')"
                     :currentDay="selectedDates[0]"
                     class="border"
                     :events="events"
                 />
                 <TimeTableWeek
-                    v-if="isSelected('week')"
+                    v-else-if="isSelected('week')"
                     :current="stopMonth"
                     ref="week"
                     :selectedDates="selectedDates"
                     :events="events"
                 />
             </div>
+            <!-- <div v-if="isLoading" class="page-loading-state">
+                <div class="page-loading-state-spinner"></div>
+            </div> -->
         </template>
     </NestedPage>
 </template>
@@ -74,7 +89,9 @@ export default {
             current: null,
             min: null,
             max: null,
-
+            isLoading: false,
+            eventsFilters: [],
+            slotsFilters: [],
             events: [],
 
             monthsLabelsChanged: [
@@ -114,7 +131,7 @@ export default {
         }
     },
     watch: {
-        wheres: {
+        dateWheres: {
             handler() {
                 this.fetchEvents()
             },
@@ -137,7 +154,7 @@ export default {
         toDate(date) {
             return new Date(date)
         },
-        wheres() {
+        dateWheres() {
             return (
                 {
                     today: [
@@ -183,6 +200,11 @@ export default {
         },
     },
     methods: {
+        changeFilters(wheres) {
+            this.slotsFilters = wheres.filter(where => where.column == 'creator_id')
+            this.eventsFilters = wheres.filter(where => where.column == 'group_id')
+            this.fetchEvents()
+        },
         selectDate(date) {
             if (date) {
                 let d1 = new Date(date),
@@ -204,7 +226,7 @@ export default {
                 setTimeout(() => this.close(), 200)
             }
         },
-        adjustDateByWeek(originalDate, daysTo = 7, isAdd = true) {
+        adjustDate(originalDate, daysTo = 7, isAdd = true) {
             const newDate = new Date(originalDate)
             isAdd
                 ? newDate.setDate(originalDate.getDate() + daysTo)
@@ -214,14 +236,14 @@ export default {
             this.selectDate(newDate)
         },
         prev() {
-            this.adjustDateByWeek(
+            this.adjustDate(
                 this.selectedDates[0],
                 this.daysToChange[this.selectedOption],
                 false
             )
         },
         next() {
-            this.adjustDateByWeek(
+            this.adjustDate(
                 this.selectedDates[0],
                 this.daysToChange[this.selectedOption],
                 true
@@ -232,27 +254,49 @@ export default {
             this.select('today')
         },
         fetchEvents() {
-            this.$api.events.list(
-                {
-                    filters: {
-                        wheres: [
-                            {
-                                column: 'role',
-                                value: {
-                                    [true]: 'student',
-                                    [false]: 'teacher',
-                                }[this.isStudent],
-                            },
-                            ...this.wheres,
-                        ],
-                    },
+            this.events = []
+            this.isLoading = true
+            const filters = {
+                filters: {
+                    wheres: [
+                        {
+                            column: 'role',
+                            value: {
+                                [true]: 'student',
+                                [false]: 'teacher',
+                            }[this.isStudent],
+                        },
+                        ...this.dateWheres,
+                        ...this.eventsFilters,
+                    ],
                 },
-                res => {
-                    this.events = res.rows.sort((first, second) =>
+            }
+            this.$api.events.list(filters, res => {
+                this.events.push(
+                    ...res.rows.sort((first, second) =>
                         first.start_time > second.start_time ? 1 : -1
                     )
-                }
-            )
+                )
+                this.$api.slots.list(
+                    {
+                        filters: {
+                            wheres: [
+                                ...(!this.isStudent ? [{ column: 'role', value: 'teacher' }] : []),
+                                ...this.dateWheres,
+                                ...this.slotsFilters,
+                            ],
+                        },
+                    },
+                    res => {
+                        this.events.push(
+                            ...res.rows.sort((first, second) =>
+                                first.start_time > second.start_time ? 1 : -1
+                            )
+                        )
+                        this.isLoading = false
+                    }
+                )
+            })
         },
     },
     created() {

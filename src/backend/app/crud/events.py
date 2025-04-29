@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 import models as m
 from crud.base import BaseCRUD
-from schemas import EventInsertIn, RequestBodyOne, EventModel
+from schemas import EventInsertIn, RequestBodyOne, EventModel, RequestBodyList
 import api.exceptions as exc
 
 
@@ -70,7 +70,7 @@ class EventsCRUD(BaseCRUD):
 
         return query, new_wheres
 
-    def list(self, request_body: RequestBodyOne): 
+    def list(self, request_body: RequestBodyList): 
         events = super().get_items(request_body)
         rows = []
 
@@ -88,7 +88,6 @@ class EventsCRUD(BaseCRUD):
 
     def update(self, request_body: EventModel):
         group_id, name = request_body.get('group_id'), request_body.get('name')
-        print(request_body)
         if group_id is None or name is None:
             raise exc.ValidationEror('Group or name is not specified')
         

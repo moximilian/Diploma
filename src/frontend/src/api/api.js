@@ -41,6 +41,7 @@ const customApi = {
     users: {
         one: makeApiFn('/user/get'),
         update: makeApiFn('/user/update'),
+        list: makeApiFn('/user/list'),
         change_password: makeApiFn('/user/change_password'),
     },
     images: {
@@ -73,7 +74,14 @@ const customApi = {
         one: makeApiFn('/events/get'),
         list: makeApiFn('/events/list'),
         update: makeApiFn('/events/update'),
-
+    },
+    slots: {
+        insert: makeApiFn('/slots/create'),
+        one: makeApiFn('/slots/get'),
+        list: makeApiFn('/slots/list'),
+        update: makeApiFn('/slots/update'),
+        leave: makeApiFn('/slots/leave'),
+        enter: makeApiFn('/slots/enter'),
     }
 }
 export const api = new (function () {

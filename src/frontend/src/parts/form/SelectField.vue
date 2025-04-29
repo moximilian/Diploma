@@ -34,7 +34,7 @@
                     class="field-dropdown innit-position"
                 >
                     <slot name="beforeValues" v-bind="optionProps">
-                        <SearchField
+                        <InputField
                             v-if="type === 'search'"
                             ref="search"
                             :value="searchValue"
@@ -44,7 +44,7 @@
 
                     <div class="field-suggestion-empty">
                         <slot name="info">{{
-                            isEmpty(optionList) ? $t('actions.empty_data') : ''
+                            isEmpty(optionList) ? 'Данных нет' : ''
                         }}</slot>
                     </div>
                     <div class="field-suggestions">

@@ -22,15 +22,15 @@
         </div>
         <div
             class="events-blocks"
-            v-if="events.length > 0"
             :style="{ marginLeft: (isShowHours ? 45 : 0) + 'px' }"
+            v-if="eventsItems.length > 0"
         >
             <div
                 class="event-block-wrapper"
                 v-for="(event, index) of events"
                 :key="index"
                 :style="{ zIndex: index + 1 }"
-                @click="$router.push('/events/show/' + event.id)"
+                @click="toShow(event)"
             >
                 <div class="event-block" :ref="'event_' + index + currentDay.toShowDate()">
                     <div class="event-title">
@@ -40,7 +40,7 @@
                         {{ getEventFullDate(event.start_date, event.end_time).toShowTime() }}
                     </div>
                     <div v-if="!fromWeek">Цена {{ event.price }} руб.</div>
-                    <div v-if="!fromWeek">
+                    <div v-if="!fromWeek && !this.isEventSlot(event)">
                         Группа
                         <ValueToString
                             :field="{
@@ -50,6 +50,21 @@
                             }"
                             :row="event"
                         />
+                    </div>
+                    <div v-if="!fromWeek && this.isEventSlot(event)">
+                        Создатель
+                        <ValueToString
+                            :field="{
+                                displayName: 'users',
+                                localKeyName: 'creator_id',
+                                showName: ['name', 'surname', 'login'],
+                            }"
+                            :row="event"
+                        />
+                    </div>
+                    <div v-if="this.isEventSlot(event)">
+                        Количество участников
+                        {{ event.participants_count }} / {{ event.max_participants_count }}
                     </div>
                 </div>
             </div>
@@ -80,14 +95,26 @@ export default {
         }
     },
     watch: {
-        eventsItems() {
-            this.setEventsStyles()
+        events: {
+            handler() {
+                this.setEventsStyles()
+            },
+            immediate: true,
+            deep: true,
         },
         currentDay() {
             this.setEventsStyles()
         },
     },
     methods: {
+        isEventSlot(event) {
+            return !event.group_id
+        },
+        toShow(eventOrSlot) {
+            this.$router.push(
+                `/${this.isEventSlot(eventOrSlot) ? 'slots' : 'events'}/show/${eventOrSlot.id}`
+            )
+        },
         getHour(index) {
             let hours = (index / this.blocksInHour + 1) % 24
             if (hours.toString().length === 1) hours = `0${hours}`
@@ -116,15 +143,13 @@ export default {
             const startBlock =
                 this.getTimeBlock(this.getEventFullDate(event.start_date, event.start_time)) + 1
 
-            const endBlock = this.getTimeBlock(
-                this.getEventFullDate(event.start_date, event.end_time)
-            ) + 1
+            const endBlock =
+                this.getTimeBlock(this.getEventFullDate(event.start_date, event.end_time)) + 1
 
             const startTop = startBlock * this.blockSizeMins
             const endTop = endBlock * this.blockSizeMins + 1
 
             const height = endTop - startTop - this.blockSizeMins
-
             const eventEl = this.$refs['event_' + index + this.currentDay.toShowDate()]?.[0]
             if (!eventEl) return setTimeout(() => this.setEventStyles(event, index), 100)
 
@@ -133,10 +158,8 @@ export default {
                 if (eventEl.style.height < height) eventEl.style.height = height
                 eventEl.style.top = this.topPadding + startTop + 18 + 'px'
                 eventEl.style.backgroundColor = this.blocksColors[index % 5]
-                const width = this.maxWidth -
-                    (this.isShowHours ? 45 : 0) -
-                    (this.fromWeek ? 0 : 22) -
-                    24
+                const width =
+                    this.maxWidth - (this.isShowHours ? 45 : 0) - (this.fromWeek ? 0 : 22) - 24
                 eventEl.style.width = width + 'px'
             }
         },
@@ -153,6 +176,9 @@ export default {
         },
         eventsItems() {
             return this.events
+        },
+        isStudent() {
+            return this.$store.getters.isStudent
         },
     },
     created() {

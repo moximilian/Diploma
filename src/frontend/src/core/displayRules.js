@@ -306,6 +306,36 @@ const eventsDisplay = [
     },
 ]
 
+const slotsDisplay = [
+    ...eventsDisplay.filter(field => field.props.name !== 'group_id'),
+    {
+        display: 'StringField',
+        props: {
+            title: 'Максимальное кол-во участников',
+            name: 'max_participants_count',
+            value: 8,
+            required: true,
+            type: 'number',
+        },
+    },
+    {
+        display: 'StringField',
+        props: {
+            name: 'creator_id',
+            value: ls.current_user,
+            disabled: true,
+            required: true,
+            title: 'Создатель',
+            type: 'text',
+        },
+        displayName: 'users',
+        fieldKey: 'id',
+        showName: ['name', 'surname', 'last_name'],
+        localKeyName: 'creator_id',
+    },
+
+]
+
 
 const enter_requestsDisplay = [
     {
@@ -445,6 +475,47 @@ const groupsStudentFilter = [
         condition: '=',
     },
 ]
+const slotsStudentFilter = [
+    {
+        display: 'SelectSearchFieldModel',
+        props: {
+            name: 'creator_id',
+            modelName: 'users',
+            title: 'Организатор индивидуальных занятий',
+            fieldKey: 'id',
+            showFieldName: 'login',
+            showFormat: (key) => {
+                return key?.login ?? key
+            },
+            defaultWheres: [{
+                column: 'role_name',
+                condition: '=',
+                value: 'teacher',
+            }]
+        },
+        condition: '=',
+    },
+    {
+        display: 'SelectSearchFieldModel',
+        props: {
+            name: 'group_id',
+            modelName: 'groups',
+            title: 'Мои группы',
+            fieldKey: 'name',
+            showFieldName: 'name',
+            multiple: true,
+            showFormat: (key) => {
+                return key?.name ?? key
+            },
+            defaultWheres: [{
+                column: 'is_currrent_participant',
+                condition: '=',
+                value: true
+            }]
+        },
+        condition: '=',
+    }
+]
 
 export default {
     registerDisplay,
@@ -457,4 +528,6 @@ export default {
     enter_requestsDisplay,
     groupsStudentFilter,
     eventsDisplay,
+    slotsDisplay,
+    slotsStudentFilter
 }

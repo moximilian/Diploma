@@ -268,8 +268,7 @@ class Slot(Base, BaseModel):
     name = Column(String(256), nullable=False)
     description = Column(String(1024), nullable=True)
     max_participants_count = Column(Integer, server_default='1')
-    datetime = Column('datetime',
-                      DateTime(), default=func.now())
+    price = Column(Integer, nullable = True)
 
     participants = relationship(
         "SlotParticipant", backref="slot", foreign_keys="SlotParticipant.slot_id")

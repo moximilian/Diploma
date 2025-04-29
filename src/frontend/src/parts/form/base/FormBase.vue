@@ -34,7 +34,7 @@ export default {
             entity: {},
 
             unchangedEntity: {},
-            displayRules: structuredClone(displayRules),
+            displayRules,
             sameValidationForm: true,
             requiredForm: true,
 
@@ -112,8 +112,6 @@ export default {
         this.getDisplayRule(() => {
             this.displayRule.map(rule => {
                 const key = rule.props.name
-                const values = {...this.unchangedEntity}
-                console.log(key, this.unchangedEntity,values, '!!!')
                 this.entity[key] = this.unchangedEntity[key] ?? rule.props.value
             })
         })

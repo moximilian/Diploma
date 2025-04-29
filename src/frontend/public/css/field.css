@@ -11,6 +11,10 @@ input:focus {
     border-color: var(--main-color);
 }
 
+.field-dropdown .field-input {
+    width: calc(100% - 34px);
+}
+
 input.field-input {
     width: 486px;
     font-size: 16px;

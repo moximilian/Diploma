@@ -9,6 +9,11 @@ import ShowValueField from '@/parts/form/ShowValueField.vue'
 
 import SwitchField from '@/parts/form/SwitchField.vue'
 import SelectField from '@/parts/form/SelectField.vue'
+
+import SelectFieldModel from '@/parts/form/model/SelectFieldModel.vue'
+import SelectSearchFieldModel from '@/parts/form/model/SelectSearchFieldModel.vue'
+
+
 import StringField from '@/parts/form/StringField.vue'
 import PasswordField from '@/parts/form/PasswordField.vue'
 import PhotoField from '@/parts/form/PhotoField.vue'
@@ -42,6 +47,8 @@ export default {
     RadioField,
     RangeField,
     DatePicker,
+    SelectFieldModel,
+    SelectSearchFieldModel,
 
     ShowValueField,
     TableView,

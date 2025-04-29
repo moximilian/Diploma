@@ -167,6 +167,8 @@ class BaseCRUD():
                 query = query.filter(column != where['value'])
             elif condition == 'in':
                 query = query.filter(column.in_(where['value']))
+            elif condition == '%':
+                query = query.filter(column.contains(where['value']))
             else:
                 query = query.filter(column == where['value'])
         for order in orders:
