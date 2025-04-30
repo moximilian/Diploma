@@ -83,7 +83,6 @@ const router = createRouter({
 })
 
 router.beforeEach(to => {
-    console.log(to, store.getters.isUserSet)
     if (
         !to.path.includes('auth') &&
         [null, undefined, ''].includes(new LocalStorage().getItemDecrypt('token'))

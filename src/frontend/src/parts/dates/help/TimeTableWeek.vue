@@ -45,8 +45,15 @@ export default {
         }
     },
     watch: {
-        currentDateShow() {
-            this.getCurrentWeekIndex()
+        // currentDateShow() {
+        //     this.getCurrentWeekIndex()
+        // },
+        currentDateShow: {
+            handler() {
+                this.getCurrentWeekIndex()
+            },
+            immediate: true,
+            deep: true,
         },
     },
     computed: {

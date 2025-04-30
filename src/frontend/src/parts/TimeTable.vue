@@ -46,25 +46,22 @@
                     v-else-if="isSelected('today')"
                     :currentDay="new Date()"
                     class="border"
-                    :events="events"
+                    :events="uniqueEvents"
                 />
                 <TimeTableDay
                     v-else-if="isSelected('day')"
                     :currentDay="selectedDates[0]"
                     class="border"
-                    :events="events"
+                    :events="uniqueEvents"
                 />
                 <TimeTableWeek
                     v-else-if="isSelected('week')"
                     :current="stopMonth"
                     ref="week"
                     :selectedDates="selectedDates"
-                    :events="events"
+                    :events="uniqueEvents"
                 />
             </div>
-            <!-- <div v-if="isLoading" class="page-loading-state">
-                <div class="page-loading-state-spinner"></div>
-            </div> -->
         </template>
     </NestedPage>
 </template>
@@ -139,6 +136,9 @@ export default {
         },
     },
     computed: {
+        uniqueEvents() {
+            return [...new Map(this.events.map(item => [item.id, item])).values()];
+        },
         currentDateLabel() {
             const date = this.selectedDates[0] ?? new Date()
 
@@ -256,6 +256,7 @@ export default {
         fetchEvents() {
             this.events = []
             this.isLoading = true
+            if (Array.isEmpty(this.dateWheres)) return
             const filters = {
                 filters: {
                     wheres: [
@@ -273,7 +274,7 @@ export default {
             }
             this.$api.events.list(filters, res => {
                 this.events.push(
-                    ...res.rows.sort((first, second) =>
+                    ...res.rows?.sort((first, second) =>
                         first.start_time > second.start_time ? 1 : -1
                     )
                 )
@@ -289,7 +290,7 @@ export default {
                     },
                     res => {
                         this.events.push(
-                            ...res.rows.sort((first, second) =>
+                            ...res.rows?.sort((first, second) =>
                                 first.start_time > second.start_time ? 1 : -1
                             )
                         )
