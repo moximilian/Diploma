@@ -36,4 +36,4 @@ class ParticipantsCRUD(BaseCRUD):
             participant['user_id'] = row.user_id
             participant['id'] = row.id
             result_rows.append(participant)
-        return super()._transform_response(result_rows, len(rows))
+        return super()._transform_response(result_rows)

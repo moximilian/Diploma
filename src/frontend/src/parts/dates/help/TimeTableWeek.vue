@@ -1,16 +1,18 @@
 <template>
-    <div class="timetable-week border">
+    <div class="timetable-week border" v-if="isShow">
         <div v-for="(day, index) of currentWeek" :key="index" class="timetable-day">
-            <div class="flex-container-column" :style="{ marginBottom: '20px' }">
+            <div class="flex-container-column timetable-week-header">
                 <div>{{ wdays[index] }}</div>
                 <div>{{ day.date.split('-')[2] }}</div>
             </div>
             <TimeTableDay
+                class="border-right"
+                :isShow="true"
                 :currentDay="new Date(day.date)"
+                :ref="'dayTable' + index"
                 :isShowHours="index == 0"
                 :blockSizeMins="25"
                 :isShowCurrTimeLine="currentDate === day.date"
-                class="border-right"
                 :fromWeek="true"
                 :events="getDayEvents(day.date)"
             />
@@ -24,6 +26,7 @@ import MonthHelper from './MonthHelper'
 export default {
     mixins: [MonthHelper],
     props: {
+        isShow: { type: Boolean, default: () => false },
         current: {
             type: Object,
             default: () => {
@@ -45,9 +48,6 @@ export default {
         }
     },
     watch: {
-        // currentDateShow() {
-        //     this.getCurrentWeekIndex()
-        // },
         currentDateShow: {
             handler() {
                 this.getCurrentWeekIndex()
@@ -84,13 +84,16 @@ export default {
         },
         firstLastDaysWeek() {
             return this.currentWeek
-                .map(day => new Date(day.date))
+                ?.map(day => new Date(day.date))
                 .filter((_, index) => index === 0 || index === 6)
                 .sort()
         },
     },
     created() {
         this.getCurrentWeekIndex()
+    },
+    mounted() {
+        this.$refs['dayTable0']?.[0].scrollToTimeLine()
     },
     components: {
         TimeTableDay,

@@ -1,5 +1,5 @@
 <template>
-    <div class="timetable-day" :key="currentMinute" ref="timetable">
+    <div v-if="isShow" class="timetable-day" :key="currentMinute" ref="timetable">
         <div
             class="block"
             v-for="index of blocks"
@@ -13,7 +13,7 @@
                 <div class="line"></div>
             </div>
             <div class="block" v-if="currentTimeBlock === index">
-                <div class="current-time" v-if="isShowHours">{{ new Date().toShowTime() }}</div>
+                <div ref="currentTimeLine" class="current-time" v-if="isShowHours">{{ new Date().toShowTime() }}</div>
                 <div
                     class="line-current-time"
                     :class="{ ['semi-transparent']: !isShowCurrTimeLine }"
@@ -39,8 +39,8 @@
                         -
                         {{ getEventFullDate(event.start_date, event.end_time).toShowTime() }}
                     </div>
-                    <div v-if="!fromWeek">Цена {{ event.price }} руб.</div>
-                    <div v-if="!fromWeek && !this.isEventSlot(event)">
+                    <div >Цена {{ event.price }} руб.</div>
+                    <div v-if="!this.isEventSlot(event)">
                         Группа
                         <ValueToString
                             :field="{
@@ -51,7 +51,7 @@
                             :row="event"
                         />
                     </div>
-                    <div v-if="!fromWeek && this.isEventSlot(event)">
+                    <div v-if="this.isEventSlot(event)">
                         Создатель
                         <ValueToString
                             :field="{
@@ -76,6 +76,7 @@
 import ValueToString from '@/parts/table/parts/ValueToString.vue'
 export default {
     props: {
+        isShow: { type: Boolean, default: () => false },
         currentDay: { type: Array, default: () => [] },
         blockSizeMins: { type: Number, default: () => 15 },
         isShowHours: { type: Boolean, default: () => true },
@@ -169,6 +170,10 @@ export default {
             this.maxWidth = Math.abs(timetableRect?.width ?? 0)
             this.eventsItems.forEach(this.setEventStyles)
         },
+        scrollToTimeLine() {
+            const lineEl = this.$refs?.currentTimeLine
+            if (lineEl) lineEl[0].scrollIntoView()
+        }
     },
     computed: {
         blocks() {
@@ -189,6 +194,7 @@ export default {
         window.scrollTo({ top: 0 })
         this.getTimeTableYOffset()
         this.setEventsStyles()
+        !this.fromWeek && this.scrollToTimeLine()
     },
     components: { ValueToString },
 }

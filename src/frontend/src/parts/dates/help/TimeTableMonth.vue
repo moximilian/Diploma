@@ -1,5 +1,5 @@
 <template>
-    <table class="calendar-timetable" :class="calendarClass">
+    <table v-if="isShow" class="calendar-timetable" :class="calendarClass">
         <tbody>
             <tr>
                 <th v-for="(wday, i) in wdays" :key="wday" :class="{ weekend: isWeekend(i) }">
@@ -8,14 +8,43 @@
             </tr>
             <tr v-for="(week, i) in currentMonthDays" :key="i">
                 <td v-for="d in week" :key="d.date" v-bind="isShowTitle(d.date)">
-                    <div :class="dayClass(d)" class="date-timetable">
-                        {{ d.day }}
+                    <div class="table-month-day">
+                        <div :class="dayClass(d)" class="date-timetable">
+                            {{ d.day }}
+                        </div>
+                        <div
+                            class="event"
+                            v-for="event in getEventsByDate(d)"
+                            :key="event.id"
+                            @click="$router.push('/events/show/' + event.id)"
+                        >
+                            {{ event?.name }}
+                        </div>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
 </template>
+<style>
+.table-month-day {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.event {
+    width: 100%;
+    height: 30px;
+    background-color: green;
+    border-radius: 8px;
+    color: white;
+    align-content: center;
+}
+.event:hover {
+    filter: brightness(1.05) saturate(0.8);
+    cursor: pointer;
+}
+</style>
 
 <script>
 import MonthHelper from './MonthHelper'
@@ -23,6 +52,7 @@ import MonthHelper from './MonthHelper'
 export default {
     mixins: [MonthHelper],
     props: {
+        isShow: { type: Boolean, default: () => false },
         current: {
             type: Object,
             default: () => {
@@ -36,8 +66,20 @@ export default {
         maxShowDate: { type: Date, default: null },
         minShowDate: { type: Date, default: null },
         maxSelectDays: { type: Number, default: null },
+        events: { type: Array, default: () => [] },
     },
+    // data() {
+    //     return {
+    //         blocksColors: ['var(--main-color)', 'pink', 'blue', 'violed', 'green'],
+    //     }
+    // },
     computed: {
+        eventsDates() {
+            return this.events.reduce((events, event) => {
+                event.start_date = event.start_date.split('T')[0]
+                return events
+            }, this.events)
+        },
         calendarClass() {
             return this.selectedDates.length > 1 &&
                 !this.selectedDates[0].isEquals(this.selectedDates[1])
@@ -48,13 +90,16 @@ export default {
             return this.datetime ? this.datetime.toShowDate() : ''
         },
         monthActiveDays() {
-            return this.currentMonthDays.flat()
-                .filter((day) => !day.class.includes('unactive'))
+            return this.currentMonthDays
+                .flat()
+                .filter(day => !day.class.includes('unactive'))
                 .map(day => new Date(day.date))
         },
-
     },
     methods: {
+        getEventsByDate(day) {
+            return this.eventsDates.filter(event => event.start_date === day.date)
+        },
         prevMonth() {
             this.$emit('prevMonth')
         },

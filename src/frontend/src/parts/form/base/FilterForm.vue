@@ -15,7 +15,9 @@
                         :is="filter.display"
                         v-bind="filter.props"
                         :ref="`filter_${index}`"
-                        @changeValue="value => onChangeValue(value, filter.props.name, filter.condition)"
+                        @changeValue="
+                            value => onChangeValue(value, filter.props.name, filter.condition)
+                        "
                     >
                         <template #beforeInput>
                             <span class="field-title">{{ filter.props.title }}</span>
@@ -78,6 +80,7 @@ export default {
     data() {
         return {
             wheres: [],
+            emptyValues: [null, undefined, ''],
         }
     },
     computed: {
@@ -85,23 +88,37 @@ export default {
             return displayRules[`${this.filterName}Filter`]
         },
     },
+    watch: {
+        filterName: {
+            handler() {
+                this.setDefault()
+            },
+            immediate: true,
+        },
+    },
     methods: {
         onChangeValue(value, column, condition) {
-            let whereExists = false
-
             const newFilter = {
                 value,
                 column,
                 condition,
             }
-            this.wheres.reduce((wheres, where, index) => {
-                if (where.column === column) {
-                    whereExists = true
-                    wheres[index].value = value
-                }
-                return wheres
-            }, this.wheres)
-            !whereExists && this.wheres.push(newFilter)
+            if (this.emptyValues.includes(value))
+                this.wheres.splice(
+                    this.wheres.findIndex(where => where.column == column),
+                    1
+                )
+            else {
+                let whereExists = false
+                this.wheres.reduce((wheres, where, index) => {
+                    if (where.column === column) {
+                        whereExists = true
+                        wheres[index].value = value
+                    }
+                    return wheres
+                }, this.wheres)
+                !whereExists && this.wheres.push(newFilter)
+            }
         },
         applyFilters() {
             this.$emit('changeFilters', this.wheres)
@@ -113,13 +130,16 @@ export default {
                 this.$refs[`filter_${index}`].value = filter.props.value
             })
         },
+        setDefault() {
+            this.displayFilters.forEach(filter => {
+                const { value, name } = filter.props
+                if (value) this.onChangeValue(value, name, filter.condition)
+            })
+            this.applyFilters()
+        },
     },
     mounted() {
-        this.displayFilters.forEach(filter => {
-            const {value, name} = filter.props
-            if (value) this.onChangeValue(value, name, filter.condition)
-        })
-        this.applyFilters()
-    }
+        this.setDefault()
+    },
 }
 </script>

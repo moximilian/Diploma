@@ -2,9 +2,9 @@
     <NestedPage :title="currentDateLabel">
         <template #page-header-right>
             <div :class="{ selected: isSelected('today') }" @click="selectToday()">Сегодня</div>
-            <div :class="{ selected: isSelected('day') }" @click="select('day')">День</div>
-            <div :class="{ selected: isSelected('week') }" @click="select('week')">Неделя</div>
-            <div :class="{ selected: isSelected('month') }" @click="select('month')">Месяц</div>
+            <div :class="{ selected: isSelected('day') }" @click="select('day', dateWheres)">День</div>
+            <div :class="{ selected: isSelected('week') }" @click="selectTab('week')">Неделя</div>
+            <div :class="{ selected: isSelected('month') }" @click="selectTab('month')">Месяц</div>
             <div class="flex-container-row">
                 <BaseBtn class="small" :outline="true" @click="prev()">{{ '<' }}</BaseBtn>
                 <BaseBtn class="small" :outline="true" @click="next()">{{ '>' }}</BaseBtn>
@@ -12,7 +12,7 @@
         </template>
         <template #page-content>
             <div class="flex-container-row flex-start timetable-layout">
-                <div class="flex-container-column">
+                <div class="flex-container-column timetable-left">
                     <DateCalendar
                         :current="stopMonth"
                         :selectedDates="selectedDates"
@@ -32,30 +32,30 @@
                         <FilterForm filterName="slotsStudent" @changeFilters="changeFilters" />
                     </div>
                 </div>
-
                 <TimeTableMonth
-                    v-if="isSelected('month')"
+                    :isShow="isSelected('month')"
                     :current="stopMonth"
                     ref="month"
                     :selectedDates="selectedDates"
                     :minShowDate="min"
                     :maxShowDate="max"
+                    :events="uniqueEvents"
                 />
 
                 <TimeTableDay
-                    v-else-if="isSelected('today')"
+                    :isShow="isSelected('today')"
                     :currentDay="new Date()"
                     class="border"
                     :events="uniqueEvents"
                 />
                 <TimeTableDay
-                    v-else-if="isSelected('day')"
+                    :isShow="isSelected('day')"
                     :currentDay="selectedDates[0]"
                     class="border"
                     :events="uniqueEvents"
                 />
                 <TimeTableWeek
-                    v-else-if="isSelected('week')"
+                    :isShow="isSelected('week')"
                     :current="stopMonth"
                     ref="week"
                     :selectedDates="selectedDates"
@@ -137,7 +137,7 @@ export default {
     },
     computed: {
         uniqueEvents() {
-            return [...new Map(this.events.map(item => [item.id, item])).values()];
+            return [...new Map(this.events.map(item => [item.id, item])).values()]
         },
         currentDateLabel() {
             const date = this.selectedDates[0] ?? new Date()
@@ -177,15 +177,7 @@ export default {
                             ],
                         },
                     ],
-                    week: this.$refs?.week?.firstLastDaysWeek()
-                        ? [
-                              {
-                                  column: 'start_date',
-                                  condition: 'between',
-                                  value: this.$refs?.week?.firstLastDaysWeek(),
-                              },
-                          ]
-                        : [],
+                    week: this.getWeekFilter(),
                     month: this.$refs?.month?.firstLastDaysMonth()
                         ? [
                               {
@@ -200,9 +192,24 @@ export default {
         },
     },
     methods: {
+        getWeekFilter() {
+            const weekEl = this.$refs?.week
+            if (!weekEl) return []
+            return [
+                {
+                    column: 'start_date',
+                    condition: 'between',
+                    value: weekEl.firstLastDaysWeek(),
+                },
+            ]
+        },
         changeFilters(wheres) {
-            this.slotsFilters = wheres.filter(where => where.column == 'creator_id')
-            this.eventsFilters = wheres.filter(where => where.column == 'group_id')
+            this.slotsFilters = wheres.filter(where => where.column == 'creator_id') ?? []
+            this.eventsFilters = wheres.filter(where => where.column == 'group_id') ?? []
+            this.fetchEvents()
+        },
+        selectTab(tab) {
+            this.select(tab, this.dateWheres)
             this.fetchEvents()
         },
         selectDate(date) {
@@ -251,7 +258,7 @@ export default {
         },
         selectToday() {
             this.selectDate(new Date())
-            this.select('today')
+            this.select('today', this.dateWheres)
         },
         fetchEvents() {
             this.events = []

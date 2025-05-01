@@ -22,6 +22,11 @@
 
     border-bottom: 1px solid var(--gray-color);
 
+    position: sticky;
+    top: 80px;
+    z-index: 102;
+    background-color: white;
+
 }
 .page-right {
     display: flex;

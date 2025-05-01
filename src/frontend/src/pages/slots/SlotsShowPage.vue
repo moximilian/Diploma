@@ -4,10 +4,10 @@
             <FormView v-if="entity" displayName="slots" action="show" :defaults="entity">
                 <template #form-bottom>
                     <BaseBtn :outline="true" @click="$router.push(`/home`)">Назад</BaseBtn>
-                    <BaseBtn v-if="isStudent && entity.is_participant" @click="leaveSlot(entity.id)"
+                    <BaseBtn v-if="isStudent && entity.is_participant" @click="leaveSlot()"
                         >Покинуть</BaseBtn
                     >
-                    <BaseBtn v-else-if="isStudent" @click="enterSlot(entity.id)"
+                    <BaseBtn v-else-if="isStudent" @click="enterSlot()"
                         >Занять место</BaseBtn
                     >
                     <BaseBtn v-if="isSlotAdmin" @click="$router.push(`/slots/edit/${slotId}`)"
@@ -35,14 +35,14 @@ export default {
         },
     },
     methods: {
-        enterSlot(id) {
-            this.$api.slots.enter({ id }, () => {
-                this.$router.reload()
+        enterSlot() {
+            this.$api.slots.enter({ id: this.slotId }, () => {
+                this.$router.go(this.$router.currentRoute)
             })
         },
-        leaveSlot(id) {
-            this.$api.slots.leave({ id }, () => {
-                this.$router.reload()
+        leaveSlot() {
+            this.$api.slots.leave({ id: this.slotId }, () => {
+                this.$router.go(this.$router.currentRoute)
             })
         },
     },

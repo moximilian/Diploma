@@ -7,10 +7,7 @@
         </template>
         <template #page-content>
             <div class="page-content-filter">
-                <FilterForm 
-                    :filterName="filterName"
-                    @changeFilters="changeFilters" 
-                />
+                <FilterForm :filterName="filterName" @changeFilters="changeFilters" />
                 <TableView
                     ref="table"
                     :keys="keys"
@@ -70,7 +67,7 @@ export default {
                 filters: {
                     wheres: [
                         {
-                            column: !this.isStudent ? 'creator_id' : 'participant_id',
+                            column: this.isStudent ? 'participant_id' : 'creator_id',
                             value: this.userId,
                         },
                         {

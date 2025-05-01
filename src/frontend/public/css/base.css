@@ -104,6 +104,10 @@ body {
     background-color: var(--light-gray-color);
 
     margin-bottom: 32px;
+
+    position:sticky;
+    top:0px;
+    z-index: 102;
 }
 .header {
     display: flex;
@@ -368,6 +372,7 @@ table.calendar-timetable {
     padding: 6px;
 
     border: 1px solid lightgray;
+    width: 200px;
 }
 .calendar-timetable th {
     height: 28px;
@@ -398,7 +403,7 @@ table.calendar-timetable {
 .line-current-time {
     width:100%;
     border: 2px solid red;
-    z-index: 10000;
+    z-index: 100;
 }
 .current-time {
     color: red;
@@ -443,4 +448,16 @@ table.calendar-timetable {
 
 .events-blocks {
     width: 100%;
+}
+.timetable-left {
+    position: sticky;
+    top: 180px;
+}
+.timetable-week-header {
+    position: sticky;
+    top: 135px;
+    padding-top: 20px;
+    background-color: white;
+    border-bottom: 1px solid lightgray;
+    z-index: 101;
 }

@@ -34,12 +34,17 @@ export default {
         },
         setPosition(changeDisplay = true, changePosition = false, leftOffset = 0) {
             const movableElem = this.$refs.movableElem
-            if (!movableElem) return setTimeout(() => this.setPosition(changeDisplay,changePosition,leftOffset), 100)
+            if (!movableElem)
+                return setTimeout(
+                    () => this.setPosition(changeDisplay, changePosition, leftOffset),
+                    100
+                )
             const triggerElem = this.$refs.triggerElem
 
             if (changeDisplay) movableElem.style.display = 'block'
             movableElem.style.visibility = 'visible'
 
+            const scrollY = window.scrollY
             const triggerRect = triggerElem.getBoundingClientRect()
             const movableRect = movableElem.getBoundingClientRect()
             const top = triggerRect.y + triggerRect.height
@@ -48,9 +53,9 @@ export default {
             const heightOffset = changePosition ? triggerRect.width : 0
 
             movableElem.style.top = `${
-                window.innerHeight < bottom - heightOffset
+                (window.innerHeight < bottom - heightOffset
                     ? triggerRect.y - movableRect.height + heightOffset
-                    : top - heightOffset
+                    : top - heightOffset) + scrollY
             }px`
             movableElem.style.left = `${triggerRect.x + heightOffset - leftOffset}px`
             if (changeDisplay) movableElem.style.width = `${triggerRect.width}px`
@@ -78,13 +83,14 @@ export default {
             keydown: e => this.opened && keys[e.code]?.(e),
         })
         // в изначальном коде было this.parentPageEl.removeEventListener('scroll', this.close), поэтому решил добавить это, но не увидел где слушатель добавляется, поэтому закомментировал
-        this.parentPageEl && (controller = addGroupEventListeners(
-            this.parentPageEl,
-            {
-                scroll: this.close,
-            },
-            controller
-        ))
+        this.parentPageEl &&
+            (controller = addGroupEventListeners(
+                this.parentPageEl,
+                {
+                    scroll: this.close,
+                },
+                controller
+            ))
 
         emitter.on('hook:beforeDestroy', controller.abort)
     },

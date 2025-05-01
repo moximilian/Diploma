@@ -408,7 +408,7 @@ const groupsTeacherFilter = [
             placeholder: 'Поиск',
             type: 'text',
         },
-        condition: '=',
+        condition: '%',
     },
     {
         display: 'RadioField',
@@ -452,7 +452,7 @@ const groupsStudentFilter = [
             placeholder: 'Поиск',
             type: 'text',
         },
-        condition: '=',
+        condition: '%',
     },
     {
         display: 'RadioField',
@@ -513,7 +513,7 @@ const slotsStudentFilter = [
                 value: true
             }]
         },
-        condition: '=',
+        condition: 'in',
     }
 ]
 
