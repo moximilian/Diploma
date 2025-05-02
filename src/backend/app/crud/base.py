@@ -46,15 +46,23 @@ class BaseCRUD():
         """
         model = self.model if model is None else model
 
-        if not hasattr(model, field):
-            raise exc.NotFoundError(message='No such field on modl', field=field)
-
         query = self.db.query(model)
+        if isinstance(field, str):
+            if not hasattr(model, field):
+                raise exc.NotFoundError(message='No such field on model', field=field)
+            value = body.get(field)
+            if value is None:
+                raise exc.NotFoundError(message='Value is null', field=field)
+            found_item = query.filter(getattr(model, field) == value).first()
+        elif isinstance(field, list):
+            for field_item in field:
+                if not hasattr(model, field_item):
+                    raise exc.NotFoundError(message='No such field on model', field=field_item)
+                value = body.get(field_item)
+                if value is None: raise exc.NotFoundError(message='Value is null', field=field)
+                query = query.filter(getattr(model, field_item) == value)
+            found_item = query.first()
 
-        value = body.get(field)
-        if value is None:
-            raise exc.NotFoundError(message='Value is null', field=field)
-        found_item = query.filter(getattr(model, field) == value).first()
 
         if found_item and found_item.get('is_deleted', False):
             raise exc.NotFoundError('Item is deleted')

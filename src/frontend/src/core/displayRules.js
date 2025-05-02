@@ -398,6 +398,41 @@ const enter_requestsDisplay = [
     },
 ]
 
+const eventParticipantDisplay = [
+    {
+        display: 'StringField',
+        props: {
+            name: 'user_id',
+            title: 'Участник',
+        },
+        displayName: 'users',
+        fieldKey: 'id',
+        showName: ['name', 'surname', 'login'],
+        localKeyName: 'user_id',
+    },
+    {
+        display: 'SwitchField',
+        props: {
+            name: 'is_attended',
+            title: 'Присутствие',
+        },
+    },
+    {
+        display: 'SwitchField',
+        props: {
+            name: 'is_paid',
+            title: 'Оплата',
+        },
+    },
+    {
+        display: 'StringField',
+        props: {
+            name: 'custom',
+            title: 'Дополнительно',
+        },
+    },
+]
+
 //filters
 
 const groupsTeacherFilter = [
@@ -529,5 +564,6 @@ export default {
     groupsStudentFilter,
     eventsDisplay,
     slotsDisplay,
-    slotsStudentFilter
+    slotsStudentFilter,
+    eventParticipantDisplay
 }

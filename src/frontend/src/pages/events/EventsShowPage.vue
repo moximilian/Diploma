@@ -1,29 +1,44 @@
 <template>
-    <NestedPage title="Просмотр занятия">
+    <NestedPage :title="entity?.name">
+        <template #page-header-right>
+            <div :class="{ selected: isSelected('about') }" @click="select('about')">О занятии</div>
+            <div
+                v-if="isGroupAdmin"
+                :class="{ selected: isSelected('participants') }"
+                @click="select('participants')"
+            >
+                Участники
+            </div>
+        </template>
         <template #page-content>
             <FormView
-                v-if="entity"              
+                v-if="entity && isSelected('about')"
                 displayName="events"
                 action="show"
-                :defaults="entity" >
-
+                :defaults="entity"
+            >
                 <template #form-bottom>
                     <BaseBtn :outline="true" @click="$router.push(`/home`)">Назад</BaseBtn>
-                    <BaseBtn v-if="isGroupAdmin" @click="$router.push(`/events/edit/${entity.id}`)"
+                    <BaseBtn v-if="isGroupAdmin" @click="$router.push(`/events/edit/${eventId}`)"
                         >Изменить</BaseBtn
                     >
                 </template>
             </FormView>
+            <EventParticipantsPage v-if="isSelected('participants')" />
         </template>
     </NestedPage>
 </template>
 <script>
+import EventParticipantsPage from './EventParticipantsPage.vue'
+import TabsMixin from '@/pages/_help/TabsMixin'
 export default {
+    mixins: [TabsMixin],
+    components: { EventParticipantsPage },
     data() {
         return {
             eventId: null,
             entity: null,
-            group: null
+            group: null,
         }
     },
     computed: {
@@ -42,13 +57,14 @@ export default {
         if (!this.eventId) {
             return console.error('Event ID is not given')
         }
+        this.select(this.selectedOption || 'about')
         this.$api.events.one({ id: this.eventId }, res => {
             if (res.detail) return console.error('Error during API call')
             this.entity = res
-            this.$api.groups.one({id: this.entity.group_id}, (res) => {
+            this.$api.groups.one({ id: this.entity.group_id }, res => {
                 this.group = res
             })
         })
-    }
+    },
 }
 </script>

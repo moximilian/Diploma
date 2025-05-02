@@ -41,15 +41,6 @@ class BaseModel:
         return result
 
 
-class Item(Base, BaseModel):
-    __tablename__ = 'items'
-
-    id = Column(UUID(as_uuid=True), primary_key=True,
-                default=uuid.uuid4, index=True)
-    name = Column(String, index=True)
-    description = Column(String)
-
-
 class User(Base, BaseModel):
     __tablename__ = 'users'
 

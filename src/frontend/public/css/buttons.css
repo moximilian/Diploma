@@ -19,7 +19,8 @@
     padding-top:3px;
     padding-right:16px;
     padding-left:16px;
-
+    align-content: center;
+    width: 50px !important;
 }
 
 .base-btn.outline {

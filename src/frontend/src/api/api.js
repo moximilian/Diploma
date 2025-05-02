@@ -61,6 +61,7 @@ const customApi = {
         send_request: makeApiFn('/groups/requests/create'),
     },
     participants: {
+        one: makeApiFn('/participants/get'),
         list: makeApiFn('/participants/list'),
         delete: makeApiFn('/participants/delete'),
     },
@@ -75,6 +76,13 @@ const customApi = {
         list: makeApiFn('/events/list'),
         update: makeApiFn('/events/update'),
     },
+    eventParticipant: {
+        list: makeApiFn('/event_participans/list'),
+        add_one: makeApiFn('/event_participans/add_one'),
+        add_all: makeApiFn('/event_participans/add_all'),
+        delete: makeApiFn('/event_participans/delete'),
+        update: makeApiFn('/event_participans/update'),
+    },
     slots: {
         insert: makeApiFn('/slots/create'),
         one: makeApiFn('/slots/get'),
@@ -82,7 +90,7 @@ const customApi = {
         update: makeApiFn('/slots/update'),
         leave: makeApiFn('/slots/leave'),
         enter: makeApiFn('/slots/enter'),
-    }
+    },
 }
 export const api = new (function () {
     this.api = null

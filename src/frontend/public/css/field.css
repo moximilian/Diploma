@@ -15,6 +15,11 @@ input:focus {
     width: calc(100% - 34px);
 }
 
+.table-cell .field-input {
+    width:auto;
+    background-color: white;
+}
+
 input.field-input {
     width: 486px;
     font-size: 16px;

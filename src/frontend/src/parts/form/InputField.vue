@@ -57,6 +57,7 @@ export default {
     },
     methods: {
         onFocus() {
+            console.log('input is focused !!!')
             this.focused = true
             this.$emit('onFocus')
         },
@@ -79,8 +80,8 @@ export default {
         focus() {
             // Автофокус с таймаутом, чтобы перебить дефолтный автофокус
             this.$el.click()
-            setTimeout(() => {
-                this.$el.querySelector('.field-input').focus()
+                setTimeout(() => {
+                    this.$el.querySelector('.field-input').focus()
             })
         },
     },

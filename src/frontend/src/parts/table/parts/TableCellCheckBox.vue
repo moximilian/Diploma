@@ -5,10 +5,13 @@
 </template>
 <script>
 export default {
+    props: {
+        isCheckedDefault: {type: Boolean, default: () => false}
+    },
     emits: ['clickCheckBox'],
     data() {
         return {
-            isChecked: false,
+            isChecked: this.isCheckedDefault,
         }
     },
     methods: {
