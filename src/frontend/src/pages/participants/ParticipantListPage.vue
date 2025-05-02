@@ -50,7 +50,7 @@ export default {
     computed: {
         keys() {
             return [
-                ...(this.isGroupAdmin ? [{ name: 'slot' }] : []),
+                ...(this.isGroupAdmin ? [{ name: 'slot', title: 'Выбрать' }] : []),
                 {
                     name: 'fio',
                     title: 'ФИО участника',

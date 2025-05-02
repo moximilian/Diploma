@@ -16,7 +16,13 @@
             >
                 Заявки на вступление
             </div>
-            <BaseBtn v-if="isGroupAdmin" :outline="true" @click="$router.push(`/events/new?group_id=${groupId}&name=${entity.name}`)">Добавить занятие</BaseBtn>
+            <div
+                v-if="entity?.is_participant || isGroupAdmin"
+                :class="{ selected: isSelected('events') }"
+                @click="select('events')"
+            >
+                Занятия
+            </div>
         </template>
         <template #page-content>
             <FormView
@@ -26,7 +32,7 @@
                 :defaults="entity"
             >
                 <template #form-bottom>
-                    <BaseBtn :outline="true" @click="$router.push(`/groups/list`)">Назад</BaseBtn>
+                    <BaseBtn :outline="true" @click="$router.back()">Назад</BaseBtn>
                     <BaseBtn
                         v-if="isStudent && entity?.is_participant"
                         @click="leaveGroup(entity.id)"
@@ -42,6 +48,12 @@
                 :groupId="groupId"
                 :entity="entity"
             />
+            <EventsListPage
+                v-if="isSelected('events') && (entity?.is_participant || isGroupAdmin)"
+                :groupId="groupId"
+                :group="entity"
+
+            />
             <EnterRequestsInListPage
                 v-if="isSelected('enter_requests') && isGroupAdmin"
                 :groupId="groupId"
@@ -54,10 +66,11 @@
 import TabsMixin from '@/pages/_help/TabsMixin'
 import ParticipantListPage from '../participants/ParticipantListPage'
 import EnterRequestsInListPage from '../enter_requests/EnterRequestsInListPage'
+import EventsListPage from '../events/EventsListPage.vue'
 
 export default {
     mixins: [TabsMixin],
-    components: { ParticipantListPage, EnterRequestsInListPage },
+    components: { ParticipantListPage, EnterRequestsInListPage, EventsListPage },
     data() {
         return {
             groupId: null,

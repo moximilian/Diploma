@@ -3,7 +3,7 @@
         <template #page-content>
             <FormView v-if="entity" displayName="slots" action="show" :defaults="entity">
                 <template #form-bottom>
-                    <BaseBtn :outline="true" @click="$router.push(`/home`)">Назад</BaseBtn>
+                    <BaseBtn :outline="true" @click="$router.back()">Назад</BaseBtn>
                     <BaseBtn v-if="isStudent && entity.is_participant" @click="leaveSlot()"
                         >Покинуть</BaseBtn
                     >

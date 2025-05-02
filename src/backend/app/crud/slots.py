@@ -139,7 +139,6 @@ class SlotsCRUD(BaseCRUD):
                 'value': slot_id
             }]
         }})
-        print(slot_id, type(slot_id))
         if found_items is not None and len(found_items) > 0:
             raise exc.ValidationEror('You already participate in this slot')
         

@@ -5,7 +5,7 @@
             :keys="[...keys, ...checkBoxKeys, ...customKeysForTable]"
             displayName="eventParticipant"
             :defaultFilters="defaultFilters"
-            :filters="defaultFilters"
+            :filters="defaultFilters.filters"
             orderByLocal="datetime"
             :isClickable="false"
             @loaded="getCustomKeysForTable"
@@ -108,6 +108,7 @@ export default {
             rows.forEach(row => {
                 row = this.transformEntity(row)
                 row.custom[this.newCustomKey] = null
+                this.newCustomKey = ''
                 this.updateRow(row)
             })
         },

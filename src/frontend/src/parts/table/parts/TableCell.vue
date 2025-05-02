@@ -34,7 +34,7 @@ export default {
         },
         viewValue() {
             return this.keyObj?.format
-                ? this.keyObj.format(this.row)
+                ? this.keyObj.format(this.row, this.row[this.keyObj.name])
                 : this.values[this.row[this.keyObj.name]] ?? this.row[this.keyObj.name]
         },
     },

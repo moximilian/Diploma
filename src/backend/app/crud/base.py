@@ -99,9 +99,7 @@ class BaseCRUD():
                 "totalCount" : 0
             }
         """
-        print(rows)
         rows = self._make_output(rows)
-        print(rows)
         rows = [row.dict() if not isinstance(row, dict) else row for row in rows]
         return BaseListResponse(rows=rows, totalCount=len(rows))
 

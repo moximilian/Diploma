@@ -18,7 +18,7 @@
                 :defaults="entity"
             >
                 <template #form-bottom>
-                    <BaseBtn :outline="true" @click="$router.push(`/home`)">Назад</BaseBtn>
+                    <BaseBtn :outline="true" @click="$router.back()">Назад</BaseBtn>
                     <BaseBtn v-if="isGroupAdmin" @click="$router.push(`/events/edit/${eventId}`)"
                         >Изменить</BaseBtn
                     >

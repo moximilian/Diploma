@@ -23,7 +23,7 @@
                     :row="row"
                     :isClickable="isClickable"
                     :class="{ even: index % 2 != 0 }"
-                    @clickRow.self="changeAction"
+                    @clickRow.self="clickRow"
                 >
                     <slot name="first-item" :row="row"></slot>
                     <div v-for="key of tableKeys" :key="key?.name" class="table-cell">
@@ -51,7 +51,7 @@ import TableRow from './parts/TableRow.vue'
 
 import displayRules from '@/core/displayRules'
 export default {
-    emits: ['onCustomKeyDelete'],
+    emits: ['onCustomKeyDelete', 'clickRow'],
     props: {
         keys: { type: Array, default: () => [] },
         rows: { type: Array, default: () => [] },
@@ -81,11 +81,9 @@ export default {
                 return titles
             }, {})
         },
-        changeAction(row) {
+        clickRow(row) {
             if (!this.isClickable) return
-            const fullPath = this.$route.path
-            const source = fullPath.split('/')[1]
-            this.$router.push(`/${source}/show/${row.id}`)
+            this.$emit('clickRow', row)
         },
     },
     created() {

@@ -5,6 +5,7 @@
         :displayName="displayName"
         :isClickable="isClickable"
         @onCustomKeyDelete="(val, rows) => $emit('onCustomKeyDelete', val, rows)"
+        @clickRow="clickRow"
     >
         <template #before>
             <slot name="before"></slot>
@@ -38,6 +39,8 @@ export default {
         filters: { type: Object, default: () => {} },
         isClickable: { type: Boolean, default: () => true },
         orderByLocal: { type: String, default: () => '' },
+
+        clickRowPath: { type: String, default: () => '' },
     },
     emits: ['loaded', 'onCustomKeyDelete'],
     data() {
@@ -63,6 +66,11 @@ export default {
                 first[this.orderByLocal] > second[this.orderByLocal] ? 1 : -1
             )
         },
+        clickRow(row) {
+            const fullPath = this.$route.path
+            const source = fullPath.split('/')[1]
+            this.$router.push(`/${this.clickRowPath || source}/show/${row.id}`)
+        }
     },
     created() {
         if (!this.displayName) {
