@@ -142,6 +142,10 @@ class SlotsCRUD(BaseCRUD):
         if found_items is not None and len(found_items) > 0:
             raise exc.ValidationEror('You already participate in this slot')
         
+        if len(found_items[0].participants) == found_items[0].max_participants_count:
+            raise exc.ForbiddenError('Slot exceeds it\'s maximum capacity')
+
+        
         self.participants_ds.insert({
             'user_id': self.user.get('id'),
             'slot_id': slot_id,

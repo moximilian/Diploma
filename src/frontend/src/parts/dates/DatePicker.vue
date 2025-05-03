@@ -6,8 +6,8 @@
             :value="date"
             :disabled="disabled"
             :readonly="true"
-            :placeholder="$t(placeholder)"
             @click="toggle"
+            :placeholder="placeholder"
         >
             <template v-slot:beforeInput="{ focused }">
                 <i class="icon icon-scheduler" :class="{ active: focused }" @click="focus"></i>

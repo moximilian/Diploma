@@ -61,13 +61,18 @@
             "requireConfigFile": false,
             "babelOptions": {
                 "plugins": [
-                    ["@babel/plugin-proposal-optional-chaining-assign", {
-                        "version": "2023-07"
-                    }]
+                    [
+                        "@babel/plugin-proposal-optional-chaining-assign",
+                        {
+                            "version": "2023-07"
+                        }
+                    ]
                 ]
             }
         },
-        "rules": {},
+        "rules": {
+            "no-control-regex": 0
+        },
         "overrides": [
             {
                 "files": [

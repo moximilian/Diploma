@@ -4,6 +4,11 @@
     justify-content: center;
 }
 
+.page-content:has(.table-base-container) {
+    display: flex;
+    flex-direction: column;
+}
+
 .page.user {
     display: flex;
     flex-direction: column;

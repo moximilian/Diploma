@@ -19,7 +19,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.ext.mutable import MutableList
 
-from sqlalchemy.orm import class_mapper, ColumnProperty, relationship, backref
+from sqlalchemy.orm import class_mapper, ColumnProperty, relationship
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 

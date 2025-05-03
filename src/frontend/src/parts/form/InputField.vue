@@ -64,7 +64,37 @@ export default {
             this.focused = false
             this.$emit('onBlur')
         },
+        checkSQLInjection(input) {
+            // Default check for SQL Injection
+            if (typeof input !== 'string') {
+                return ''
+            }
+            const value = input
+                .replace(/[\0\x08\x09\x1a\n\r"'\\%]/g, char => {
+                    // Экранируем специальные символы
+                    const replacements = {
+                        '\0': '\\0',
+                        '\x08': '\\b',
+                        '\x09': '\\t',
+                        '\x1a': '\\z',
+                        '\n': '\\n',
+                        '\r': '\\r',
+                        '"': '',
+                        "'": '',
+                        '\\\\': '',
+                        '%': '\\%',
+                    }
+                    return replacements[char] || ''
+                })
+                .replace(
+                    /(\b(union|select|insert|update|delete|drop|alter|create|exec|shutdown|--|#|\/\*|\*\/)\b)/gi,
+                    ''
+                )
+            console.log(value, '!!!')
+            return value
+        },
         onInput() {
+            this.realValue = this.checkSQLInjection(this.realValue)
             if (this.afterInputFormat) {
                 this.realValue = this.afterInputFormat(this.realValue)
             }
@@ -79,8 +109,8 @@ export default {
         focus() {
             // Автофокус с таймаутом, чтобы перебить дефолтный автофокус
             this.$el.click()
-                setTimeout(() => {
-                    this.$el.querySelector('.field-input').focus()
+            setTimeout(() => {
+                this.$el.querySelector('.field-input').focus()
             })
         },
     },
