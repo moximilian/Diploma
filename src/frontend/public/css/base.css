@@ -52,6 +52,10 @@ body {
     position: relative;
 }
 
+.custom-checkbox.disabled:hover {
+    cursor:not-allowed;
+}
+
 .custom-checkbox:checked {
     border-color: var(--main-color);
     background-color: var(--main-color);

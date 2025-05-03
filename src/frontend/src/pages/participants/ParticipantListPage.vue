@@ -10,6 +10,8 @@
         <template #first-item="{ row }">
             <TableCellCheckBox
                 v-if="isGroupAdmin"
+                :disabled="row.has_events"
+                :title="row.has_events ? 'Нельзя! Принимает участие в занятии' : ''"
                 @clickCheckBox="isChecked => onCheckboxChecked(isChecked, row)"
             />
         </template>
@@ -38,13 +40,11 @@ export default {
         onCheckboxChecked(isChecked, { id }) {
             isChecked ? this.selectedIds.set(id, true) : this.selectedIds.delete(id, true)
         },
-        removeParticipans() {
-            this.$api.participants.delete(
-                { ids: Array.from(this.selectedIds).map(item => item[0]) },
-                () => {
-                    this.$refs.table.load()
-                }
-            )
+        async removeParticipans() {
+            await this.$api.participants.delete({
+                ids: Array.from(this.selectedIds).map(item => item[0]),
+            })
+            await this.$refs.table.load()
         },
     },
     computed: {

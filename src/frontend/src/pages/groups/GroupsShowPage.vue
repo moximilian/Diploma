@@ -52,7 +52,6 @@
                 v-if="isSelected('events') && (entity?.is_participant || isGroupAdmin)"
                 :groupId="groupId"
                 :group="entity"
-
             />
             <EnterRequestsInListPage
                 v-if="isSelected('enter_requests') && isGroupAdmin"
@@ -80,10 +79,9 @@ export default {
         }
     },
     methods: {
-        leaveGroup(id) {
-            this.$api.groups.leave({ id }, () => {
-                this.$router.push(`/groups/list`)
-            })
+        async leaveGroup(id) {
+            await this.$api.groups.leave({ id })
+            this.$router.push(`/groups/list`)
         },
     },
     computed: {
@@ -94,15 +92,14 @@ export default {
             return this.$store.getters.isStudent
         },
     },
-    created() {
+    async created() {
         this.groupId = this.$route.params.id
         if (!this.groupId) {
             return console.error('User ID is not given')
         }
-        this.$api.groups.one({ id: this.groupId }, res => {
-            if (res.detail) return console.error('Error during API call')
-            this.entity = res
-        })
+        const { body, ok } = await this.$api.groups.one({ id: this.groupId })
+        if (!ok) return console.error('Error during API call')
+        this.entity = body
     },
 }
 </script>

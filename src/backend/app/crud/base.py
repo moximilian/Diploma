@@ -1,3 +1,4 @@
+from sqlite3 import IntegrityError
 import models as m
 import api.exceptions as exc
 from schemas import BaseListResponse
@@ -12,6 +13,7 @@ class BaseCRUD():
     Args:
         db: SqlAlchemy Session instance
         model: SqlAlchemy orm default model
+        joined_models: Optional list of models in which filters will work. Defaults to [model]
     """
 
     def __init__(self, db, model, joined_models = []):

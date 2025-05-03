@@ -2,7 +2,9 @@
     <NestedPage :title="currentDateLabel">
         <template #page-header-right>
             <div :class="{ selected: isSelected('today') }" @click="selectToday()">Сегодня</div>
-            <div :class="{ selected: isSelected('day') }" @click="select('day', dateWheres)">День</div>
+            <div :class="{ selected: isSelected('day') }" @click="select('day', dateWheres)">
+                День
+            </div>
             <div :class="{ selected: isSelected('week') }" @click="selectTab('week')">Неделя</div>
             <div :class="{ selected: isSelected('month') }" @click="selectTab('month')">Месяц</div>
             <div class="flex-container-row">
@@ -243,24 +245,16 @@ export default {
             this.selectDate(newDate)
         },
         prev() {
-            this.adjustDate(
-                this.selectedDates[0],
-                this.daysToChange[this.selectedOption],
-                false
-            )
+            this.adjustDate(this.selectedDates[0], this.daysToChange[this.selectedOption], false)
         },
         next() {
-            this.adjustDate(
-                this.selectedDates[0],
-                this.daysToChange[this.selectedOption],
-                true
-            )
+            this.adjustDate(this.selectedDates[0], this.daysToChange[this.selectedOption], true)
         },
         selectToday() {
             this.selectDate(new Date())
             this.select('today', this.dateWheres)
         },
-        fetchEvents() {
+        async fetchEvents() {
             this.events = []
             this.isLoading = true
             if (Array.isEmpty(this.dateWheres)) return
@@ -279,37 +273,32 @@ export default {
                     ],
                 },
             }
-            this.$api.events.list(filters, res => {
-                this.events.push(
-                    ...res.rows?.sort((first, second) =>
-                        first.start_time > second.start_time ? 1 : -1
-                    )
+            const { body } = await this.$api.events.list(filters)
+            this.events.push(
+                ...body.rows?.sort((first, second) =>
+                    first.start_time > second.start_time ? 1 : -1
                 )
-                this.$api.slots.list(
-                    {
-                        filters: {
-                            wheres: [
-                                ...(!this.isStudent ? [{ column: 'role', value: 'teacher' }] : []),
-                                ...this.dateWheres,
-                                ...this.slotsFilters,
-                            ],
-                        },
-                    },
-                    res => {
-                        this.events.push(
-                            ...res.rows?.sort((first, second) =>
-                                first.start_time > second.start_time ? 1 : -1
-                            )
-                        )
-                        this.isLoading = false
-                    }
-                )
+            )
+            const res = await this.$api.slots.list({
+                filters: {
+                    wheres: [
+                        ...(!this.isStudent ? [{ column: 'role', value: 'teacher' }] : []),
+                        ...this.dateWheres,
+                        ...this.slotsFilters,
+                    ],
+                },
             })
+            this.events.push(
+                ...res.body.rows?.sort((first, second) =>
+                    first.start_time > second.start_time ? 1 : -1
+                )
+            )
+            this.isLoading = false
         },
     },
-    created() {
+    async created() {
         this.selectToday()
-        this.fetchEvents()
+        await this.fetchEvents()
     },
     components: {
         DateCalendar,

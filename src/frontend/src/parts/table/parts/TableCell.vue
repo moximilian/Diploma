@@ -33,6 +33,7 @@ export default {
             return this.field?.displayName ? 'ValueToString' : 'span'
         },
         viewValue() {
+            if (!this.row) return
             return this.keyObj?.format
                 ? this.keyObj.format(this.row, this.row[this.keyObj.name])
                 : this.values[this.row[this.keyObj.name]] ?? this.row[this.keyObj.name]

@@ -1,8 +1,7 @@
 <template>
     <NestedPage title="Создать слот" v-if="!isStudent">
         <template #page-content>
-            <FormView action="new" displayName="slots" @onSave="entity => createSlot(entity)">
-            </FormView>
+            <FormView action="new" displayName="slots" @onSave="createSlot"> </FormView>
         </template>
     </NestedPage>
 </template>
@@ -19,11 +18,10 @@ export default {
         },
     },
     methods: {
-        createSlot(entity) {
-            this.$api.slots.insert({ ...entity }, res => {
-                if (res.detail) return
-                this.$router.replace(`/slots/show/${res[0].id}`)
-            })
+        async createSlot(entity) {
+            const { body, ok } = await this.$api.slots.insert({ ...entity })
+            if (!ok) return
+            this.$router.replace(`/slots/show/${body[0].id}`)
         },
     },
 }

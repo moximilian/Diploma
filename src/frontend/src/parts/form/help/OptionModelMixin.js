@@ -10,9 +10,9 @@ export default {
         searchField: { type: [String, Array], default: null },
         defaultLimit: { type: Number, default: () => 15 },
         afterFetch: { type: Function, default: null },
-        isBaseRequestAllowed: {type: Boolean, default: () => true},
+        isBaseRequestAllowed: { type: Boolean, default: () => true },
         emptyValue: { type: String, default: () => '—' },
-        isLocalSearch: {type: Boolean, default: () => false},
+        isLocalSearch: { type: Boolean, default: () => false },
     },
     emits: ['loaded'],
     mixins: [SelectFormatMixin],
@@ -20,7 +20,7 @@ export default {
         return {
             searchValue: null,
             isLoading: true,
-            optionRows: []
+            optionRows: [],
         }
     },
     computed: {
@@ -75,11 +75,10 @@ export default {
         },
     },
     methods: {
-        load() {
+        async load() {
             this.isLoading = true
-            this.model.list(this.fetchOptions, res => {
-                this.optionRows = res.rows
-            })
+            const { body } = await this.model.list(this.fetchOptions)
+            this.optionRows = body.rows
         },
     },
 }

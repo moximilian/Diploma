@@ -1,5 +1,6 @@
 <template>
     <TableBase
+        v-if="rows !== null"
         :keys="keys"
         :rows="rows"
         :displayName="displayName"
@@ -39,26 +40,26 @@ export default {
         filters: { type: Object, default: () => {} },
         isClickable: { type: Boolean, default: () => true },
         orderByLocal: { type: String, default: () => '' },
-
         clickRowPath: { type: String, default: () => '' },
     },
     emits: ['loaded', 'onCustomKeyDelete'],
     data() {
         return {
-            rows: [],
+            rows: null,
             totalCount: 0,
         }
     },
     methods: {
-        load() {
+        async load() {
             this.rows = []
-            this.$api[this.displayName].list({ filters: this.filters }, res => {
-                if (res.detail) return console.error('Error during API call')
-                this.rows = res.rows
-                this.defaultSort()
-                this.totalCount = res.totalCount
-                this.$emit('loaded', this.rows)
+            const { body, ok } = await this.$api[this.displayName].list({
+                filters: this.filters,
             })
+            if (!ok) return console.error('Error during API call')
+            this.rows = body.rows
+            this.defaultSort()
+            this.totalCount = body.totalCount
+            this.$emit('loaded', this.rows)
         },
         defaultSort() {
             if (!this.orderByLocal) return
@@ -70,19 +71,19 @@ export default {
             const fullPath = this.$route.path
             const source = fullPath.split('/')[1]
             this.$router.push(`/${this.clickRowPath || source}/show/${row.id}`)
-        }
+        },
     },
-    created() {
+    async created() {
         if (!this.displayName) {
             return console.error('TableView: display rule is not provided')
         }
-        this.$api[this.displayName].list(this.defaultFilters, res => {
-            if (res.detail) return console.error('Error during API call')
-            this.rows = res.rows
-            this.defaultSort()
-            this.totalCount = res.totalCount
-            this.$emit('loaded', this.rows)
-        })
+        console.error(this.displayName)
+        const { body, ok } = await this.$api[this.displayName].list(this.defaultFilters)
+        if (!ok) return console.error('Error during API call')
+        this.rows = body.rows
+        this.defaultSort()
+        this.totalCount = body.totalCount
+        this.$emit('loaded', this.rows)
     },
     components: { TableBase },
 }

@@ -3,7 +3,7 @@
         <TableView
             ref="table"
             :keys="[...keys, ...checkBoxKeys, ...customKeysForTable]"
-            displayName="eventParticipant"
+            displayName="slotParticipants"
             :defaultFilters="defaultFilters"
             :filters="defaultFilters.filters"
             orderByLocal="datetime"
@@ -11,9 +11,6 @@
             @loaded="getCustomKeysForTable"
             @onCustomKeyDelete="deleteCustomKey"
         >
-            <template #before>
-                <BaseBtn @click="addAllParticipants">Добавить всех участников группы</BaseBtn>
-            </template>
             <template #table-cell="{ row, keyObj }">
                 <TableCellCheckBox
                     v-if="checkBoxKeys.includes(keyObj)"
@@ -55,12 +52,8 @@
                     </div>
                 </div>
             </template>
-            <template #last-item="{ row }">
-                <TableCell>
-                    <BaseBtn @click="async () => await deleteEventParticipant(row.id)"
-                        >Удалить участника</BaseBtn
-                    >
-                </TableCell>
+            <template #last-item>
+                <TableCell />
             </template>
         </TableView>
     </div>
@@ -75,8 +68,8 @@ export default {
                 filters: {
                     wheres: [
                         {
-                            column: 'event_id',
-                            value: this.eventId,
+                            column: 'slot_id',
+                            value: this.slotId,
                         },
                     ],
                 },
@@ -84,21 +77,13 @@ export default {
         },
     },
     methods: {
-        async addAllParticipants() {
-            await this.$api.eventParticipant.add_all({ id: this.eventId })
-            await this.$refs.table.load()
-        },
         async updateRow(entity) {
-            await this.$api.eventParticipant.update(entity)
-            await this.$refs.table.load()
-        },
-        async deleteEventParticipant(id) {
-            await this.$api.eventParticipant.delete({ id })
-            await this.$refs.table.load()
+            await this.$api.slotParticipants.update(entity)
+            this.$refs.table.load()
         },
     },
     created() {
-        this.eventId = this.$route.params.id
+        this.slotId = this.$route.params.id
     },
 }
 </script>

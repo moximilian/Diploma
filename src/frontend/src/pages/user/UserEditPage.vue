@@ -11,6 +11,13 @@
             >
                 Безопасность
             </div>
+            <div
+                v-if="!isStudent"
+                :class="{ selected: isSelected('slots') }"
+                @click="select('slots')"
+            >
+                Мои слоты
+            </div>
         </template>
 
         <template #page-content>
@@ -36,21 +43,26 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-content" v-else>
+                <div class="page-content" v-if="isSelected('security')">
                     <FormView displayName="passwordChange" action="edit">
                         <template #form-bottom="{ entity }">
                             <BaseBtn @click="updatePassword(entity)">Изменить пароль</BaseBtn>
                         </template>
                     </FormView>
                 </div>
+                <div class="page-content" v-if="isSelected('slots')">
+                    <SlotsListPage :userId="userId" />
+                </div>
             </div>
         </template>
     </NestedPage>
 </template>
 <script>
+import SlotsListPage from '@/pages/slots/SlotsListPage.vue'
 import TabsMixin from '@/pages/_help/TabsMixin'
 export default {
     mixins: [TabsMixin],
+    components: { SlotsListPage },
     data() {
         return {
             userId: null,
@@ -60,59 +72,58 @@ export default {
         }
     },
     methods: {
-        saveUser(entity) {
-            this.$api.users.update({ ...entity, id: this.userId }, res => {
-                if (res.detail) return
-                this.fetchUser()
+        async saveUser(entity) {
+            const { ok } = await this.$api.users.update({
+                ...entity,
+                id: this.userId,
+                is_external_auth: this.entity.is_external_auth,
             })
+            if (!ok) return
+            await this.fetchUser()
         },
-        updatePassword(entity) {
-            this.$api.users.change_password({ ...entity }, res => {
-                if (res.detail) return
+        async updatePassword(entity) {
+            await this.$api.users.change_password({ ...entity })
+        },
+        async fetchUser() {
+            const { body, ok } = await this.$api.users.one({ id: this.userId })
+            if (!ok) return console.error('Error during API call')
+            this.entity = body
+            if (body?.photo_id && !this.imageSrc) await this.fetchImage(body.photo_id)
+        },
+        async fetchImage(id) {
+            const { body } = await this.$api.images.get({ id })
+            this.$store.commit('setPhoto', body)
+        },
+        async uploadImage(image_data, image_name) {
+            const { ok } = await this.$api.images.set_user({
+                image_name,
+                image_data,
             })
+            if (!ok) return
+            await this.fetchUser()
         },
-        fetchUser() {
-            this.$api.users.one({ id: this.userId }, res => {
-                if (res.detail) return console.error('Error during API call')
-                this.entity = res
-                if (res?.photo_id && !this.imageSrc) this.fetchImage(res.photo_id)
+        async deleteImage() {
+            const { ok } = await this.$api.images.delete_user({
+                id: this.$store.state.photo_id,
             })
-        },
-        fetchImage(id) {
-            this.$api.images.get({ id }, res => {
-                this.$store.commit('setPhoto', res)
-            })
-        },
-        uploadImage(image_data, image_name) {
-            this.$api.images.set_user(
-                {
-                    image_name,
-                    image_data,
-                },
-                res => {
-                    if (res?.detail) return
-                    this.fetchUser()
-                }
-            )
-        },
-        deleteImage() {
-            this.$api.images.delete_user({ id: this.$store.state.photo_id }, res => {
-                if (res?.detail) return
-                this.$store.commit('setPhoto', { image_data: null, id: null })
-            })
+            if (!ok) return
+            this.$store.commit('setPhoto', { image_data: null, id: null })
         },
     },
     computed: {
         imageSrc() {
             return this.$store.state.photo64
         },
+        isStudent() {
+            return this.$store.getters.isStudent
+        },
     },
-    created() {
+    async created() {
         this.userId = this.$route.params.id
         if (!this.userId) {
             return console.error('User ID is not given')
         }
-        this.fetchUser()
+        await this.fetchUser()
     },
 }
 </script>

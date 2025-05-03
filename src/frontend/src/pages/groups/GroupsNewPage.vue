@@ -20,11 +20,10 @@ export default {
         },
     },
     methods: {
-        saveGroup(entity) {
-            this.$api.groups.insert({ ...entity }, res => {
-                if (res.detail) return
-                this.$router.replace(`/groups/show/${res[0].id}`)
-            })
+        async saveGroup(entity) {
+            const { body, ok } = await this.$api.groups.insert({ ...entity })
+            if (!ok) return
+            this.$router.replace(`/groups/show/${body[0].id}`)
         },
     },
 }

@@ -25,14 +25,13 @@ export default {
         }
     },
     methods: {
-        authorize(entity) {
-            this.$api.auth.login({ ...entity }, res => {
-                if (res?.detail) return
-                this.$ls.token = res.access_token
-                this.$ls.current_user = res.user_id
-                this.$store.commit('setUser', res.user_id)
-                this.$router.replace('/home')
-            })
+        async authorize(entity) {
+            const { body, ok } = await this.$api.auth.login({ ...entity })
+            if (!ok) return
+            this.$ls.token = body.access_token
+            this.$ls.current_user = body.user_id
+            this.$store.commit('setUser', body.user_id)
+            this.$router.replace('/home')
         },
         async initGoogleAuth() {
             await this.loadBtnScript('https://accounts.google.com/gsi/client?hl=ru')
@@ -40,28 +39,24 @@ export default {
                 /* eslint-disable no-undef */
                 await google.accounts.id.initialize({
                     client_id: GOOGLE_CLIENT_ID,
-                    callback: ({ credential }) => {
+                    callback: async ({ credential }) => {
                         const userData = jwtDecode(credential)
                         const password = this.transformPassword(
                             `${userData.sub}-${userData.email.ucFirst()}`
                         )
-                        this.$api.auth.register(
-                            {
-                                name: userData.given_name,
-                                surname: userData.family_name,
-                                login: userData.email,
-                                password,
-                                password_confirm: password,
-                                role_name: 'student',
-                                is_external_auth: true,
-                            },
-                            () => {
-                                this.authorize({
-                                    login: userData.email,
-                                    password: password,
-                                })
-                            }
-                        )
+                        await this.$api.auth.register({
+                            name: userData.given_name,
+                            surname: userData.family_name,
+                            login: userData.email,
+                            password,
+                            password_confirm: password,
+                            role_name: 'student',
+                            is_external_auth: true,
+                        })
+                        await this.authorize({
+                            login: userData.email,
+                            password: password,
+                        })
                     },
                     response_type: 'token',
                     scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email	openid',
@@ -128,26 +123,22 @@ export default {
         }
         this.initYandexAuth()
         this.initGoogleAuth()
-        this.$ls.subscribe('yandex_user_data', () => {
+        this.$ls.subscribe('yandex_user_data', async () => {
             const userData = JSON.parse(this.$ls.getItemDecrypt('yandex_user_data'))
             const password = this.transformPassword(userData.psuid)
-            this.$api.auth.register(
-                {
-                    name: userData.first_name,
-                    surname: userData.last_name,
-                    login: userData.login,
-                    password,
-                    password_confirm: password,
-                    role_name: 'student',
-                    is_external_auth: true,
-                },
-                () => {
-                    this.authorize({
-                        login: userData.login,
-                        password: password,
-                    })
-                }
-            )
+            await this.$api.auth.register({
+                name: userData.first_name,
+                surname: userData.last_name,
+                login: userData.login,
+                password,
+                password_confirm: password,
+                role_name: 'student',
+                is_external_auth: true,
+            })
+            await this.authorize({
+                login: userData.login,
+                password: password,
+            })
         })
     },
 }

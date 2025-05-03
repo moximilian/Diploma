@@ -47,11 +47,11 @@ export default {
         onCheckboxChecked(isChecked, { id }) {
             isChecked ? this.selectedIds.set(id, true) : this.selectedIds.delete(id, true)
         },
-        changeUserStatus(status) {
-            Array.from(this.selectedIds).map(item => {
-                this.$api.enter_requests[status]({ id: item[0] })
+        async changeUserStatus(status) {
+            Array.from(this.selectedIds).map(async item => {
+                await this.$api.enter_requests[status]({ id: item[0] })
             })
-            this.$refs.requestsTable.load()
+            await this.$refs.requestsTable.load()
         },
     },
     computed: {

@@ -200,13 +200,13 @@ class EventParticipant(Base, BaseModel):
 
     event_id = Column(
         UUID(as_uuid=True),
-        ForeignKey('events.id', onupdate='CASCADE', ondelete='RESTRICT'), nullable=False
+        ForeignKey('events.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
     )
     datetime = Column('datetime',
                       DateTime(), default=func.now())
     participant_id = Column(
         UUID(as_uuid=True),
-        ForeignKey('group_participants.id', onupdate='CASCADE', ondelete='RESTRICT'), nullable=False
+        ForeignKey('group_participants.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False
     )
 
     is_attended = Column(Boolean, default=None, nullable=True)

@@ -13,8 +13,9 @@
 <script>
 export default {
     methods: {
-        register(entity) {
-            this.$api.auth.register(entity, () => this.$router.push('/auth/login'))
+        async register(entity) {
+            await this.$api.auth.register(entity)
+            this.$router.push('/auth/login')
         },
     },
     mounted() {

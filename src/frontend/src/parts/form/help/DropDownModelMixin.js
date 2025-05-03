@@ -3,8 +3,8 @@ import OptionModelMixin from './OptionModelMixin'
 export default {
     mixins: [SelectPropsMixin, OptionModelMixin],
     watch: {
-        searchValue(newSearch) {
-            newSearch === '' && this.load()
+        async searchValue(newSearch) {
+            newSearch === '' && await this.load()
         },
     },
     computed: {
@@ -13,18 +13,18 @@ export default {
         },
     },
     methods: {
-        searchCb(search) {
+        async searchCb(search) {
             if (!this.isSearch || this.isLocalSearch) return
 
             this.searchValue = search
             if (search?.length > 1) {
-                this.load()
+                await this.load()
                 this.$emit('search', search)
             }
         },
-        opened() {
+        async opened() {
             this.searchValue = ''
-            this.load()
+            await this.load()
             this.$emit('onOpened')
         },
         closed() {
@@ -37,7 +37,7 @@ export default {
             modelName: this.modelName,
         }
     },
-    created() {
+    async created() {
         if (!this.modelName) {
             console.error('DropDownModel: Model Name does not exists')
             return
@@ -46,6 +46,6 @@ export default {
             console.error(`DropDownModel: Model ${this.modelName} does not exists`)
             return
         }
-        this.load()
+        await this.load()
     },
 }

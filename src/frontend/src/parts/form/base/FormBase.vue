@@ -68,34 +68,40 @@ export default {
     },
     methods: {
         getDisplayRule(cb) {
-            this.displayRule = this.injectWithValues(this.fieldset, (finalValue, field, defaultValue) => {
-                if (!this.unchangedEntity[field.props.name])
-                    this.unchangedEntity[field.props.name] = defaultValue
-                field.props.value = finalValue
-                cb?.()
-            })
+            this.displayRule = this.injectWithValues(
+                this.fieldset,
+                (finalValue, field, defaultValue) => {
+                    if (!this.unchangedEntity[field.props.name])
+                        this.unchangedEntity[field.props.name] = defaultValue
+                    field.props.value = finalValue
+                    cb?.()
+                }
+            )
         },
         injectWithValues(fields, cb) {
-            fields.forEach(field => {
+            fields.forEach(async field => {
                 const defaultValue = !Object.isEmpty(this.defaults)
                     ? this.defaults[field.props.name]
                     : field.props.value
                 ![null, undefined].includes(field.displayName)
-                    ? this.getFieldValue(field, defaultValue, (finalValue) => cb?.(finalValue, field, defaultValue))
+                    ? await this.getFieldValue(field, defaultValue, finalValue =>
+                          cb?.(finalValue, field, defaultValue)
+                      )
                     : (field.props.value = defaultValue)
             })
             return fields
         },
-        getFieldValue(field, defaultValue, cb) {
+        async getFieldValue(field, defaultValue, cb) {
             if (!defaultValue) return ''
-            this.$api[field.displayName].one({ [field.fieldKey ?? 'id']: defaultValue }, res => {
-                if (res.detail) return defaultValue
-                cb?.(
-                    Array.isArray(field.showName)
-                        ? field.showName.map(field => res[field]).join(' ')
-                        : res[field.showName]
-                )
+            const { body, ok } = await this.$api[field.displayName].one({
+                [field.fieldKey ?? 'id']: defaultValue,
             })
+            if (!ok) return defaultValue
+            cb?.(
+                Array.isArray(field.showName)
+                    ? field.showName.map(field => body[field]).join(' ')
+                    : body[field.showName]
+            )
         },
         componentProps(field) {
             return { ...field.props }

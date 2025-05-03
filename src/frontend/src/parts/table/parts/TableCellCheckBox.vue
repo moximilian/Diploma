@@ -1,12 +1,22 @@
 <template>
     <TableCell>
-        <input type="checkbox" class="custom-checkbox" @change="click" :checked="isChecked" />
+        <input
+            type="checkbox"
+            class="custom-checkbox"
+            :disabled="disabled"
+            @change="click"
+            :checked="isChecked"
+            :title="title"
+            :class="{disabled}"
+        />
     </TableCell>
 </template>
 <script>
 export default {
     props: {
-        isCheckedDefault: {type: Boolean, default: () => false}
+        isCheckedDefault: { type: Boolean, default: () => false },
+        disabled: { type: Boolean, default: () => false },
+        title: { type: String, default: () => '' },
     },
     emits: ['clickCheckBox'],
     data() {

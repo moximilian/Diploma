@@ -431,4 +431,4 @@ class SlotParticipantModel(BaseModelConfig):
     slot_id: UUID
     is_attended: bool
     is_paid: bool
-    custom: Dict[List[Any], Any] = None
+    custom: Optional[Dict[str, Any]] = None

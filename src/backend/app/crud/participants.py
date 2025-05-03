@@ -2,13 +2,9 @@
 Logic to work with DB
 """
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
 import models as m
 from crud.base import BaseCRUD
 from crud.users import User
-
-from schemas import GroupOut, RequestBodyOne, GroupBase
-import api.exceptions as exc
 
 
 class ParticipantsCRUD(BaseCRUD):
@@ -32,8 +28,10 @@ class ParticipantsCRUD(BaseCRUD):
         result_rows = []
         for row in rows:
             participant = self.userCRUD.get({'id': row.user_id}).dict()
+            participant.pop('password', {})
             participant['group_id'] = row.group_id
             participant['user_id'] = row.user_id
+            participant['has_events'] = len(row.events) != 0
             participant['id'] = row.id
             result_rows.append(participant)
         return super()._transform_response(result_rows)

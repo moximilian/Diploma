@@ -152,24 +152,22 @@ export default {
         toGroups() {
             this.$router.push(`/groups/list?user_id=${this.currentUserId}`)
         },
-        logout() {
-            this.$api.auth.logout({ access_token: this.$ls.token }, () => {
-                this.$ls.token = null
-                this.$ls.current_user = null
-                this.$router.push('/auth/login')
-            })
+        async logout() {
+            await this.$api.auth.logout({ access_token: this.$ls.token })
+            this.$ls.token = null
+            this.$ls.current_user = null
+            this.$router.push('/auth/login')
         },
-        getCurrentUser() {
-            this.$api.users.one({ id: this.$ls.current_user }, res => {
-                this.currentUser = res
-                if (res?.photo_id || this.imageSrc === null) this.fetchImage(res.photo_id)
-                this.$store.commit('setRole', res.role_name)
-            }) ?? ''
+        async getCurrentUser() {
+            const { body } = await this.$api.users.one({ id: this.$ls.current_user })
+            this.currentUser = body
+            if (body?.photo_id || this.imageSrc === null) await this.fetchImage(body.photo_id)
+            this.$store.commit('setRole', body.role_name)
         },
-        fetchImage(id) {
-            this.$api.images.get({ id }, res => {
-                this.$store.commit('setPhoto', res)
-            })
+        async fetchImage(id) {
+            const { body } = await this.$api.images.get({ id })
+
+            this.$store.commit('setPhoto', body)
         },
     },
     computed: {

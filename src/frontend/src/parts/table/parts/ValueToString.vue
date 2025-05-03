@@ -14,16 +14,14 @@ export default {
         }
     },
 
-    created() {
-        this.$api[this.field.displayName].one(
-            { [this.field.fieldKey ?? 'id']: this.row[this.field.localKeyName] },
-            res => {
-                if (res.detail) return
-                this.realValue = Array.isArray(this.field.showName)
-                    ? this.field.showName.map(field => res[field]).join(' ')
-                    : res[this.field.showName]
-            }
-        )
+    async created() {
+        const { body, ok } = await this.$api[this.field.displayName].one({
+            [this.field.fieldKey ?? 'id']: this.row[this.field.localKeyName],
+        })
+        if (!ok) return
+        this.realValue = Array.isArray(this.field.showName)
+            ? this.field.showName.map(field => body[field]).join(' ')
+            : body[this.field.showName]
     },
 }
 </script>

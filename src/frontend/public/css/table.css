@@ -30,7 +30,7 @@
     background-color: #f4f7f7;
 }
 
-.table-base-row:not(.table-base-header):hover {
+.table-base-row:not(.table-base-header).clickable:hover {
     background-color: rgba(var(--main-dark-rgb), 0.1);
     cursor: pointer;
 }

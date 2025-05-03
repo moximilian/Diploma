@@ -57,7 +57,6 @@ export default {
     },
     methods: {
         onFocus() {
-            console.log('input is focused !!!')
             this.focused = true
             this.$emit('onFocus')
         },

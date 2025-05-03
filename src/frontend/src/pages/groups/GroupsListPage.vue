@@ -36,8 +36,10 @@ export default {
         }
     },
     watch: {
-        isStudent() {
-            this.$refs.table.load()
+        isStudent: {
+            async handler() {
+                await this.$refs.table.load()
+            }
         },
     },
     computed: {
@@ -80,9 +82,10 @@ export default {
         },
     },
     methods: {
-        changeFilters(wheres) {
+        async changeFilters(wheres) {
+            console.log(wheres, '!!!')
             this.filters.wheres = wheres
-            this.$refs.table?.load()
+            await this.$refs.table?.load()
         },
         buttonProps(row) {
             return {
@@ -92,17 +95,14 @@ export default {
                 value: this.buttonState(row),
             }
         },
-        onGroupChange(row) {
+        async onGroupChange(row) {
             const action = row.is_participant ? null : row.is_open ? 'enter' : 'send_request'
-            action &&
-                this.$api.groups[action](
-                    {
-                        id: row.id,
-                    },
-                    () => {
-                        this.$refs.table.load()
-                    }
-                )
+            if (action) {
+                await this.$api.groups[action]({
+                    id: row.id,
+                })
+                await this.$refs.table.load()
+            }
         },
         buttonState(row) {
             return row.is_participant ? 'Учавствую' : row.is_open ? 'Вступить' : 'Отправить запрос'

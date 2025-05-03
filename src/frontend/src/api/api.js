@@ -15,8 +15,7 @@ import { reactive } from 'vue'
  */
 const makeApiFn =
     (path, setArgsFn = args => ({ args })) =>
-    (args, cb) =>
-        baseCallApi(path, setArgsFn(args), cb)
+    (args) => baseCallApi(path, setArgsFn(args))
 
 const customApi = {
     auth: {
@@ -83,6 +82,10 @@ const customApi = {
         delete: makeApiFn('/event_participans/delete'),
         update: makeApiFn('/event_participans/update'),
     },
+    slotParticipants: {
+        list: makeApiFn('/slot_participans/list'),
+        update: makeApiFn('/slot_participans/update'),
+    },
     slots: {
         insert: makeApiFn('/slots/create'),
         one: makeApiFn('/slots/get'),
@@ -98,5 +101,6 @@ export const api = new (function () {
     // eslint-disable-next-line no-unused-vars
     this.install = (app, _) => {
         app.config.globalProperties.$api = this.api = reactive(customApi)
+
     }
 })()

@@ -52,19 +52,17 @@ export default {
             return this.group && (this.$ls.current_user == this.group?.creator_id ?? false)
         },
     },
-    created() {
+    async created() {
         this.eventId = this.$route.params.id
         if (!this.eventId) {
             return console.error('Event ID is not given')
         }
         this.select(this.selectedOption || 'about')
-        this.$api.events.one({ id: this.eventId }, res => {
-            if (res.detail) return console.error('Error during API call')
-            this.entity = res
-            this.$api.groups.one({ id: this.entity.group_id }, res => {
-                this.group = res
-            })
-        })
+        const { body, ok } = await this.$api.events.one({ id: this.eventId })
+        if (!ok) return console.error('Error during API call')
+        this.entity = body
+        const res = await this.$api.groups.one({ id: this.entity.group_id })
+        this.group = res.body
     },
 }
 </script>

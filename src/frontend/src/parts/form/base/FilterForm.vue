@@ -129,6 +129,8 @@ export default {
                     this.onChangeValue(filter.props.value, filter.props.name, filter.condition)
                 this.$refs[`filter_${index}`].value = filter.props.value
             })
+            this.wheres = []
+            this.$emit('changeFilters', this.wheres)
         },
         setDefault() {
             this.displayFilters.forEach(filter => {

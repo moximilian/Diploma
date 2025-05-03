@@ -1,7 +1,14 @@
 <template>
-    <NestedPage :title="`Создать занятие ${groupName && 'для группы ' + groupName}`" v-if="!isStudent">
+    <NestedPage
+        :title="`Создать занятие ${groupName && 'для группы ' + groupName}`"
+        v-if="!isStudent"
+    >
         <template #page-content>
-            <FormView action="new" displayName="events" @onSave="entity => saveEvent(entity)">
+            <FormView
+                action="new"
+                displayName="events"
+                @onSave="async entity => await saveEvent(entity)"
+            >
             </FormView>
         </template>
     </NestedPage>
@@ -20,14 +27,16 @@ export default {
         },
         groupName() {
             return this.$route.query.name ?? ''
-        }
+        },
     },
     methods: {
-        saveEvent(entity) {
-            this.$api.events.insert({ ...entity, group_id: this.$route.query.group_id }, res => {
-                if (res.detail) return
-                this.$router.replace(`/events/show/${res[0].id}`)
+        async saveEvent(entity) {
+            const { body, ok } = await this.$api.events.insert({
+                ...entity,
+                group_id: this.$route.query.group_id,
             })
+            if (!ok) return
+            this.$router.replace(`/events/show/${body[0].id}`)
         },
     },
 }
