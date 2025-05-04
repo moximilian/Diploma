@@ -33,9 +33,9 @@ export default {
             rows.forEach(async row => {
                 row = this.transformEntity(row)
                 row.custom[this.newCustomKey] = null
-                this.newCustomKey = ''
                 await this.updateRow(row)
             })
+            this.newCustomKey = ''
         },
         toggleCustomInput() {
             this.isShowCustomInput = !this.isShowCustomInput
