@@ -67,7 +67,7 @@ export default {
         checkSQLInjection(input) {
             // Default check for SQL Injection
             if (typeof input !== 'string') {
-                return ''
+                return input
             }
             const value = input
                 .replace(/[\0\x08\x09\x1a\n\r"'\\%]/g, char => {
@@ -90,7 +90,6 @@ export default {
                     /(\b(union|select|insert|update|delete|drop|alter|create|exec|shutdown|--|#|\/\*|\*\/)\b)/gi,
                     ''
                 )
-            console.log(value, '!!!')
             return value
         },
         onInput() {

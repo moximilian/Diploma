@@ -219,6 +219,7 @@ class EnterRequestsCRUD(BaseCRUD):
             else:
                 query = query.filter(
                     getattr(m.EnterRequest, column) == where.get('value'))
+        print(query.statement.compile())
         rows = query.all()
 
         return self._transform_response(rows)

@@ -80,45 +80,40 @@ Table slots {
     description varchar
     is_open boolean
     datetime datetime
-    duration integer
     max_participants_count integer
 }  
+Ref: slots.creator_id > users.id 
+Ref: slots.repeat_id > rapids.id
 
 Table rapids {
     id uuid [primary key]
+    start_date date
+    start_time time
+    end_time time
     weekdays array [null]
-    start_date timestamp
-    end_date timestamp
-    datetime datetime
-    duration integer
     months array [null]
 }
 
 Ref: slot_participants.user_id > users.id
 Ref: slot_participants.slot_id > slots.id
-Ref: slots.creator_id > users.id 
-Ref: slots.repeat_id > rapids.id
 
-Table events { //составной ключ??
+
+Table events { 
     id uuid [primary key]
     template_id uuid
-    datetime datetime
-}
-Ref: events.template_id > events_template.id
 
-Table events_template {
-    id uuid [primary key]
-    repeat_id uuid
     group_id uuid
+    repeat_id uuid
     name varchar
     description varchar
-    max_participants_count integer
+    price varchar
 }
-Ref: events_template.repeat_id > rapids.id
-Ref: events_template.group_id > groups.id
+Ref: events.repeat_id > rapids.id
 
 
-Table group_event_participants {
+
+
+Table event_participants {
     id uuid [primary key]
     event_id uuid
     participant_id uuid
@@ -126,5 +121,5 @@ Table group_event_participants {
     is_paid boolean
     custom json
 }
-Ref: group_event_participants.event_id > events.id
-Ref: group_event_participants.participant_id > group_participants.id 
+Ref: event_participants.event_id > events.id
+Ref: event_participants.participant_id > group_participants.id 

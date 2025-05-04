@@ -83,7 +83,6 @@ export default {
     },
     methods: {
         async changeFilters(wheres) {
-            console.log(wheres, '!!!')
             this.filters.wheres = wheres
             await this.$refs.table?.load()
         },

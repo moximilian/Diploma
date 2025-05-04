@@ -183,6 +183,8 @@ class BaseCRUD():
             query = query.order_by(getattr(model, order['column']).desc(
             ) if order['desc'] else getattr(model, order['column']).asc())
 
+        print(query.statement.compile())
+        
         return query.all()
 
     def _make_custom_query(self, query, wheres):

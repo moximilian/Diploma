@@ -12,12 +12,12 @@
         </template>
         <template #after-table="{ rows }">
             <BaseBtn
-                v-if="rows.length > 0"
+                v-if="rows?.length > 0"
                 :outline="true"
                 value="Отклонить"
                 @click="changeUserStatus('revoke')"
             />
-            <BaseBtn v-if="rows.length > 0" value="Принять" @click="changeUserStatus('accept')" />
+            <BaseBtn v-if="rows?.length > 0" value="Принять" @click="changeUserStatus('accept')" />
         </template>
     </TableView>
 </template>
