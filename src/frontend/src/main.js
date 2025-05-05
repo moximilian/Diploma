@@ -2,7 +2,7 @@ import '@/core/define' //вспомогательные функции для б
 import App from '@/App.vue'
 import { createApp } from 'vue'
 
-import '@/assets/fontawesome.all.css'
+// import '@/assets/fontawesome.all.css'
 import components from '@/core/defineComponents'
 
 import { api } from '@/api/api'

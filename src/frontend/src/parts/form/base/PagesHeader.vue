@@ -70,58 +70,6 @@
         </teleport>
     </span>
 </template>
-<style>
-.card {
-    position: absolute;
-    visibility: hidden;
-    background-color: white;
-    width: 203px !important;
-    border-radius: 8px;
-    box-shadow: 3px 3px 30px rgba(0, 0, 0, 0.1);
-    z-index: 10000000000;
-}
-.card-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-.card-wrapper .naming {
-    display: flex;
-    padding-left: 8px;
-    padding-right: 8px;
-    flex-direction: column;
-    align-items: center;
-}
-.line {
-    border-bottom: 1px solid var(--gray-color);
-    width: 90%;
-}
-.links {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-    text-align: left;
-}
-.links .link,
-.links .link a,
-.links a {
-    color: black;
-    padding-left: 16px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    cursor: pointer;
-}
-.links div:hover {
-    background-color: var(--light-gray-color);
-}
-.gray {
-    color: var(--gray-color);
-}
-</style>
 <script>
 import SelectPositionMixin from '../help/SelectPositionMixin'
 export default {

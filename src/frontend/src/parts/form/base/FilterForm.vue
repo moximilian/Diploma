@@ -30,46 +30,6 @@
         </div>
     </div>
 </template>
-<style>
-.filter-container {
-    display: flex;
-    margin-top: 32px;
-}
-.filters {
-    display: flex;
-    flex-direction: column;
-    width: 320px;
-}
-.filters-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-.filter-title {
-    font-weight: 800;
-    font-size: 16px;
-}
-.filter-content {
-    display: flex;
-    flex-direction: column;
-}
-.filter-content .line {
-    margin-top: 24px;
-    width: 100%;
-}
-.filter-item {
-    margin-bottom: 24px;
-}
-
-.filter-item input.field-input {
-    width: calc(100% - 34px);
-}
-
-.filter-item .field-title {
-    margin-bottom: 16px;
-    font-weight: 800;
-}
-</style>
 <script>
 import displayRules from '@/core/displayRules'
 export default {

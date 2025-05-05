@@ -20,23 +20,7 @@
         </div>
     </div>
 </template>
-<style>
-.range-field {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-.inputs {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 12px;
-    align-items: center;
-}
-.inputs input.field-input {
-    width: 67px;
-}
-</style>
+
 
 <script>
 import InputPropsMixin from './help/props/InputPorpsMixin'

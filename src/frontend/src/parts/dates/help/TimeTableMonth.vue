@@ -26,26 +26,6 @@
         </tbody>
     </table>
 </template>
-<style>
-.table-month-day {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-.event {
-    width: 100%;
-    height: 30px;
-    background-color: green;
-    border-radius: 8px;
-    color: white;
-    align-content: center;
-}
-.event:hover {
-    filter: brightness(1.05) saturate(0.8);
-    cursor: pointer;
-}
-</style>
-
 <script>
 import MonthHelper from './MonthHelper'
 
