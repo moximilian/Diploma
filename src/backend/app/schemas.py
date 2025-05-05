@@ -143,7 +143,7 @@ class GroupBase(BaseModelConfig):
     name: str
     description: str
     is_open: bool = Field(default=True)
-    max_participants_count: int = Field(default=1)
+    max_participants_count: int = Field(default=1, min=1)
     is_deleted: bool = Field(default=False)
 
 
@@ -157,7 +157,7 @@ class GroupUpdateIn(BaseModelConfig):
     name: str = None
     description: str = None
     is_open: bool = Field(default=True)
-    max_participants_count: int = Field(default=1)
+    max_participants_count: int = Field(default=1, min=1)
 
 class ParticipantCreate(BaseModelConfig):
     user_id: UUID
@@ -200,7 +200,7 @@ class EventModelOut(BaseModelConfig):
 
     name: str = None
     description: Optional[str] = None
-    price: int = None
+    price: int = Field(default=0, min=0)
     
     @field_serializer('description')
     def serialize_description(self, description: Optional[str]) -> Optional[str]:
@@ -222,7 +222,7 @@ class EventModel(BaseModelConfig):
 
     name: str = None
     description: str = None
-    price: int =None
+    price: int = Field(default=0, min=0)
     
     @field_validator('start_date', mode='before')
     def parse_date(cls, value):
@@ -252,7 +252,7 @@ class EventInsertIn(BaseModelConfig):
 
     name: str = None
     description: str = None
-    price: int =None
+    price: int = Field(default=0, min=0)
 
     @field_validator('start_date', mode='before')
     def parse_date(cls, value):
@@ -339,7 +339,7 @@ class SlotModel(BaseModelConfig):
     name: str = None
     description: str = None
     max_participants_count: int = Field(default=1)
-    price: int = None
+    price: int = Field(default=0, min=0)
     @field_validator('start_date', mode='before')
     def parse_date(cls, value):
         if isinstance(value, str):
@@ -374,8 +374,8 @@ class SlotModelOut(BaseModelConfig):
     description: str = None
     participants_count: int = Field(default = 0)
     is_participant: bool = Field(default=False)
-    max_participants_count: int = Field(default=1)
-    price: int = None
+    max_participants_count: int = Field(default=1, min=1)
+    price: int = Field(default=0, min=0)
     
     @field_serializer('start_date')
     def serialize_date(self, date: Optional[dt.date]) -> Optional[str]:
@@ -393,8 +393,8 @@ class SlotInsertIn(BaseModelConfig):
 
     name: str = None
     description: str = None
-    max_participants_count: int = Field(default=1)
-    price: int = None
+    max_participants_count: int = Field(default=1, min=1)
+    price: int = Field(default=0, min=0)
     
     @field_validator('start_date', mode='before')
     def parse_date(cls, value):

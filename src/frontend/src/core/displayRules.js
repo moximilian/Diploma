@@ -170,7 +170,7 @@ const groupsDisplay = [
         },
     },
     {
-        display: 'StringField',
+        display: 'NumberField',
         props: {
             title: 'Максимальное кол-во участников',
             name: 'max_participants_count',
@@ -216,7 +216,7 @@ const eventsDisplay = [
         },
     },
     {
-        display: 'StringField',
+        display: 'NumberField',
         props: {
             name: 'price',
             required: true,
@@ -234,7 +234,7 @@ const eventsDisplay = [
         },
     },
     {
-        display: 'StringField',
+        display: 'TimePicker',
         props: {
             name: 'start_time',
             title: 'Начало',
@@ -242,7 +242,7 @@ const eventsDisplay = [
         },
     },
     {
-        display: 'StringField',
+        display: 'TimePicker',
         props: {
             name: 'end_time',
             title: 'Конец',
@@ -309,7 +309,7 @@ const eventsDisplay = [
 const slotsDisplay = [
     ...eventsDisplay.filter(field => field.props.name !== 'group_id'),
     {
-        display: 'StringField',
+        display: 'NumberField',
         props: {
             title: 'Максимальное кол-во участников',
             name: 'max_participants_count',

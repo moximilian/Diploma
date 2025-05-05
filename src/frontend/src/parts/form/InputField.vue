@@ -13,6 +13,7 @@
             :name="name"
             :min="min"
             :max="max"
+            maxlength="64"
             :autofocus="autofocus"
             v-model="realValue"
             @input="onInput"

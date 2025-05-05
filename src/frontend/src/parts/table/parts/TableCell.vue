@@ -34,9 +34,14 @@ export default {
         },
         viewValue() {
             if (!this.row) return
-            return this.keyObj?.format
+            let value = this.keyObj?.format
                 ? this.keyObj.format(this.row, this.row[this.keyObj.name])
                 : this.values[this.row[this.keyObj.name]] ?? this.row[this.keyObj.name]
+            if (value.length > 64) {
+                const toDelete = value.substring(64, value.length)
+                value = value.replace(toDelete, '')  + '...'
+            }
+            return value
         },
     },
     components: { ValueToString },

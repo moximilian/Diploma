@@ -33,8 +33,9 @@ input.field-input {
     flex-direction: column;
     gap:8px;
 }
-.label-type-field .field:first-child {
+.label-type-field .field:first-child, .label-type-field span  {
     font-weight: 600;
+    text-align: left;
 }
 input.field-input:disabled {
     background-color: var(--light-gray-color);
@@ -285,4 +286,55 @@ input.field-input:disabled {
 }
 .inputs input.field-input {
     width: 67px;
+}
+
+.time-picker {
+    display: block;
+    padding: 5px;
+    margin-top: 3px;
+}
+
+.time-picker-nav {
+    width: var(--date-plate-size);
+    height: var(--date-plate-size);
+    color:var(--main-color)
+}
+
+.time-picker-value {
+    text-align: center;
+    font-size: 14px;
+    user-select: none;
+}
+
+.time-value-select {
+    display: flex;
+}
+
+.time-value-select-item:first-child {
+    margin-right: 17px;
+}
+
+body:not(.dark) .timePicker:not(.disabled) .timePicker-selected:hover{
+    color: #121212;
+    background: var(--gray-color-1);
+}
+body:not(.dark) .timePicker:not(.disabled) .timePicker-selected:hover {
+    color: #121212;
+    background: var(--gray-color-1);
+}
+
+body.dark .timePicker:not(.disabled) .timePicker-selected:hover{
+    background: #262626;
+    color: var(--white-color);
+}
+.calendar .timePicker {
+    border: none;
+    font-size: 12px;
+    min-height: 0;
+    padding: 4px 8px;
+}
+
+.calendar .timePicker {
+    border-radius: 0 5px 5px 0;
+    width: 50px;
 }

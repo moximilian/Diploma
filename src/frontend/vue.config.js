@@ -6,12 +6,8 @@ const buildList = (process.env.VUE_APP_BUILD_LIST || '').split(', ')
 
 module.exports = defineConfig({
     transpileDependencies: true,
+    productionSourceMap: false, 
     publicPath: process.env.BASE_URL || '/',
-    // pages: Object.fromEntries(
-    //     Object.entries({
-    //         index: 'src/main.js',
-    //     }).filter(([buildName]) => buildList.includes(buildName))
-    // ),
     pages: {
         index: {
             entry: 'src/main.js',

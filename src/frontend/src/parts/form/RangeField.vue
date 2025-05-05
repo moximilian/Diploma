@@ -2,25 +2,24 @@
     <div class="range-field">
         <slot name="beforeInput"> </slot>
         <div class="inputs">
-            <StringField
+            <NumberField
                 name="min"
                 :value="realValue[0]"
                 placeholder="от"
-                type="number"
+                maxlength="64"
                 @changeValue="value => setValue(value, 'min')"
             />
             -
-            <StringField
+            <NumberField
                 name="max"
                 placeholder="до"
-                type="number"
                 :value="realValue[1]"
+                maxlength="64"
                 @changeValue="value => setValue(value, 'max')"
             />
         </div>
     </div>
 </template>
-
 
 <script>
 import InputPropsMixin from './help/props/InputPorpsMixin'
@@ -30,19 +29,19 @@ export default {
     emits: ['changeValue'],
     data() {
         return {
-            minValue: this.value[0],
-            maxValue: this.value[1],
+            minValue: this.value[0] > 0 ? this.value[0] : 0,
+            maxValue: this.value[1] > 0 ? this.value[1] : 0,
         }
     },
     computed: {
         realValue() {
             return [this.minValue, this.maxValue]
-        }
+        },
     },
     methods: {
         setValue(value, type) {
             this[`${type}Value`] = value
-            if (this.realValue[0]!== null && this.realValue !== null) {
+            if (this.realValue[0] !== null && this.realValue !== null) {
                 this.$emit('changeValue', this.realValue)
             }
         },

@@ -9,6 +9,9 @@ import ShowValueField from '@/parts/form/ShowValueField.vue'
 
 import SwitchField from '@/parts/form/SwitchField.vue'
 import SelectField from '@/parts/form/SelectField.vue'
+import NumberField from '@/parts/form/NumberField.vue'
+import SelectTimeField from '@/parts/form/SelectTimeField.vue'
+import TimePicker from '@/parts/dates/TimePicker.vue'
 
 import SelectFieldModel from '@/parts/form/model/SelectFieldModel.vue'
 import SelectSearchFieldModel from '@/parts/form/model/SelectSearchFieldModel.vue'
@@ -49,6 +52,9 @@ export default {
     DatePicker,
     SelectFieldModel,
     SelectSearchFieldModel,
+    NumberField,
+    SelectTimeField,
+    TimePicker,
 
     ShowValueField,
     TableView,

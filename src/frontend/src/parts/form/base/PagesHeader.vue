@@ -46,12 +46,12 @@
                             </router-link>
                         </div>
                         <div class="link" v-if="!currentUser?.is_external_auth">
-                            <router-link :to="`/user/edit/${currentUserId}?tab=settings`">
+                            <router-link :to="`/user/edit/${currentUserId}?tab=security`">
                                 Настройки
                             </router-link>
                         </div>
                         <div class="link">
-                            <a> FAQ </a>
+                            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"> FAQ </a>
                         </div>
                     </div>
                     <div class="line"></div>

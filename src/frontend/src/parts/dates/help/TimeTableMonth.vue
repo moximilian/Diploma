@@ -16,7 +16,11 @@
                             class="event"
                             v-for="event in getEventsByDate(d)"
                             :key="event.id"
-                            @click="$router.push('/events/show/' + event.id)"
+                            @click="
+                                $router.push(
+                                    `/${isEventSlot(event) ? 'events' : 'slots'}/show/` + event.id
+                                )
+                            "
                         >
                             {{ event?.name }}
                         </div>
@@ -79,6 +83,9 @@ export default {
     methods: {
         getEventsByDate(day) {
             return this.eventsDates.filter(event => event.start_date === day.date)
+        },
+        isEventSlot(event) {
+            return !!event.group_id
         },
         prevMonth() {
             this.$emit('prevMonth')

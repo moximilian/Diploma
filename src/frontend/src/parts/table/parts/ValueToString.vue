@@ -1,5 +1,5 @@
 <template>
-    {{ realValue }}
+    {{ viewValue }}
 </template>
 <script>
 export default {
@@ -12,6 +12,15 @@ export default {
         return {
             realValue: '',
         }
+    },
+    computed: {
+        viewValue() {
+            if (this.realValue.length > 64) {
+                const toDelete = this.realValue.substring(64, this.realValue.length)
+                return this.realValue.replace(toDelete, '') + '...'
+            }
+            return this.realValue
+        },
     },
 
     async created() {

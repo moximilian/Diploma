@@ -84,7 +84,7 @@ export default {
                     {
                         client_id: YANDEX_CLIENT_ID,
                         response_type: 'token',
-                        redirect_uri: 'http://localhost:1024/auth/yandex-callback',
+                        redirect_uri: `http://${window.location.hostname}:1024/auth/yandex-callback`,
                         display: 'page',
                     },
                     null,

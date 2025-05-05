@@ -7,6 +7,7 @@
             <FormView
                 action="new"
                 displayName="events"
+                :defaults="{ group_id: groupId }"
                 @onSave="async entity => await saveEvent(entity)"
             >
             </FormView>
