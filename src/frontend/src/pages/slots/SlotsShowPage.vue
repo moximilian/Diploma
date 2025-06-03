@@ -32,6 +32,9 @@
                     <BaseBtn v-if="isSlotAdmin" @click="$router.push(`/slots/edit/${slotId}`)"
                         >Изменить</BaseBtn
                     >
+                    <BaseBtn v-if="isSlotAdmin" @click="async () => await deleteSlot()"
+                        >Удалить</BaseBtn
+                    >
                 </template>
             </FormView>
             <SlotsParticipantPage v-if="isSelected('participants')" />
@@ -68,6 +71,10 @@ export default {
         async leaveSlot() {
             await this.$api.slots.leave({ id: this.slotId })
             this.$router.go(this.$router.currentRoute)
+        },
+        async deleteSlot() {
+            await this.$api.slots.delete({id: this.slotId})
+            this.$router.replace(`/home`)
         },
     },
     async created() {

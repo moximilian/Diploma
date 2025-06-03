@@ -3,6 +3,7 @@
         <template #page-content>
             <FormView v-if="entity" action="edit" :defaults="entity" displayName="slots">
                 <template #form-bottom="{ entity }">
+                    <BaseBtn :outline="true" @click="$router.back()">Назад</BaseBtn>
                     <BaseBtn v-if="!isStudent" @click="async () => await saveSlot(entity)"
                         >Сохранить</BaseBtn
                     >

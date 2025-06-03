@@ -65,11 +65,7 @@ class BaseCRUD():
                 query = query.filter(getattr(model, field_item) == value)
             found_item = query.first()
 
-
-        if found_item and found_item.get('is_deleted', False):
-            raise exc.NotFoundError('Item is deleted')
-        else:
-            return found_item
+        return found_item
 
     def get(self, body, field='id', model=None):
         """Get one item from specific table by given field key and value.

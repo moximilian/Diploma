@@ -93,6 +93,9 @@ const customApi = {
         update: makeApiFn('/slots/update'),
         leave: makeApiFn('/slots/leave'),
         enter: makeApiFn('/slots/enter'),
+
+        delete: makeApiFn('/slots/delete'),
+
     },
 }
 export const api = new (function () {

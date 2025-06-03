@@ -49,5 +49,5 @@ async def update(item: schemas.SlotModel, db=Depends(get_db), user=Depends(autho
 @router.post('/slots/delete', response_model=schemas.SlotModelOut)
 async def delete(item: schemas.RequestBodyOne, db=Depends(get_db), user=Depends(authorised_user)):
     controller = SlotsCRUD(db, user)
-    return controller.mark_deleted(item)
+    return controller.delete(item)
 

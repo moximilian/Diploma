@@ -504,7 +504,7 @@ const groupsTeacherFilter = [
         props: {
             name: 'max_participants_count',
             title: 'Кол-во участников',
-            value: [0, 8],
+            value: [0, 20],
             min: 0,
             max: 45,
         },
