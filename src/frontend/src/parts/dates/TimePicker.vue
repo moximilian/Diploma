@@ -21,7 +21,6 @@
 export default {
     props: {
         value: { type: [Date, String], default: null },
-        
         name: { type: String, default: () => '' },
     },
     emits: ['changeValue', 'dateFocusStatus'],

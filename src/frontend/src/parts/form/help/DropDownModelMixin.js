@@ -4,7 +4,7 @@ export default {
     mixins: [SelectPropsMixin, OptionModelMixin],
     watch: {
         async searchValue(newSearch) {
-            newSearch === '' && await this.load()
+            newSearch === '' && (await this.load())
         },
     },
     computed: {

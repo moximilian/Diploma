@@ -1,10 +1,6 @@
 <template>
     <slot name="beforeInput" v-bind="$props"></slot>
-    <InputField 
-        v-bind="computedProps"
-        @onBlur="onBlur"
-        @changeValue="changeValue"
-    />
+    <InputField v-bind="computedProps" @onBlur="onBlur" @changeValue="changeValue" />
 </template>
 
 <script>
@@ -17,7 +13,7 @@ export default {
             result.afterInputFormat = this.$props.afterInputFormat || this.transformNumberInput
             result.type = 'number'
             return result
-        }
+        },
     },
     methods: {
         transformNumberInput(value) {
@@ -32,7 +28,7 @@ export default {
         },
         changeValue(value, name) {
             this.$emit('changeValue', value, name)
-        }
+        },
     },
 }
 </script>

@@ -45,12 +45,11 @@ export default {
             if (!this.file) return
 
             const reader = new FileReader()
-            reader.onload = (e) => {
+            reader.onload = e => {
                 const base64String = e.target.result
                 base64String && this.$emit('onclick', base64String, this.file.name)
             }
             reader.readAsDataURL(this.file)
-             
         },
     },
     mounted() {

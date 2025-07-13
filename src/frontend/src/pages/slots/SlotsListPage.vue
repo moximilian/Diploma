@@ -7,13 +7,6 @@
         :filters="defaultFilters"
         clickRowPath="slots"
     >
-        <!-- <template #before="">
-            <BaseBtn
-                v-if="isGroupAdmin"
-                @click="$router.push(`/events/new?group_id=${userId}&name=${group.name}`)"
-                >Добавить занятие</BaseBtn
-            >
-        </template> -->
     </TableView>
 </template>
 <script>

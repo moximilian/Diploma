@@ -333,9 +333,7 @@ const slotsDisplay = [
         showName: ['name', 'surname', 'last_name'],
         localKeyName: 'creator_id',
     },
-
 ]
-
 
 const enter_requestsDisplay = [
     {
@@ -512,7 +510,6 @@ const groupsTeacherFilter = [
     },
 ]
 
-
 const groupsStudentFilter = [
     {
         display: 'StringField',
@@ -553,14 +550,16 @@ const slotsStudentFilter = [
             title: 'Организатор индивидуальных занятий',
             fieldKey: 'id',
             showFieldName: 'login',
-            showFormat: (key) => {
+            showFormat: key => {
                 return key?.login ?? key
             },
-            defaultWheres: [{
-                column: 'role_name',
-                condition: '=',
-                value: 'teacher',
-            }]
+            defaultWheres: [
+                {
+                    column: 'role_name',
+                    condition: '=',
+                    value: 'teacher',
+                },
+            ],
         },
         condition: '=',
     },
@@ -573,17 +572,19 @@ const slotsStudentFilter = [
             fieldKey: 'name',
             showFieldName: 'name',
             multiple: true,
-            showFormat: (key) => {
+            showFormat: key => {
                 return key?.name ?? key
             },
-            defaultWheres: [{
-                column: 'is_currrent_participant',
-                condition: '=',
-                value: true
-            }]
+            defaultWheres: [
+                {
+                    column: 'is_currrent_participant',
+                    condition: '=',
+                    value: true,
+                },
+            ],
         },
         condition: 'in',
-    }
+    },
 ]
 
 export default {
@@ -600,5 +601,5 @@ export default {
     slotsDisplay,
     slotsStudentFilter,
     eventParticipantDisplay,
-    slotParticipantsDisplay
+    slotParticipantsDisplay,
 }

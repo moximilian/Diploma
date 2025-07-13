@@ -1,6 +1,6 @@
 <template>
     <div class="show-field">
-        <span class="title" :name="name">{{ title }}</span>   
+        <span class="title" :name="name">{{ title }}</span>
         <div class="value-container">
             <span :name="name">{{ viewValue }}</span>
         </div>
@@ -15,21 +15,21 @@ export default {
         return {
             booleans: {
                 [true]: 'Да',
-                [false]: 'Нет'
-            }
+                [false]: 'Нет',
+            },
         }
     },
     computed: {
         viewValue() {
             if (this.value?.length > 64) {
                 const toDelete = this.value.substring(64, this.value.length)
-                return this.value.replace(toDelete, '')  + '...'
+                return this.value.replace(toDelete, '') + '...'
             }
             if (typeof this.value === 'boolean') {
                 return this.booleans[this.value]
             }
             return this.value
-        }
-    }
+        },
+    },
 }
 </script>

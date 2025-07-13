@@ -13,7 +13,9 @@
                 <div class="line"></div>
             </div>
             <div class="block" v-if="currentTimeBlock === index">
-                <div ref="currentTimeLine" class="current-time" v-if="isShowHours">{{ new Date().toShowTime() }}</div>
+                <div ref="currentTimeLine" class="current-time" v-if="isShowHours">
+                    {{ new Date().toShowTime() }}
+                </div>
                 <div
                     class="line-current-time"
                     :class="{ ['semi-transparent']: !isShowCurrTimeLine }"
@@ -39,7 +41,7 @@
                         -
                         {{ getEventFullDate(event.start_date, event.end_time).toShowTime() }}
                     </div>
-                    <div >Цена {{ event.price }} руб.</div>
+                    <div>Цена {{ event.price }} руб.</div>
                     <div v-if="!this.isEventSlot(event)">
                         Группа
                         <ValueToString
@@ -173,7 +175,7 @@ export default {
         scrollToTimeLine() {
             const lineEl = this.$refs?.currentTimeLine
             if (lineEl) lineEl[0].scrollIntoView()
-        }
+        },
     },
     computed: {
         blocks() {

@@ -39,7 +39,7 @@ export default {
         isStudent: {
             async handler() {
                 await this.$refs.table.load()
-            }
+            },
         },
     },
     computed: {

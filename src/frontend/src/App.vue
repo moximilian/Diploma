@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <main class="page">
-            <HeaderBar/>
+            <HeaderBar />
             <router-view />
         </main>
     </div>
@@ -10,8 +10,7 @@
 <script>
 export default {
     data() {
-        return {
-        }
+        return {}
     },
 }
 </script>

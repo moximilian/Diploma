@@ -43,9 +43,7 @@
                     </slot>
 
                     <div class="field-suggestion-empty">
-                        <slot name="info">{{
-                            isEmpty(optionList) ? 'Данных нет' : ''
-                        }}</slot>
+                        <slot name="info">{{ isEmpty(optionList) ? 'Данных нет' : '' }}</slot>
                     </div>
                     <div class="field-suggestions">
                         <div

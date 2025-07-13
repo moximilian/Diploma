@@ -4,15 +4,11 @@ import CryptoJS from 'crypto-js'
 export default class LocalStorage {
     _ls = null
     _secret = /*metaData.userId ||*/ process.env.VUE_APP_CRYPTO_KEY || 'Fghk%^8vmn'
-    _theme = false
     _lang = 'en'
     _current_user = null
 
     constructor() {
         this._ls = window.localStorage
-        let theme = false
-        if (theme !== false) theme = Boolean(Number(theme))
-        this._theme = theme
 
         this._lang = ''
         this._token = this.getItemDecrypt('token') || null
@@ -21,9 +17,6 @@ export default class LocalStorage {
         return reactive(this)
     }
 
-    get theme() {
-        return this._theme
-    }
     get token() {
         return this._token
     }
@@ -32,11 +25,6 @@ export default class LocalStorage {
     }
     get current_user() {
         return this._current_user
-    }
-
-    set theme(value) {
-        this._theme = value
-        this.setItemEncrypt('theme', Number(value))
     }
 
     set token(value) {

@@ -2,8 +2,6 @@
 const { defineConfig } = require('@vue/cli-service')
 const path = require('path')
 
-const buildList = (process.env.VUE_APP_BUILD_LIST || '').split(', ')
-
 module.exports = defineConfig({
     transpileDependencies: true,
     productionSourceMap: false, 

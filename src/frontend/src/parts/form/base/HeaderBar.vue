@@ -1,11 +1,7 @@
 <template>
     <span>
-        <AuthPagesHeader 
-            v-if="!isAuthorized"
-        />
-        <PagesHeader
-            v-else
-        />
+        <AuthPagesHeader v-if="!isAuthorized" />
+        <PagesHeader v-else />
     </span>
 </template>
 <script>
@@ -20,6 +16,6 @@ export default {
             return !!this.accessToken // && getUser()
         },
     },
-    components: { AuthPagesHeader, PagesHeader }
+    components: { AuthPagesHeader, PagesHeader },
 }
 </script>

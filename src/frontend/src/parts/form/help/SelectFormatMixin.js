@@ -1,8 +1,8 @@
 export default {
     inject: {
         localModelName: {
-            from: 'modelName'
-        }
+            from: 'modelName',
+        },
     },
     methods: {
         getValue(val) {
@@ -20,7 +20,9 @@ export default {
             return this.checkFunction(
                 'keyFormat',
                 key,
-                'object' === typeof key ? key?.key || key?.id || key.value || key[Object.keys(key)[0]] : key
+                'object' === typeof key
+                    ? key?.key || key?.id || key.value || key[Object.keys(key)[0]]
+                    : key
             )
         },
         showValue(val) {
@@ -35,10 +37,9 @@ export default {
         },
         checkFunction(name, param, otherwise) {
             return 'function' === typeof this[name]
-                ? ( this[name](param, this.options) == param
+                ? this[name](param, this.options) == param
                     ? otherwise
                     : this[name](param, this.options)
-                 )
                 : otherwise
         },
     },

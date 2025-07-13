@@ -58,7 +58,6 @@ const sections = [
     { name: 'groups', actions: ['list', 'show', 'edit', 'new'], useId: true },
     { name: 'events', actions: ['show', 'edit', 'new'], useId: true },
     { name: 'slots', actions: ['show', 'edit', 'new'], useId: true },
-
 ]
 
 const routes = generateRoutes(sections)

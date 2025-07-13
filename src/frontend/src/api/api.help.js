@@ -38,7 +38,6 @@ export const sendRequest = (url, method, headers, body, callback) => {
     // Выполняем запрос
     fetch(url, config)
         .then(async response => {
-            // Парсим ответ (учитываем, что ответ может быть не JSON)
             let data
             try {
                 data = await response.json()

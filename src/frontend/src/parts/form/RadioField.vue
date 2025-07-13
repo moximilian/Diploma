@@ -1,7 +1,6 @@
 <template>
     <div class="fieldRadio">
-        <slot name="beforeInput">
-        </slot>
+        <slot name="beforeInput"> </slot>
         <label
             v-for="(val, key) in options"
             :key="key"
