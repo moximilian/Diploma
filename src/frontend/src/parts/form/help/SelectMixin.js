@@ -50,7 +50,6 @@ export default {
             return Object.values(this.selected).map(this.showValue)
         },
         preparedPlaceholder() {
-            // return this.$t('forms.fields.choose_from_list')
             return 'Выберете из списка'
         },
     },

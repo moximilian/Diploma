@@ -1,9 +1,7 @@
 // @ts-check
 
-import { callApi as baseCallApi, sendRequest } from '@/api/api.help'
+import { callApi as baseCallApi } from '@/api/api.help'
 import { reactive } from 'vue'
-
-// import { Confirmation } from '@/core/notifications'
 
 /**
  * Возвращает функцию вызова api
@@ -15,23 +13,50 @@ import { reactive } from 'vue'
  */
 const makeApiFn =
     (path, setArgsFn = args => ({ args })) =>
-    (args) => baseCallApi(path, setArgsFn(args))
+    args =>
+        baseCallApi(path, setArgsFn(args))
 
 const customApi = {
     auth: {
         login: makeApiFn('/auth/login'),
         register: makeApiFn('/auth/register'),
         logout: makeApiFn('/auth/logout'),
-        yandexGetData: (token, format, cb) => {
-            sendRequest(
-                `https://login.yandex.ru/info?format=${format}`,
-                'GET',
-                {
-                    Authorization: token,
+        yandexGetData: (token, format, callback) => {
+            const config = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                null,
-                cb
-            )
+            }
+            fetch(`https://login.yandex.ru/info?format=${format}`, config)
+                .then(async response => {
+                    let data
+                    try {
+                        data = await response.json()
+                    } catch {
+                        data = await response.text()
+                    }
+                    if (!response.ok) {
+                        throw {
+                            status: response.status,
+                            message: data.message || 'Request failed',
+                            data,
+                        }
+                    }
+                    callback(data, null)
+                })
+                .catch(error => {
+                    // Вызываем колбэк с ошибкой
+                    callback(
+                        null,
+                        error instanceof Error
+                            ? error
+                            : {
+                                  message: error.message || 'Network error',
+                                  ...error,
+                              }
+                    )
+                })
         },
     },
     items: {
@@ -95,7 +120,6 @@ const customApi = {
         enter: makeApiFn('/slots/enter'),
 
         delete: makeApiFn('/slots/delete'),
-
     },
 }
 export const api = new (function () {
@@ -104,6 +128,5 @@ export const api = new (function () {
     // eslint-disable-next-line no-unused-vars
     this.install = (app, _) => {
         app.config.globalProperties.$api = this.api = reactive(customApi)
-
     }
 })()

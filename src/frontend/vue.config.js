@@ -19,11 +19,9 @@ module.exports = defineConfig({
         },
     },
 
-    // Хэши в именах файлов сборки
-    // filenameHashing: false, // false для отключения
+    // filenameHashing: false, 
 
     chainWebpack: config => {
-        // set environment variables
         config.plugin('define').tap(definitions => {
             Object.assign(definitions[0], {
                 __VUE_I18N_FULL_INSTALL__: JSON.stringify(true),

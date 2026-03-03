@@ -62,7 +62,6 @@ export default {
         },
         close() {
             this.opened = false
-            // this.parentPageEl.removeEventListener('scroll', this.close)
         },
     },
     created() {
@@ -82,7 +81,6 @@ export default {
             },
             keydown: e => this.opened && keys[e.code]?.(e),
         })
-        // в изначальном коде было this.parentPageEl.removeEventListener('scroll', this.close), поэтому решил добавить это, но не увидел где слушатель добавляется, поэтому закомментировал
         this.parentPageEl &&
             (controller = addGroupEventListeners(
                 this.parentPageEl,

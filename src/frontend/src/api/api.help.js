@@ -12,64 +12,6 @@ const makeOnError =
     }
 
 const redirect = url => window.location.replace(url || '/auth/login')
-/**
- * Универсальная функция для отправки HTTP-запросов
- * @param {string} url - URL для запроса
- * @param {string} method - HTTP метод (GET, POST, PUT, DELETE и т.д.)
- * @param {Object} headers - Заголовки запроса
- * @param {Object} body - Тело запроса (для POST/PUT)
- * @param {function} callback - Функция обратного вызова (принимает response, error)
- */
-export const sendRequest = (url, method, headers, body, callback) => {
-    // Создаем конфигурацию запроса
-    const config = {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            ...headers, // Добавляем переданные заголовки
-        },
-    }
-
-    // Добавляем тело запроса для методов, которые его поддерживают
-    if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase()) && body) {
-        config.body = JSON.stringify(body)
-    }
-
-    // Выполняем запрос
-    fetch(url, config)
-        .then(async response => {
-            let data
-            try {
-                data = await response.json()
-            } catch {
-                data = await response.text()
-            }
-
-            // Проверяем статус ответа
-            if (!response.ok) {
-                throw {
-                    status: response.status,
-                    message: data.message || 'Request failed',
-                    data,
-                }
-            }
-
-            // Вызываем колбэк с данными
-            callback(data, null)
-        })
-        .catch(error => {
-            // Вызываем колбэк с ошибкой
-            callback(
-                null,
-                error instanceof Error
-                    ? error
-                    : {
-                          message: error.message || 'Network error',
-                          ...error,
-                      }
-            )
-        })
-}
 
 const parseHandler = res => {
     const onError = makeOnError(res.errors)
@@ -97,9 +39,7 @@ const makeErrorHandler = msg =>
         return res
     }, parseHandler)
 
-const makeRedirectHandler = (msg, path, cb) => res => (
-    cb?.(), redirect(path), makeOnError(res.errors)(msg), res
-)
+const makeRedirectHandler = (msg, path, cb) => res => (cb?.(), redirect(path), makeOnError(res.errors)(msg), res)
 
 const emptyLS = () => {
     const ls = new LocalStorage()
@@ -122,8 +62,7 @@ const handlersByStatusCode = {
 const callXhr = ({ url, method, headers, body }) =>
     new Promise(resolve => {
         const Xhr = new XMLHttpRequest()
-        const setXhr = (method, object) =>
-            Object.entries(object).forEach(args => Xhr[method](...args))
+        const setXhr = (method, object) => Object.entries(object).forEach(args => Xhr[method](...args))
         const onResolve = (statusCode, body, errors) => void resolve({ statusCode, body, errors })
         const onError = (...errors) => onResolve(null, null, errors)
 
@@ -149,26 +88,20 @@ const callXhr = ({ url, method, headers, body }) =>
 const handleRequest = (promise, handlers) =>
     promise.then(res => {
         const handler =
-            Object.assign(handlersByStatusCode, handlers)[res.statusCode] ||
-            (() => res.errors.push('Bad status code.'))
+            Object.assign(handlersByStatusCode, handlers)[res.statusCode] || (() => res.errors.push('Bad status code.'))
         return Object.assign(res, compose(returnObject, handler)(res))
     })
 
 const makeArguments = ({ path, method, args, headers }) => {
     return {
-        url:
-            API_PREFIX +
-            path +
-            (method === 'GET' && args ? '?' + new URLSearchParams(args).toString() : ''),
+        url: API_PREFIX + path + (method === 'GET' && args ? '?' + new URLSearchParams(args).toString() : ''),
         method: method === 'GET' ? method : 'POST',
         headers: {
             'Content-Type': 'application/json',
             ...headers,
         },
         credentials: isProductionMode ? false : 'same-origin',
-        mode: isProductionMode // isDevelopmentMode || API_USE_MOCK)
-            ? 'cors'
-            : 'same-origin',
+        mode: isProductionMode ? 'cors' : 'same-origin',
         referrerPolicy: 'no-referrer',
         body: method === 'GET' ? null : JSON.stringify(args),
     }
@@ -193,12 +126,4 @@ export const callApi = async (path, params = {}, statusCodeHandlers = {}) => {
         ...result,
         ok: result.errors.length === 0,
     }
-}
-
-// Экспорт API
-export const api = {
-    call: callApi,
-    install: app => {
-        app.config.globalProperties.$api = callApi
-    },
 }

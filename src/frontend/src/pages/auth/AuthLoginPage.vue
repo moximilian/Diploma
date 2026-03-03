@@ -22,6 +22,8 @@ export default {
         return {
             GOOGLE_CLIENT_ID,
             YANDEX_CLIENT_ID,
+            googleBtnPath: 'https://accounts.google.com/gsi/client?hl=ru',
+            yandexBtnPath: 'https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js',
         }
     },
     methods: {
@@ -34,30 +36,12 @@ export default {
             this.$router.replace('/home')
         },
         async initGoogleAuth() {
-            await this.loadBtnScript('https://accounts.google.com/gsi/client?hl=ru')
+            await this.loadBtnScript(this.googleBtnPath)
             try {
                 /* eslint-disable no-undef */
                 await google.accounts.id.initialize({
                     client_id: GOOGLE_CLIENT_ID,
-                    callback: async ({ credential }) => {
-                        const userData = jwtDecode(credential)
-                        const password = this.transformPassword(
-                            `${userData.sub}-${userData.email.ucFirst()}`
-                        )
-                        await this.$api.auth.register({
-                            name: userData.given_name,
-                            surname: userData.family_name,
-                            login: userData.email,
-                            password,
-                            password_confirm: password,
-                            role_name: 'student',
-                            is_external_auth: true,
-                        })
-                        await this.authorize({
-                            login: userData.email,
-                            password: password,
-                        })
-                    },
+                    callback: this.onGoogleAuth,
                     response_type: 'token',
                     scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email	openid',
                     ux_mode: 'popup',
@@ -75,9 +59,7 @@ export default {
         },
         async initYandexAuth() {
             /* eslint-disable no-undef */
-            await this.loadBtnScript(
-                'https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js'
-            )
+            await this.loadBtnScript(this.yandexBtnPath)
             try {
                 const { handler } = await YaAuthSuggest.init(
                     /* eslint-enable no-undef */
@@ -115,6 +97,39 @@ export default {
         transformPassword(uuid) {
             return uuid.replaceAll('.', '').replaceAll('_', '-')
         },
+        async registerAuth(userData) {
+            await this.$api.auth.register({
+                ...userData,
+                role_name: 'student',
+                is_external_auth: true,
+            })
+            await this.authorize({
+                login: userData.login,
+                password: userData.password,
+            })
+        },
+        async onGoogleAuth({ credential }) {
+            const userData = jwtDecode(credential)
+            const password = this.transformPassword(`${userData.sub}-${userData.email.ucFirst()}`)
+            await registerAuth({
+                name: userData.given_name,
+                surname: userData.family_name,
+                login: userData.email,
+                password,
+                password_confirm: password,
+            })
+        },
+        async onYandexAuth() {
+            const userData = JSON.parse(this.$ls.getItemDecrypt('yandex_user_data'))
+            const password = this.transformPassword(userData.psuid)
+            await registerAuth({
+                name: userData.first_name,
+                surname: userData.last_name,
+                login: userData.login,
+                password,
+                password_confirm: password,
+            })
+        },
     },
     created() {
         if (![null, '', undefined].includes(this.$ls.token)) {
@@ -123,23 +138,7 @@ export default {
         }
         this.initYandexAuth()
         this.initGoogleAuth()
-        this.$ls.subscribe('yandex_user_data', async () => {
-            const userData = JSON.parse(this.$ls.getItemDecrypt('yandex_user_data'))
-            const password = this.transformPassword(userData.psuid)
-            await this.$api.auth.register({
-                name: userData.first_name,
-                surname: userData.last_name,
-                login: userData.login,
-                password,
-                password_confirm: password,
-                role_name: 'student',
-                is_external_auth: true,
-            })
-            await this.authorize({
-                login: userData.login,
-                password: password,
-            })
-        })
+        this.$ls.subscribe('yandex_user_data', this.onYandexAuth)
     },
 }
 </script>
