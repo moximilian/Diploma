@@ -9,6 +9,21 @@ Specialty is Corporate information technology
 
 Build your timetable, manage your groups, connect with pupils. Made spicificly for teacher's and tutor's needs!
 
+## Backend
+
+- ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=white) 3.11
+- ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white) 0.136.1
+- ![SqlAlchemy](https://img.shields.io/badge/SQLAlchemy-306998?logo=python&logoColor=white) 2.0.49
+- ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white) 14.4-alpine
+- ![Docker](https://img.shields.io/badge/docker-257bd6?style=for-the-badge&logo=docker&logoColor=white) 3.8
+- ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white) 1.19.3
+
+
+## Frontend
+
+- ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript) ES2023
+- ![Vue](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D) 3.5.13
+
 ## Project table of contents
 
 - /src/backend - Server side src
@@ -37,8 +52,6 @@ Build your timetable, manage your groups, connect with pupils. Made spicificly f
 - Sending notifications about rescheduling activities
 
 ## Set up and run
-
-Docker version >= 3.8
 
 `cd src` - move to working direcroty
 
