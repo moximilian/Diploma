@@ -1,12 +1,9 @@
 // @ts-check
 
-import { callApi as baseCallApi } from '@/api/api.help'
+import { callApi as baseCallApi } from '@/api/functions'
 import { reactive } from 'vue'
 
 /**
- * Возвращает функцию вызова api
- * Для улучшения читабельности и уменьшения повторяющегося кода
- *
  * @param { String } path
  * @param { Function } setArgsFn
  * @returns { Function } callApi function
@@ -21,7 +18,7 @@ const customApi = {
         login: makeApiFn('/auth/login'),
         register: makeApiFn('/auth/register'),
         logout: makeApiFn('/auth/logout'),
-        yandexGetData: (token, format, callback) => {
+        yandexGetData: (_, format, callback) => {
             const config = {
                 method: 'GET',
                 headers: {
@@ -46,7 +43,6 @@ const customApi = {
                     callback(data, null)
                 })
                 .catch(error => {
-                    // Вызываем колбэк с ошибкой
                     callback(
                         null,
                         error instanceof Error

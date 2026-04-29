@@ -1,9 +1,7 @@
-from sqlite3 import IntegrityError
 import models as m
 import api.exceptions as exc
-from schemas import BaseListResponse
-from functools import wraps
-import typing as t
+from schemas import BaseListResponse, RequestBodyList, RequestBodyOne
+from sqlalchemy.orm import Session, Query
 
 
 class BaseCRUD():
@@ -16,12 +14,13 @@ class BaseCRUD():
         joined_models: Optional list of models in which filters will work. Defaults to [model]
     """
 
-    def __init__(self, db, model, joined_models = []):
+    def __init__(self, db: Session, model: m.BaseModel, joined_models: list | None = None):
         self.db = db
         self.model = model
-        self.joined_models = [model] if len(joined_models) == 0 else joined_models
+        self.joined_models = [
+            model] if joined_models is None else joined_models
 
-    def _save_to_db(self, item: t.Dict[str, t.Any]):
+    def _save_to_db(self, item: m.BaseModel) -> m.BaseModel:
         """Create new Item in db and return its new glory.
 
         Args:
@@ -35,11 +34,11 @@ class BaseCRUD():
         self.db.refresh(item)
         return item
 
-    def get_item(self, body, field='id', model=None) -> m.BaseModel:
+    def get_item(self, body: RequestBodyOne, field: str = 'id', model: m.BaseModel | None = None) -> m.BaseModel:
         """Get one item from specific table by given field key and value.
 
         Args:
-            value (schemas.RequestBodyOne) Request body
+            body (schemas.RequestBodyOne): Request body
             field (str): Field key of model of which type is searched. Defaults to 'id'
 
         Returns:
@@ -51,7 +50,8 @@ class BaseCRUD():
         query = self.db.query(model)
         if isinstance(field, str):
             if not hasattr(model, field):
-                raise exc.NotFoundError(message='No such field on model', field=field)
+                raise exc.NotFoundError(
+                    message='No such field on model', field=field)
             value = body.get(field)
             if value is None:
                 raise exc.NotFoundError(message='Value is null', field=field)
@@ -59,19 +59,22 @@ class BaseCRUD():
         elif isinstance(field, list):
             for field_item in field:
                 if not hasattr(model, field_item):
-                    raise exc.NotFoundError(message='No such field on model', field=field_item)
+                    raise exc.NotFoundError(
+                        message='No such field on model', field=field_item)
                 value = body.get(field_item)
-                if value is None: raise exc.NotFoundError(message='Value is null', field=field)
+                if value is None:
+                    raise exc.NotFoundError(
+                        message='Value is null', field=field)
                 query = query.filter(getattr(model, field_item) == value)
             found_item = query.first()
 
         return found_item
 
-    def get(self, body, field='id', model=None):
+    def get(self, body: RequestBodyOne, field: str = 'id', model: m.BaseModel | None = None) -> m.BaseModel:
         """Get one item from specific table by given field key and value.
 
         Args:
-            value (schemas.RequestBodyOne) Request body
+            value (schemas.RequestBodyOne): Request body
             field (str): Field key of model of which type is searched. Defaults to 'id'
 
         Returns:
@@ -80,17 +83,17 @@ class BaseCRUD():
         """
         return self._make_output([self.get_item(body, field, model)])[0]
 
-    def _make_output(self, rows):
+    def _make_output(self, rows: list) -> list:
         return rows
 
-    def _transform_response(self, rows):
+    def _transform_response(self, rows: list) -> BaseListResponse:
         """Transform response into defined format.
 
         Args:
             rows (list): List of items to wrap
 
         Returns:
-            schemas.BaseListResponse
+            BaseListResponse:
             .. code-block:: json
             {
                 "rows": [],
@@ -98,28 +101,30 @@ class BaseCRUD():
             }
         """
         rows = self._make_output(rows)
-        rows = [row.dict() if not isinstance(row, dict) else row for row in rows]
+        rows = [row.dict() if not isinstance(
+            row, dict) else row for row in rows]
         return BaseListResponse(rows=rows, totalCount=len(rows))
 
-
-    def _transform_boolean(self, where):
+    def _transform_boolean(self, where: dict) -> dict:
         if isinstance(where, dict) and where.get('value') and where.get('value') in ['false', 'true']:
-            where['value'] = where['value'].lower() in ("yes", "true", "t", "1")
+            where['value'] = where['value'].lower() in (
+                "yes", "true", "t", "1")
         return where
-    
-    def _get_column_from_joined_models(self, column_name):
+
+    def _get_column_from_joined_models(self, column_name: str) -> str:
         for model in self.joined_models:
             if hasattr(model, column_name):
                 return getattr(model, column_name)
             if column_name in model.__table__.columns:
                 return model.__table__.columns[column_name]
-        raise ValueError(f"Column '{column_name}' not found in any of the provided models")
+        raise ValueError(
+            f"Column '{column_name}' not found in any of the provided models")
 
-    def list(self, body, model=None):
+    def list(self, body: RequestBodyList, model: m.BaseModel | None = None) -> BaseListResponse:
         """Get one or multiple items in list representation:
 
         Args:
-            body(schemas.RequestBodyList)
+            body (schemas.RequestBodyList):
             .. code-block:: json
             {
                 "filters": {
@@ -150,7 +155,7 @@ class BaseCRUD():
         rows = self.get_items(body, model)
         return self._transform_response(rows)
 
-    def get_items(self, body, model=None):
+    def get_items(self, body: RequestBodyList, model: m.BaseModel | None = None):
         model = self.model if model is None else model
         filters = body.get('filters', {})
 
@@ -180,13 +185,13 @@ class BaseCRUD():
             ) if order['desc'] else getattr(model, order['column']).asc())
 
         print(query.statement.compile())
-        
+
         return query.all()
 
-    def _make_custom_query(self, query, wheres):
+    def _make_custom_query(self, query: Query, wheres: dict) -> tuple[Query, dict]:
         return query, wheres
 
-    def _delete_item(self, body, field, model=None):
+    def _delete_item(self, body: RequestBodyOne, field: str, model: m.BaseModel | None = None) -> m.BaseModel:
         item_to_delete = self.get_item(body, field, model)
         if not item_to_delete:
             raise exc.NotFoundError(field=field)
@@ -194,7 +199,7 @@ class BaseCRUD():
         self.db.commit()
         return item_to_delete
 
-    def delete(self, body, field='id', model=None):
+    def delete(self, body: RequestBodyOne, field: str = 'id', model: m.BaseModel | None = None) -> m.BaseModel | None:
         """Delete one item from specific table by given field key and value.
 
         Args:
@@ -216,9 +221,10 @@ class BaseCRUD():
                 item_to_delete = self._delete_item({'id': item}, field, model)
                 items_to_delete.append(item_to_delete)
             return items_to_delete
-        else: return self._delete_item(body, field, model)
+        else:
+            return self._delete_item(body, field, model)
 
-    def _is_value_empty(self, value) -> bool:
+    def _is_value_empty(self, value: str | int | bool | list | dict) -> bool:
         null_values = ['', 'null', 'None', b'']
         return value in null_values
 
@@ -260,7 +266,7 @@ class BaseCRUD():
 
         return item_to_update
 
-    def mark_deleted(self, body, field='id', restore=False, model=None):
+    def mark_deleted(self, body: RequestBodyOne, field: str = 'id', restore: bool = False, model: m.BaseModel | None = None) -> m.BaseModel | None:
         """Mark one item as deleted from specific table by given field key and value.
 
         Args:

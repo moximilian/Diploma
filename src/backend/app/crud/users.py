@@ -1,10 +1,8 @@
 from sqlalchemy.orm import Session
 import models as m
-import typing as t
 import api.exceptions as exc
 import schemas
 from crud.base import BaseCRUD
-import bcrypt
 from crud.auth import Authorisation
 
 
@@ -26,4 +24,4 @@ class User(BaseCRUD):
 
         hashed_new_password = self.authCRUD._hash_password(new_password)
 
-        return super().update({'password': hashed_new_password, 'id': self.current_user.id })
+        return super().update({'password': hashed_new_password, 'id': self.current_user.id})

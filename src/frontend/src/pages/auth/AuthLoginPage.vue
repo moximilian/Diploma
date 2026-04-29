@@ -1,22 +1,24 @@
 <template>
-    <div class="auth-form">
-        <div class="page-title">Вход</div>
-        <FormView displayName="login" action="edit">
-            <template #form-bottom="{ entity }">
-                <div class="form-bottom-column">
-                    <BaseBtn @click="authorize(entity)">Войти</BaseBtn>
-                    Или
-                    <div id="auth-bottom"></div>
-                    <div id="auth-bottom2"></div>
-                </div>
-            </template>
-        </FormView>
+    <div class="auth-form-container">
+        <div class="auth-form">
+            <div class="page-title">Вход</div>
+            <FormView displayName="login" action="edit">
+                <template #form-bottom="{ entity }">
+                    <div class="form-bottom-column">
+                        <BaseBtn @click="authorize(entity)">Войти</BaseBtn>
+                        Или
+                        <div id="auth-bottom"></div>
+                        <div id="auth-bottom2"></div>
+                    </div>
+                </template>
+            </FormView>
+        </div>
     </div>
 </template>
 
 <script>
 import { jwtDecode } from 'jwt-decode'
-import { GOOGLE_CLIENT_ID, YANDEX_CLIENT_ID } from '@/api/api.settings'
+import { GOOGLE_CLIENT_ID, YANDEX_CLIENT_ID } from '@/core/settings'
 export default {
     data() {
         return {
@@ -111,7 +113,7 @@ export default {
         async onGoogleAuth({ credential }) {
             const userData = jwtDecode(credential)
             const password = this.transformPassword(`${userData.sub}-${userData.email.ucFirst()}`)
-            await registerAuth({
+            await this.registerAuth({
                 name: userData.given_name,
                 surname: userData.family_name,
                 login: userData.email,
@@ -122,7 +124,7 @@ export default {
         async onYandexAuth() {
             const userData = JSON.parse(this.$ls.getItemDecrypt('yandex_user_data'))
             const password = this.transformPassword(userData.psuid)
-            await registerAuth({
+            await this.registerAuth({
                 name: userData.first_name,
                 surname: userData.last_name,
                 login: userData.login,

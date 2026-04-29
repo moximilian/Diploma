@@ -1,17 +1,17 @@
-# Фронт-енд часть проекта
+# Frontend part of the project
 
-## Для локальной сборки, необходимо иметь установленно:
+## For local build, install requirenments:
 
 - Node.js -v>=20
 
-Для установки зависимостей сначала:  
+First, install npm dependencies:  
 
 `npm install`
 
-Далее запуск прокси сервера для проксирования запросов с локального порта на порт API бекенда  
+Second, run internal proxy for API request forwarding:
 
 `npm run proxy`
 
-Далее запуск самого проекта
+Thirs, serve the project:
 
 `npm run serve`

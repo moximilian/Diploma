@@ -9,7 +9,7 @@ from crud.participants import ParticipantsCRUD
 
 from crud.users import User
 
-from schemas import GroupOut, RequestBodyOne, RequestBodyOne, EnterRequestOut, ParticipantCreate
+from schemas import RequestBodyOne, RequestBodyOne, EnterRequestOut, ParticipantCreate
 import api.exceptions as exc
 
 

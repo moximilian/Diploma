@@ -8,7 +8,6 @@ import schemas
 from crud.groups import GroupsCRUD
 from crud.auth import authorised_user
 from database import get_db
-from models import Group
 router = APIRouter()
 
 

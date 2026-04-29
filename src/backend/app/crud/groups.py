@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_
 import models as m
 from crud.base import BaseCRUD
-from schemas import GroupOut, RequestBodyOne, GroupBase
+from schemas import RequestBodyOne, GroupBase
 import api.exceptions as exc
 
 

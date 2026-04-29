@@ -24,7 +24,6 @@
 
 <script>
 export default {
-    // Здесь клик в таблицу должен проваливаться в карточку пользователя
     props: {
         groupId: { type: String, default: () => '' },
     },

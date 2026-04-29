@@ -14,7 +14,6 @@ import api.exceptions as exc
 from database import get_db
 from jose import JWTError, jwt
 from env_constants import SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES, BASE_URL
-import typing as t
 
 import bcrypt
 
@@ -96,11 +95,11 @@ class Authorisation(BaseCRUD):
         # new_user = self._save_to_db(new_user)
         # return new_user
 
-    def _hash_password(self, password: t.Optional[str]) -> str:
+    def _hash_password(self, password: str | None) -> str:
         """Hash password with bcrypt module.
 
         Args:
-            password (str): plain password from request.
+            password (str | None): plain password from request.
 
         Returns:
             hashed_password (str): hashed password.
@@ -134,7 +133,7 @@ class Authorisation(BaseCRUD):
         )
         return {'access_token': access_token, 'token_type': 'bearer', 'user_id': user.get('id')}
 
-    def _verify_token(self, username: str, password: str) -> t.Union[UserOut, bool]:
+    def _verify_token(self, username: str, password: str) -> UserOut | None:
         """Verify if user exists and given password match one in db.
 
         Args:
@@ -142,12 +141,12 @@ class Authorisation(BaseCRUD):
             `password` (str): plain password for auth check.
 
         Returns:
-            False if there is no such user or passwords do not match. \n
+            None if there is no such user or passwords do not match. \n
             User if one exists.
         """
         user = self._get_user_by_login(username)
         if not user or not self._verify_password(password, user.get('password')):
-            return False
+            return None
         return user
 
     # def _change_failed_attempt(self, user: m.User, new_count) -> m.User:
@@ -177,7 +176,7 @@ class Authorisation(BaseCRUD):
         """
         return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
-    def _get_user_by_login(self, login: str) -> t.Optional[t.Union[UserOut, None]]:
+    def _get_user_by_login(self, login: str) -> UserOut | None:
         """Get user by login.
 
         Args:

@@ -1,8 +1,8 @@
 /**
- * Запуск прокси сервера
+ * Proxy server start
  *
  * npm run proxy
- * @argv[2] (serve) флаг для запуска дев-сервера вместе с прокси-сервером
+ * @argv[2] (serve) flag to server project simultaneously
  */
 
 require('dotenv').config({ path: '.env.development.local', override: true })
@@ -59,7 +59,7 @@ async function init() {
     app.use(cors()) // Enable CORS for all routes
 
     server.listen(port, hostname, () => {
-        console.log(`Прокси запущен на ${hostname}:${port}`)
+        console.log(`Proxy is avaliable at: ${hostname}:${port}`)
     })
 
     if (process.argv[2] === 'serve') {

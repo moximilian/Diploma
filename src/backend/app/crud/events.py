@@ -2,7 +2,6 @@
 Logic to work with DB
 """
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
 import models as m
 from crud.base import BaseCRUD
 from schemas import EventInsertIn, RequestBodyOne, EventModel, RequestBodyList

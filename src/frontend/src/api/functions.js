@@ -1,9 +1,18 @@
 // @ts-check
 import { returnObject, compose, checkString } from '@/core/functions'
-import { API_PREFIX, isProductionMode } from './api.settings'
+import { API_PREFIX, isProductionMode } from '@/core/settings'
 import LocalStorage from '@/core/LocalStorage'
 
-/*** Help methods for response ***/
+/**
+ * @typedef {Object} APIParams
+ * @property {Object=} headers
+ * @property {Object=} body
+ * @property {Object=} args
+ * @property {String=} method
+ * @property {String=} path
+ * @property {String=} url
+ */
+
 const makeOnError =
     (errors = []) =>
     (...messages) => {
@@ -57,8 +66,12 @@ const handlersByStatusCode = {
     500: makeErrorHandler('[500] Internal server error.'),
 }
 
-/*** Основные методы API ***/
-
+/*** Main API methods ***/
+/**
+ * 
+ * @param {APIParams} params 
+ * @returns 
+ */
 const callXhr = ({ url, method, headers, body }) =>
     new Promise(resolve => {
         const Xhr = new XMLHttpRequest()
@@ -84,7 +97,12 @@ const callXhr = ({ url, method, headers, body }) =>
 
         Xhr.send(body)
     })
-
+/**
+ * 
+ * @param {Promise<any>} promise 
+ * @param {} handlers 
+ * @returns 
+ */
 const handleRequest = (promise, handlers) =>
     promise.then(res => {
         const handler =
@@ -92,6 +110,11 @@ const handleRequest = (promise, handlers) =>
         return Object.assign(res, compose(returnObject, handler)(res))
     })
 
+/**
+ * 
+ * @param {APIParams} params 
+ * @returns {Object}
+ */
 const makeArguments = ({ path, method, args, headers }) => {
     return {
         url: API_PREFIX + path + (method === 'GET' && args ? '?' + new URLSearchParams(args).toString() : ''),
@@ -108,10 +131,9 @@ const makeArguments = ({ path, method, args, headers }) => {
 }
 
 /**
- * Основной метод для вызова API
- * @param {String} path - API endpoint path
- * @param {Object} params - Параметры запроса
- * @param {Object} statusCodeHandlers - Кастомные обработчики статус-кодов
+ * @param {String} path
+ * @param {APIParams} params
+ * @param {Object} statusCodeHandlers
  * @returns {Promise<{statusCode: number, body: any, errors: string[], ok: boolean}>}
  */
 export const callApi = async (path, params = {}, statusCodeHandlers = {}) => {

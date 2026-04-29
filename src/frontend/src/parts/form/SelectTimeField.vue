@@ -76,7 +76,7 @@ export default {
         },
 
         value() {
-            ;[this.hours, this.minutes] = this.value.split(':')
+            [this.hours, this.minutes] = this.value.split(':')
         },
     },
 

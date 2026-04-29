@@ -51,7 +51,7 @@
                             </router-link>
                         </div>
                         <div class="link">
-                            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"> FAQ </a>
+                            <a href="https://github.com/moximilian/Diploma" target="_blank" > FAQ </a>
                         </div>
                     </div>
                     <div class="line"></div>
@@ -109,8 +109,8 @@ export default {
         async getCurrentUser() {
             const { body } = await this.$api.users.one({ id: this.$ls.current_user })
             this.currentUser = body
-            if (body?.photo_id || this.imageSrc === null) await this.fetchImage(body.photo_id)
-            this.$store.commit('setRole', body.role_name)
+            if (body?.photo_id && this.imageSrc === null) await this.fetchImage(body.photo_id)
+            body?.role_name && this.$store.commit('setRole', body.role_name)
         },
         async fetchImage(id) {
             const { body } = await this.$api.images.get({ id })

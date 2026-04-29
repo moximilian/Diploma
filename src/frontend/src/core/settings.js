@@ -1,8 +1,5 @@
 // @ts-check
 
-/** Application settings -- /public/settings.js */ // @ts-ignore
-const settings = window?.settings || {}
-
 /** Modes */
 export const isDevelopmentMode = process.env.NODE_ENV === 'development'
 export const isProductionMode = process.env.NODE_ENV === 'production'
@@ -10,7 +7,7 @@ export const isStandMode = process.env.NODE_ENV === 'stand'
 
 /** Settings */
 /** @param { String } key @returns { any } */
-const getSetting = key => (isProductionMode && settings[key]) || process.env['VUE_APP_' + key]
+const getSetting = key => process.env['VUE_APP_' + key]
 /** @param { String } val @param { String } def @returns { String } */
 const getStrOr = (val, def = '/') => (typeof val === 'string' && val.trim()) || def
 export const PROJECT_NAME = getStrOr(getSetting('PROJECT_NAME'), 'PROJECT NAME')

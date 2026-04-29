@@ -6,7 +6,6 @@ from fastapi import APIRouter, Depends
 
 import schemas
 from crud.events import EventsCRUD
-from crud.base import BaseCRUD
 from crud.auth import authorised_user
 from database import get_db
 router = APIRouter()

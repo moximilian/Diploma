@@ -9,7 +9,7 @@
         @clickRow="clickRow"
     >
         <template #before>
-            <slot name="before"></slot>
+            <div class="before-table"><slot name="before"></slot></div>
         </template>
         <template #custom-title-key="{ rows }">
             <slot name="custom-title-key" :rows="rows"></slot>

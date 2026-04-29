@@ -66,13 +66,11 @@ export default {
             this.$emit('onBlur')
         },
         checkSQLInjection(input) {
-            // Default check for SQL Injection
             if (typeof input !== 'string') {
                 return input
             }
             const value = input
                 .replace(/[\0\x08\x09\x1a\n\r"'\\%]/g, char => {
-                    // Экранируем специальные символы
                     const replacements = {
                         '\0': '\\0',
                         '\x08': '\\b',
@@ -103,11 +101,9 @@ export default {
         clear(autofocus = true) {
             this.realValue = ''
             this.onInput()
-            // Автофокус с таймаутом, чтобы перебить дефолтный автофокус
             autofocus && setTimeout(() => this.focus())
         },
         focus() {
-            // Автофокус с таймаутом, чтобы перебить дефолтный автофокус
             this.$el.click()
             setTimeout(() => {
                 this.$el.querySelector('.field-input').focus()

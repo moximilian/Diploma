@@ -1,43 +1,49 @@
-# Дипломная работа
-__Сыров Максим Евгеньевич, 2025__
-Корпоративные информационные технологии
+# Tutors Hub
 
-## Тема работы:
-    Создание клиент-серверного веб-приложения администрирования групповых занятий
+**Made entierly by Maxim Syrov in 2025**
 
-- src/backend - Сервеерная часть
-- src/frontend - Исходный код клиентской части
-- docs - Документация
-- examples - Примеры работы приложения
+Originaly this project started as a Final Qualifying Work from Moscow Polytech Univercity,
+Specialty is Corporate information technology
 
-## Список идеальных возможностей проекта:
-- Регистрация
-- Авторизация
-- Редактирование своих данных
-- Удаление аккаунта
-- Хранение сесси авторизации, разлогин при протухшей сессии
-- Создание, поиск, редактирование, удаление групп участников
-- Вступить в отрктыте группы
-- Отправить запрос на вступление в закрытые группы
-- Выход из группы
-- Создать ссылку приглашение в группу
-- Создание, редактирование, поиск, удаление слотов
-- Вступление(бронирование) слота
-- Просмотр свой статистики посещений различных занятий с фильтрами
-- Просмотр статистики посещений целой группы или отдельного занятия
-- Просмотр своего расписания планируемых занятий (как орагнизатор и как участник)
-- Ведение посещаемости, оплаты и прочих характеристик на каждом занятии
-- Отправка уведомлений о переносе занятия
+## Description:
 
+Build your timetable, manage your groups, connect with pupils. Made spicificly for teacher's and tutor's needs!
 
-## Для сборки
+## Project table of contents
 
-Необходимо иметь Docker v>3.8
+- /src/backend - Server side src
+- /src/frontend - Client side src
+- /docs - Documentation
+- /examples - Usage examples
 
-`cd src` - переключаемся в рабочую директорию
+## Functionality:
 
-`docker-compose --env-file .env up` - Сборка всех контейнеров по очереди
+- User registration (manually or via OAUth 2)
+- User authentication
+- Editing own data
+- Deleting account
+- Storing authentication session, log out when the session expires
+- Creating, searching, editing, and deleting participant groups
+- Join open groups
+- Send a request to join closed groups
+- Leave a group
+- Create a group invitation link
+- Creating, editing, searching, and deleting slots
+- Joining (booking) a slot
+- Viewing personal attendance statistics for various activities with filters
+- Viewing attendance statistics for an entire group or a specific activity
+- Viewing personal schedule of planned activities (as both organizer and participant)
+- Tracking attendance, payments, and other attributes for each activity
+- Sending notifications about rescheduling activities
 
-В результате собирается API на порту `8000`
+## Set up and run
 
-Фронтенд запускается на `localhost:1024` слушатель через nginx
+Docker version >= 3.8
+
+`cd src` - move to working direcroty
+
+`docker-compose --env-file .env up` - Build all images and run containers
+
+API will be avaliable at `8000` port
+
+Client side will be avaliable at `localhost:1024`, made possible by NGINX

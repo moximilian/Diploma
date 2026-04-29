@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { BASE_URL } from '@/api/api.settings'
+import { BASE_URL } from '@/core/settings'
 export default {
     data() {
         return {

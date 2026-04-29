@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from crud.events import EventsCRUD
 import models as m
 from crud.base import BaseCRUD
-from schemas import EventInsertIn, RequestBodyOne, EventModel, RequestBodyList
 import api.exceptions as exc
 
 

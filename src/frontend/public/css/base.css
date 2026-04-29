@@ -147,6 +147,13 @@ body {
     text-decoration: underline;
     text-underline-position: under;
 }
+.auth-form {
+    width: 100%;
+    max-width: 600px;
+    padding: 64px;
+    border: 2px solid lightgray ;
+    border-radius: 32px;
+}
 .auth-form .form .base-btn {
     min-width: -webkit-fill-available;
 }

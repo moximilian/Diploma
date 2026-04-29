@@ -1,11 +1,23 @@
 <template>
     <div v-if="isShow" class="timetable-day" :key="currentMinute" ref="timetable">
-        <div
-            class="block"
-            v-for="index of blocks"
-            :key="index"
-            :style="{ height: blockSizeMins + 'px' }"
-        >
+        <div class="hours">
+            <div class="hour" v-for="(_, hour) of Array(24)" :key="hour">
+                <div class="semi-transparent-black-color hour-time" v-if="isShowHours">
+                    {{ getHour(hour) }}
+                </div>
+                <div class="hour-block">
+    
+                </div>
+            </div>
+        </div>
+        <div class="events">
+
+        </div>
+        <div ref="currentTimeLine" class="current-time" v-if="isShowHours">
+            {{ new Date().toShowTime() }}
+        </div>
+        <div class="line-current-time" :class="{ ['semi-transparent']: !isShowCurrTimeLine }"></div>
+        <!-- <div class="block" v-for="index of blocks" :key="index" :style="{ height: blockSizeMins + 'px' }">
             <div class="block" v-if="index % blocksInHour == 0 && currentTimeBlock !== index">
                 <div class="semi-transparent-black-color" v-if="isShowHours">
                     {{ getHour(index) }}
@@ -16,17 +28,10 @@
                 <div ref="currentTimeLine" class="current-time" v-if="isShowHours">
                     {{ new Date().toShowTime() }}
                 </div>
-                <div
-                    class="line-current-time"
-                    :class="{ ['semi-transparent']: !isShowCurrTimeLine }"
-                ></div>
+                <div class="line-current-time" :class="{ ['semi-transparent']: !isShowCurrTimeLine }"></div>
             </div>
-        </div>
-        <div
-            class="events-blocks"
-            :style="{ marginLeft: (isShowHours ? 45 : 0) + 'px' }"
-            v-if="eventsItems.length > 0"
-        >
+        </div> -->
+        <div class="events-blocks" :style="{ marginLeft: (isShowHours ? 45 : 0) + 'px' }" v-if="eventsItems.length > 0">
             <div
                 class="event-block-wrapper"
                 v-for="(event, index) of events"
@@ -73,7 +78,27 @@
         </div>
     </div>
 </template>
-
+<style>
+.hour {
+    width: 60px;
+}
+.hour-time {
+    width: 100%;
+    margin-top: -24.25px;
+    height: 23px;
+}
+.hour-block {
+    height: 80px;
+    width: 100%;
+}
+.hours {
+    border-right: 1px solid gray;
+    width: fit-content;
+}
+.events {
+    width: 100%;
+}
+</style>
 <script>
 import ValueToString from '@/parts/table/parts/ValueToString.vue'
 export default {
@@ -114,14 +139,11 @@ export default {
             return !event.group_id
         },
         toShow(eventOrSlot) {
-            this.$router.push(
-                `/${this.isEventSlot(eventOrSlot) ? 'slots' : 'events'}/show/${eventOrSlot.id}`
-            )
+            this.$router.push(`/${this.isEventSlot(eventOrSlot) ? 'slots' : 'events'}/show/${eventOrSlot.id}`)
         },
-        getHour(index) {
-            let hours = (index / this.blocksInHour + 1) % 24
-            if (hours.toString().length === 1) hours = `0${hours}`
-            return `${hours}:00`
+        getHour(hour) {
+            if (hour.toString().length === 1) hour = `0${hour}`
+            return `${hour}:00`
         },
         getTimeBlock(date = null) {
             date = date ? new Date(date) : new Date()
@@ -143,11 +165,9 @@ export default {
             this.maxWidth = Math.abs(timetableRect?.width ?? 0)
         },
         setEventStyles(event, index) {
-            const startBlock =
-                this.getTimeBlock(this.getEventFullDate(event.start_date, event.start_time)) + 1
+            const startBlock = this.getTimeBlock(this.getEventFullDate(event.start_date, event.start_time)) + 1
 
-            const endBlock =
-                this.getTimeBlock(this.getEventFullDate(event.start_date, event.end_time)) + 1
+            const endBlock = this.getTimeBlock(this.getEventFullDate(event.start_date, event.end_time)) + 1
 
             const startTop = startBlock * this.blockSizeMins
             const endTop = endBlock * this.blockSizeMins + 1
@@ -161,8 +181,7 @@ export default {
                 if (eventEl.style.height < height) eventEl.style.height = height
                 eventEl.style.top = this.topPadding + startTop + 18 + 'px'
                 eventEl.style.backgroundColor = this.blocksColors[index % 5]
-                const width =
-                    this.maxWidth - (this.isShowHours ? 45 : 0) - (this.fromWeek ? 0 : 22) - 24
+                const width = this.maxWidth - (this.isShowHours ? 45 : 0) - (this.fromWeek ? 0 : 22) - 24
                 eventEl.style.width = width + 'px'
             }
         },
@@ -174,7 +193,7 @@ export default {
         },
         scrollToTimeLine() {
             const lineEl = this.$refs?.currentTimeLine
-            if (lineEl) lineEl[0].scrollIntoView()
+            if (lineEl) lineEl[0]?.scrollIntoView()
         },
     },
     computed: {

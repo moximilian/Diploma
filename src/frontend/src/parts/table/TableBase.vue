@@ -11,7 +11,7 @@
                         v-if="key?.isCustom"
                         @click="$emit('onCustomKeyDelete', key.name, rows)"
                         >-</BaseBtn
-                    > 
+                    >
                     <!-- @TODO Переделать эту кнопку в слот -->
                 </div>
                 <slot name="custom-title-key" :rows="rows"></slot>
@@ -22,27 +22,23 @@
                     :key="row.id"
                     :row="row"
                     :isClickable="isClickable"
-                    :class="{ even: index % 2 != 0 }"
+                    :class="{ even: index % 2 != 0, lastRow: index === rows.length - 1 }"
                     @clickRow.self="clickRow"
                 >
                     <slot name="first-item" :row="row"></slot>
                     <div v-for="key of tableKeys" :key="key?.name" class="table-cell">
                         <div v-if="key?.name">
                             <TableCell :row="row" :keyObj="key" :field="getField(key.name)">
-                                <slot
-                                    name="table-cell"
-                                    :row="row"
-                                    :keyObj="key"
-                                    :field="getField(key.name)"
-                                >
-                                </slot>
+                                <slot name="table-cell" :row="row" :keyObj="key" :field="getField(key.name)"> </slot>
                             </TableCell>
                         </div>
                     </div>
                     <slot name="last-item" :row="row"></slot>
                 </TableRow>
             </div>
-            <div v-else>Нет данных</div>
+            <TableRow v-else :isClickable="false">
+                <div>Нет данных</div>
+            </TableRow>
         </div>
     </div>
 </template>

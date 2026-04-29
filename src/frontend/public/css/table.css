@@ -5,15 +5,17 @@
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
-    padding: 16px;
+    margin: 16px;
     overflow-x: auto; /* Use auto instead of scroll for better UX */
 }
 
 .table-base-body {
-    width: 100%;
+    width: calc(100% - 4px);
     display: flex;
     flex-direction: column;
     min-width: max-content; /* Ensure the body expands to fit the content */
+    border: 2px solid rgba(var(--main-color-rgb), 0.8);
+    border-radius: 16px;
 }
 
 .table-base-row {
@@ -22,8 +24,18 @@
     gap: 10px;
     padding: 8px 0;
     width: 100%; /* Ensure the row spans the full width */
-    min-width: 1024px;
-    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+}
+
+.table-base-row.lastRow {
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.before-table {
+    padding-bottom: 16px;
 }
 
 .table-base-row.even {
@@ -44,7 +56,8 @@
 .table-base-header {
     font-weight: bold;
     background-color: var(--table-header-bg-color);
-    border-radius: 8px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
 }
 
 .after-table-continer {
